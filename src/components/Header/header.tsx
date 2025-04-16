@@ -19,7 +19,7 @@ export default function Header() {
         <header className="bg-white border-b border-gray-300 fixed top-0 left-0 z-10 w-full">
             <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 lg:px-8">
                 <div className="flex lg:flex-1">
-                    <a href="#" className="-m-1.5 p-1.5">
+                    <Link href="/" className="-m-1.5 p-1.5">
                         <Image
                             src="/images/logo.png"
                             width={120}
@@ -27,7 +27,7 @@ export default function Header() {
                             alt='logo'
                             quality={100}
                         />
-                    </a>
+                    </Link>
                 </div>
                 <div className="flex lg:hidden">
                     <button
@@ -40,17 +40,15 @@ export default function Header() {
                     </button>
                 </div>
                 <PopoverGroup className="hidden lg:flex lg:gap-x-12">
-                    <Link href="/" className="text-gray-700 transition font-semibold hover:text-gray-500/75">Головна</Link>
-                    <a className="text-gray-700 transition font-semibold hover:text-gray-500/75" href="#"> Каталог </a>
-                    <a className="text-gray-700 transition font-semibold hover:text-gray-500/75" href="#"> Відгуки </a>
+                    <Link className="text-gray-700 transition font-semibold hover:text-gray-500/75" href="/">Головна</Link>
+                    <Link className="text-gray-700 transition font-semibold hover:text-gray-500/75" href="/catalog/"> Каталог </Link>
+                    <Link className="text-gray-700 transition font-semibold hover:text-gray-500/75" href="/reviews/"> Відгуки </Link>
                     <Link className="text-gray-700 transition font-semibold hover:text-gray-500/75" href="/portfolio/"> Портфоліо </Link>
                     <Link className="text-gray-700 transition font-semibold hover:text-gray-500/75" href="/contact/"> Контакти </Link>
-                    <a className="text-gray-700 transition font-semibold hover:text-gray-500/75" href="#"> Про мене </a>
+                    <Link className="text-gray-700 transition font-semibold hover:text-gray-500/75" href="/about/"> Про мене </Link>
                 </PopoverGroup>
                 <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-                    <a href="#" className="text-sm/6 font-semibold text-gray-900">
-                        Log in <span aria-hidden="true">&rarr;</span>
-                    </a>
+                    <button type="button" className="text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"> Замовити </button>
                 </div>
             </nav>
             <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">

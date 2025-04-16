@@ -1,16 +1,6 @@
-// import Image from "next/image";
-
 export default function PageBanner() {
   return (
     <section className="h-[90vh] relative flex items-center justify-center">
-      {/* <Image
-        className="h-full w-full object-cover absolute top-0 left-0"
-        src="/images/test1.jpg"
-        fill={true}
-        alt="background"
-        priority={true}
-        quality={100}
-      /> */}
       <video
         autoPlay
         muted
