@@ -1,20 +1,16 @@
-'use client'
+'use client';
+
 import Image from "next/image";
 import Link from 'next/link';
-
-import { useState } from 'react'
-import {
-    Dialog,
-    DialogPanel,
-    PopoverGroup,
-} from '@headlessui/react'
-import {
-    Bars3Icon,
-    XMarkIcon,
-} from '@heroicons/react/24/outline'
+import { useState } from 'react';
+import { useSession, signOut } from "next-auth/react";
+import { Dialog, DialogPanel, PopoverGroup } from '@headlessui/react'
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 
 export default function Header() {
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const { data: session } = useSession();
+
     return (
         <header className="bg-white border-b border-gray-300 fixed top-0 left-0 z-10 w-full">
             <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 lg:px-8">
@@ -48,7 +44,21 @@ export default function Header() {
                     <Link className="text-gray-700 transition font-semibold hover:text-gray-500/75" href="/about/"> Про мене </Link>
                 </PopoverGroup>
                 <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-                    <button type="button" className="text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"> Замовити </button>
+                    {session ? (
+                        <button
+                            onClick={() => signOut()}
+                            className="text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+                        >
+                            Вийти
+                        </button>
+                    ) : (
+                        <Link
+                            href="/auth/login/"
+                            className="text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+                        >
+                            Увійти
+                        </Link>
+                    )}
                 </div>
             </nav>
             <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
@@ -84,7 +94,7 @@ export default function Header() {
                                 <a className="-mx-3 block rounded-lg px-3 py-2 text-base/7 text-gray-900 hover:bg-gray-50" href="#"> Про мене </a>
                             </div>
                             <div className="py-6">
-                                <a href="#" className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">
+                                <a href="#" className="mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">
                                     Log in
                                 </a>
                             </div>

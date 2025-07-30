@@ -1,18 +1,8 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
 import Header from "@/components/Header/header";
-import Footer from '@/components/Footer/footer';
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import Footer from "@/components/Footer/footer";
+import SessionWrapper from '@/components/utils/SessionWrapper';
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Shy Cakes",
@@ -24,12 +14,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <Header />
-        {children}
-        <Footer />
+    <html lang="uk">
+      <body className="antialiased">
+        <SessionWrapper>
+          <Header />
+          {children}
+          <Footer />
+        </SessionWrapper>
       </body>
     </html>
   );
