@@ -1,64 +1,52 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import clientPromise from "@/api/db/db";
+import { findUserByEmail } from "@/api/db/operations";
 import bcrypt from "bcrypt";
 
 export const authOptions: NextAuthOptions = {
+  secret: process.env.NEXTAUTH_SECRET,
+  debug: process.env.NODE_ENV === 'development',
   providers: [
     CredentialsProvider({
       name: "credentials",
       credentials: {
-        email: { label: "Email", type: "text" },
+        email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
           return null;
-          // throw new Error("Email і пароль обов'язкові");
         }
 
         try {
-          const client = await clientPromise;
-          const db = client.db("shy-cakes");
-
-          const user = await db
-            .collection("users")
-            .findOne({ email: credentials.email });
-          console.log(user)
+          const user = await findUserByEmail(credentials.email.toLowerCase());
 
           if (!user) {
-             return null;
-            // throw new Error("Користувача не знайдено");
+            return null;
           }
 
           const isValidPassword = await bcrypt.compare(
             credentials.password,
             user.password
           );
-          console.log(isValidPassword);
-
 
           if (!isValidPassword) {
             return null;
-            // throw new Error("Невірний пароль");
           }
 
           return {
-            id: user._id.toString(),
+            id: user._id?.toString() || "",
             name: user.name,
             email: user.email,
+            role: user.role,
+            phone: user.phone,
           };
         } catch (error) {
-          console.error("Помилка авторизації:", error);
           return null;
-          // throw new Error("Помилка авторизації");
         }
       },
     }),
   ],
-  pages: {
-    signIn: "/auth/login"
-  },
   session: {
     strategy: "jwt",
   },
@@ -66,12 +54,16 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.role = user.role;
+        token.phone = user.phone;
       }
       return token;
     },
     async session({ session, token }) {
       if (token && session.user) {
-        // session.user.id = token.id;
+        (session.user as any).id = token.id;
+        (session.user as any).role = token.role;
+        (session.user as any).phone = token.phone;
       }
       return session;
     },

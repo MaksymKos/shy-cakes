@@ -1,7 +1,7 @@
-import { MongoClient } from "mongodb";
+import { MongoClient, MongoClientOptions } from "mongodb";
 
-const uri = process.env.MONGODB_URI;
-const options = {};
+const uri = process.env.MONGODB_URI as string;
+const options: MongoClientOptions = {};
 
 if (!uri) {
   throw new Error("Будь ласка, задай MONGODB_URI в .env.local");

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Header from "@/components/Header/header";
+import DynamicHeader from "@/components/Header/DynamicHeader";
 import Footer from "@/components/Footer/footer";
 import SessionWrapper from '@/components/utils/SessionWrapper';
 import "./globals.css";
@@ -17,9 +17,9 @@ export default function RootLayout({
 
   return (
     <html lang="uk">
-      <body className="antialiased">
+      <body className="antialiased" suppressHydrationWarning={true}>
         <SessionWrapper>
-          <Header />
+          <DynamicHeader />
           {children}
           <Footer />
         </SessionWrapper>
