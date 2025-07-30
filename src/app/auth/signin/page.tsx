@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
-import { signIn, getSession } from 'next-auth/react';
+import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
 interface FormData {
@@ -81,7 +81,7 @@ export default function SignIn() {
       } else {
         router.push('/');
       }
-    } catch (error) {
+    } catch {
       setErrors({ general: 'Виникла помилка. Спробуйте ще раз.' });
     } finally {
       setIsLoading(false);

@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { ObjectId } from 'mongodb';
 import { 
   createUser, 
   findUserByEmail, 
-  getAllUsers, 
-  updateUser 
+  getAllUsers
 } from '@/api/db/operations';
 import { CreateUser } from '@/types/database';
 import bcrypt from 'bcrypt';
@@ -12,7 +10,7 @@ import bcrypt from 'bcrypt';
 export async function GET() {
   try {
     const users = await getAllUsers();
-    const usersWithoutPasswords = users.map(({ password, ...user }) => user);
+    const usersWithoutPasswords = users.map(({ password: _, ...user }) => user);
     return NextResponse.json(usersWithoutPasswords);
   } catch {
     return NextResponse.json(
@@ -60,7 +58,7 @@ export async function POST(request: NextRequest) {
       throw new Error('Failed to create user');
     }
 
-    const { password: userPassword, ...userWithoutPassword } = {
+    const { password: _, ...userWithoutPassword } = {
       _id: result.insertedId,
       ...userData,
       createdAt: new Date(),

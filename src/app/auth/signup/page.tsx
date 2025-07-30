@@ -145,14 +145,14 @@ export default function SignUp() {
             router.push('/auth/signin');
           }, 2000);
         }
-      } catch (signInError) {
+      } catch {
         setErrors({ general: 'Реєстрація успішна, але не вдалося автоматично увійти. Спробуйте увійти вручну.' });
         setTimeout(() => {
           router.push('/auth/signin');
         }, 2000);
       }
 
-    } catch (error) {
+    } catch {
       setErrors({ general: 'Виникла помилка. Спробуйте ще раз.' });
     } finally {
       setIsLoading(false);
@@ -213,7 +213,7 @@ export default function SignUp() {
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                Повне ім'я *
+                Повне ім&apos;я *
               </label>
               <input
                 id="name"
@@ -226,7 +226,7 @@ export default function SignUp() {
                 className={`appearance-none relative block w-full px-3 py-2 border rounded-md placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 focus:z-10 sm:text-sm transition-colors duration-200 ${
                   errors.name ? 'border-red-300 bg-red-50' : 'border-gray-300'
                 }`}
-                placeholder="Введіть ваше повне ім'я"
+                placeholder="Введіть ваше повне ім&apos;я"
               />
               {errors.name && (
                 <p className="mt-1 text-sm text-red-600">{errors.name}</p>

@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
       throw new Error('Не вдалося створити користувача');
     }
 
-    const { password: userPassword, ...userWithoutPassword } = {
+    const { password: _, ...userWithoutPassword } = {
       _id: result.insertedId,
       ...userData,
       createdAt: new Date(),
