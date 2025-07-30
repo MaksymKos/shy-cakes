@@ -7,7 +7,7 @@ export async function GET() {
     const cakes = await db.collection('cakes').find({}).toArray();
     
     return NextResponse.json(cakes);
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Failed to fetch cakes' },
       { status: 500 }
@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
       _id: result.insertedId 
     }, { status: 201 });
     
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Failed to create cake' },
       { status: 500 }

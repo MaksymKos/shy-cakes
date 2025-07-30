@@ -10,7 +10,7 @@ export async function GET() {
       .toArray();
     
     return NextResponse.json(orders);
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Failed to fetch orders' },
       { status: 500 }
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
       _id: result.insertedId 
     }, { status: 201 });
     
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Failed to create order' },
       { status: 500 }

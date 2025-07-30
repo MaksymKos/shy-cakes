@@ -14,7 +14,7 @@ export async function GET() {
     const users = await getAllUsers();
     const usersWithoutPasswords = users.map(({ password, ...user }) => user);
     return NextResponse.json(usersWithoutPasswords);
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Failed to fetch users' },
       { status: 500 }
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
       throw new Error('Failed to create user');
     }
 
-    const { password: _, ...userWithoutPassword } = {
+    const { password: userPassword, ...userWithoutPassword } = {
       _id: result.insertedId,
       ...userData,
       createdAt: new Date(),
@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(userWithoutPassword, { status: 201 });
     
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Failed to create user' },
       { status: 500 }
