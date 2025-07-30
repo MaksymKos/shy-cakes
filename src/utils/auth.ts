@@ -15,25 +15,31 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
+          console.log("Missing credentials");
           return null;
         }
 
         try {
+          console.log("Attempting to find user:", credentials.email);
           const user = await findUserByEmail(credentials.email.toLowerCase());
 
           if (!user) {
+            console.log("User not found:", credentials.email);
             return null;
           }
 
+          console.log("User found, verifying password");
           const isValidPassword = await bcrypt.compare(
             credentials.password,
             user.password
           );
 
           if (!isValidPassword) {
+            console.log("Invalid password for user:", credentials.email);
             return null;
           }
 
+          console.log("Authentication successful for user:", credentials.email);
           return {
             id: user._id?.toString() || "",
             name: user.name,
@@ -41,7 +47,8 @@ export const authOptions: NextAuthOptions = {
             role: user.role,
             phone: user.phone,
           };
-        } catch {
+        } catch (error) {
+          console.error("Authentication error:", error);
           return null;
         }
       },

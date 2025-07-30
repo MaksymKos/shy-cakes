@@ -1,23 +1,28 @@
 import { Db, Collection, ObjectId } from "mongodb";
-import { 
-  DatabaseCollections, 
-  CreateUser, 
-  CreateCakeOrder, 
-  CreateReview, 
-  CreatePortfolioItem, 
+import {
+  DatabaseCollections,
+  CreateUser,
+  CreateCakeOrder,
+  CreateReview,
+  CreatePortfolioItem,
   CreateContactMessage,
   User,
   CakeOrder,
   Review,
   PortfolioItem,
-  ContactMessage
+  ContactMessage,
 } from "../../types/database";
 import clientPromise from "./db";
 
 export async function getDatabase(): Promise<Db> {
-  const client = await clientPromise;
-  const dbName = process.env.MONGODB_DB || "shy-cakes";
-  return client.db(dbName);
+  try {
+    const client = await clientPromise;
+    const dbName = process.env.MONGODB_DB || "shy-cakes";
+    return client.db(dbName);
+  } catch (error) {
+    console.error("Failed to connect to database:", error);
+    throw new Error("Database connection failed");
+  }
 }
 
 export async function getCollection<T extends keyof DatabaseCollections>(
@@ -27,7 +32,9 @@ export async function getCollection<T extends keyof DatabaseCollections>(
   return db.collection<DatabaseCollections[T]>(collectionName);
 }
 
-export function addTimestamps<T>(document: T): T & { createdAt: Date; updatedAt: Date } {
+export function addTimestamps<T>(
+  document: T
+): T & { createdAt: Date; updatedAt: Date } {
   const now = new Date();
   return {
     ...document,
@@ -44,156 +51,181 @@ export function updateTimestamp<T>(document: T): T & { updatedAt: Date } {
 }
 
 export async function createUser(userData: CreateUser) {
-  const users = await getCollection('users');
+  const users = await getCollection("users");
   const userWithTimestamps = addTimestamps(userData);
   return await users.insertOne(userWithTimestamps);
 }
 
 export async function findUserByEmail(email: string): Promise<User | null> {
-  const users = await getCollection('users');
-  return await users.findOne({ email });
+  try {
+    const users = await getCollection("users");
+    return await users.findOne({ email: email.toLowerCase() });
+  } catch (error) {
+    console.error("Error finding user by email:", error);
+    throw new Error("Database connection failed");
+  }
 }
 
-export async function findUserById(userId: string | ObjectId): Promise<User | null> {
-  const users = await getCollection('users');
-  const id = typeof userId === 'string' ? new ObjectId(userId) : userId;
+export async function findUserById(
+  userId: string | ObjectId
+): Promise<User | null> {
+  const users = await getCollection("users");
+  const id = typeof userId === "string" ? new ObjectId(userId) : userId;
   return await users.findOne({ _id: id });
 }
 
-export async function updateUser(userId: string | ObjectId, updateData: Partial<User>) {
-  const users = await getCollection('users');
-  const id = typeof userId === 'string' ? new ObjectId(userId) : userId;
+export async function updateUser(
+  userId: string | ObjectId,
+  updateData: Partial<User>
+) {
+  const users = await getCollection("users");
+  const id = typeof userId === "string" ? new ObjectId(userId) : userId;
   const dataWithTimestamp = updateTimestamp(updateData);
   return await users.updateOne({ _id: id }, { $set: dataWithTimestamp });
 }
 
 export async function getAllUsers(): Promise<User[]> {
-  const users = await getCollection('users');
+  const users = await getCollection("users");
   return await users.find({}).sort({ createdAt: -1 }).toArray();
 }
 
 export async function createOrder(orderData: CreateCakeOrder) {
-  const orders = await getCollection('orders');
+  const orders = await getCollection("orders");
   const orderWithTimestamps = addTimestamps(orderData);
   return await orders.insertOne(orderWithTimestamps);
 }
 
-export async function getUserOrders(userId: string | ObjectId): Promise<CakeOrder[]> {
-  const orders = await getCollection('orders');
-  const id = typeof userId === 'string' ? new ObjectId(userId) : userId;
+export async function getUserOrders(
+  userId: string | ObjectId
+): Promise<CakeOrder[]> {
+  const orders = await getCollection("orders");
+  const id = typeof userId === "string" ? new ObjectId(userId) : userId;
   return await orders.find({ userId: id }).sort({ createdAt: -1 }).toArray();
 }
 
-export async function getOrderById(orderId: string | ObjectId): Promise<CakeOrder | null> {
-  const orders = await getCollection('orders');
-  const id = typeof orderId === 'string' ? new ObjectId(orderId) : orderId;
+export async function getOrderById(
+  orderId: string | ObjectId
+): Promise<CakeOrder | null> {
+  const orders = await getCollection("orders");
+  const id = typeof orderId === "string" ? new ObjectId(orderId) : orderId;
   return await orders.findOne({ _id: id });
 }
 
 export async function updateOrderStatus(
-  orderId: string | ObjectId, 
-  status: CakeOrder['status']
+  orderId: string | ObjectId,
+  status: CakeOrder["status"]
 ) {
-  const orders = await getCollection('orders');
-  const id = typeof orderId === 'string' ? new ObjectId(orderId) : orderId;
+  const orders = await getCollection("orders");
+  const id = typeof orderId === "string" ? new ObjectId(orderId) : orderId;
   return await orders.updateOne(
-    { _id: id }, 
+    { _id: id },
     { $set: { status, updatedAt: new Date() } }
   );
 }
 
 export async function getAllOrders(): Promise<CakeOrder[]> {
-  const orders = await getCollection('orders');
+  const orders = await getCollection("orders");
   return await orders.find({}).sort({ createdAt: -1 }).toArray();
 }
 
 export async function createReview(reviewData: CreateReview) {
-  const reviews = await getCollection('reviews');
+  const reviews = await getCollection("reviews");
   const reviewWithTimestamps = addTimestamps(reviewData);
   return await reviews.insertOne(reviewWithTimestamps);
 }
 
 export async function getApprovedReviews(): Promise<Review[]> {
-  const reviews = await getCollection('reviews');
-  return await reviews.find({ isApproved: true }).sort({ createdAt: -1 }).toArray();
+  const reviews = await getCollection("reviews");
+  return await reviews
+    .find({ isApproved: true })
+    .sort({ createdAt: -1 })
+    .toArray();
 }
 
 export async function getAllReviews(): Promise<Review[]> {
-  const reviews = await getCollection('reviews');
+  const reviews = await getCollection("reviews");
   return await reviews.find({}).sort({ createdAt: -1 }).toArray();
 }
 
 export async function approveReview(reviewId: string | ObjectId) {
-  const reviews = await getCollection('reviews');
-  const id = typeof reviewId === 'string' ? new ObjectId(reviewId) : reviewId;
+  const reviews = await getCollection("reviews");
+  const id = typeof reviewId === "string" ? new ObjectId(reviewId) : reviewId;
   return await reviews.updateOne(
-    { _id: id }, 
+    { _id: id },
     { $set: { isApproved: true, updatedAt: new Date() } }
   );
 }
 
 export async function createPortfolioItem(itemData: CreatePortfolioItem) {
-  const portfolio = await getCollection('portfolio');
+  const portfolio = await getCollection("portfolio");
   const itemWithTimestamps = addTimestamps(itemData);
   return await portfolio.insertOne(itemWithTimestamps);
 }
 
 export async function getVisiblePortfolioItems(): Promise<PortfolioItem[]> {
-  const portfolio = await getCollection('portfolio');
-  return await portfolio.find({ isVisible: true }).sort({ createdAt: -1 }).toArray();
+  const portfolio = await getCollection("portfolio");
+  return await portfolio
+    .find({ isVisible: true })
+    .sort({ createdAt: -1 })
+    .toArray();
 }
 
 export async function getAllPortfolioItems(): Promise<PortfolioItem[]> {
-  const portfolio = await getCollection('portfolio');
+  const portfolio = await getCollection("portfolio");
   return await portfolio.find({}).sort({ createdAt: -1 }).toArray();
 }
 
 export async function updatePortfolioItem(
-  itemId: string | ObjectId, 
+  itemId: string | ObjectId,
   updateData: Partial<PortfolioItem>
 ) {
-  const portfolio = await getCollection('portfolio');
-  const id = typeof itemId === 'string' ? new ObjectId(itemId) : itemId;
+  const portfolio = await getCollection("portfolio");
+  const id = typeof itemId === "string" ? new ObjectId(itemId) : itemId;
   const dataWithTimestamp = updateTimestamp(updateData);
   return await portfolio.updateOne({ _id: id }, { $set: dataWithTimestamp });
 }
 
 export async function deletePortfolioItem(itemId: string | ObjectId) {
-  const portfolio = await getCollection('portfolio');
-  const id = typeof itemId === 'string' ? new ObjectId(itemId) : itemId;
+  const portfolio = await getCollection("portfolio");
+  const id = typeof itemId === "string" ? new ObjectId(itemId) : itemId;
   return await portfolio.deleteOne({ _id: id });
 }
 
 export async function createContactMessage(messageData: CreateContactMessage) {
-  const messages = await getCollection('messages');
+  const messages = await getCollection("messages");
   const messageWithTimestamps = addTimestamps(messageData);
   return await messages.insertOne(messageWithTimestamps);
 }
 
 export async function getUnreadMessages(): Promise<ContactMessage[]> {
-  const messages = await getCollection('messages');
-  return await messages.find({ isRead: false }).sort({ createdAt: -1 }).toArray();
+  const messages = await getCollection("messages");
+  return await messages
+    .find({ isRead: false })
+    .sort({ createdAt: -1 })
+    .toArray();
 }
 
 export async function getAllMessages(): Promise<ContactMessage[]> {
-  const messages = await getCollection('messages');
+  const messages = await getCollection("messages");
   return await messages.find({}).sort({ createdAt: -1 }).toArray();
 }
 
 export async function markMessageAsRead(messageId: string | ObjectId) {
-  const messages = await getCollection('messages');
-  const id = typeof messageId === 'string' ? new ObjectId(messageId) : messageId;
+  const messages = await getCollection("messages");
+  const id =
+    typeof messageId === "string" ? new ObjectId(messageId) : messageId;
   return await messages.updateOne(
-    { _id: id }, 
+    { _id: id },
     { $set: { isRead: true, updatedAt: new Date() } }
   );
 }
 
 export async function markMessageAsReplied(messageId: string | ObjectId) {
-  const messages = await getCollection('messages');
-  const id = typeof messageId === 'string' ? new ObjectId(messageId) : messageId;
+  const messages = await getCollection("messages");
+  const id =
+    typeof messageId === "string" ? new ObjectId(messageId) : messageId;
   return await messages.updateOne(
-    { _id: id }, 
+    { _id: id },
     { $set: { replied: true, updatedAt: new Date() } }
   );
 }
