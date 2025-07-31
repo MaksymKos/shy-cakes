@@ -8,11 +8,17 @@ if (!uri) {
 
 const options: MongoClientOptions = {
   maxPoolSize: 10, // Maintain up to 10 socket connections
-  serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
-  socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
+  serverSelectionTimeoutMS: 30000, // Keep trying to send operations for 30 seconds
+  socketTimeoutMS: 60000, // Close sockets after 60 seconds of inactivity
   family: 4, // Use IPv4, skip trying IPv6
-  connectTimeoutMS: 10000, // Give up initial connection after 10 seconds
-  maxIdleTimeMS: 30000, // Close connections after 30 seconds of inactivity
+  connectTimeoutMS: 30000, // Give up initial connection after 30 seconds
+  maxIdleTimeMS: 60000, // Close connections after 60 seconds of inactivity
+  retryWrites: true,
+  tls: true,
+  tlsAllowInvalidCertificates: true,
+  tlsAllowInvalidHostnames: true,
+  heartbeatFrequencyMS: 10000, // Check server every 10 seconds
+  maxConnecting: 2, // Limit concurrent connections
 };
 
 let client: MongoClient;
