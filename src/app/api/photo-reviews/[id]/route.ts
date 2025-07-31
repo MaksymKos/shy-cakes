@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ObjectId } from "mongodb";
 import { getDatabase } from "@/api/db/operations";
+import { ObjectId } from "mongodb";
 
 export async function GET(
   request: NextRequest,
@@ -12,24 +12,27 @@ export async function GET(
 
     if (!ObjectId.isValid(id)) {
       return NextResponse.json(
-        { error: "Невірний ID товару" },
+        { error: "Невірний ID відгуку" },
         { status: 400 }
       );
     }
 
-    const product = await db
-      .collection("products")
+    const review = await db
+      .collection("photo_reviews")
       .findOne({ _id: new ObjectId(id) });
 
-    if (!product) {
-      return NextResponse.json({ error: "Товар не знайдено" }, { status: 404 });
+    if (!review) {
+      return NextResponse.json(
+        { error: "Відгук не знайдено" },
+        { status: 404 }
+      );
     }
 
-    return NextResponse.json(product);
+    return NextResponse.json(review);
   } catch (error) {
-    console.error("Error fetching product:", error);
+    console.error("Error fetching photo review:", error);
     return NextResponse.json(
-      { error: "Помилка завантаження товару" },
+      { error: "Помилка завантаження відгуку" },
       { status: 500 }
     );
   }
@@ -45,16 +48,30 @@ export async function PATCH(
 
     if (!ObjectId.isValid(id)) {
       return NextResponse.json(
-        { error: "Невірний ID продукту" },
+        { error: "Невірний ID відгуку" },
         { status: 400 }
       );
     }
 
     const db = await getDatabase();
-    const updateData = {
+    const updateData: Record<string, unknown> = {
       ...body,
       updatedAt: new Date(),
     };
+
+    // Конвертуємо числові поля
+    if (updateData.totalPrice !== undefined) {
+      updateData.totalPrice = Number(updateData.totalPrice);
+    }
+    if (updateData.totalWeight !== undefined) {
+      updateData.totalWeight = Number(updateData.totalWeight);
+    }
+    if (
+      updateData.completedDate !== undefined &&
+      updateData.completedDate !== null
+    ) {
+      updateData.completedDate = new Date(updateData.completedDate as string);
+    }
 
     // Remove undefined fields
     Object.keys(updateData).forEach((key) => {
@@ -64,21 +81,21 @@ export async function PATCH(
     });
 
     const result = await db
-      .collection("products")
+      .collection("photo_reviews")
       .updateOne({ _id: new ObjectId(id) }, { $set: updateData });
 
     if (result.matchedCount === 0) {
       return NextResponse.json(
-        { error: "Продукт не знайдено" },
+        { error: "Відгук не знайдено" },
         { status: 404 }
       );
     }
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ message: "Відгук оновлено" });
   } catch (error) {
-    console.error("Update product error:", error);
+    console.error("Error updating photo review:", error);
     return NextResponse.json(
-      { error: "Помилка оновлення продукту" },
+      { error: "Помилка оновлення відгуку" },
       { status: 500 }
     );
   }
@@ -93,28 +110,28 @@ export async function DELETE(
 
     if (!ObjectId.isValid(id)) {
       return NextResponse.json(
-        { error: "Невірний ID продукту" },
+        { error: "Невірний ID відгуку" },
         { status: 400 }
       );
     }
 
     const db = await getDatabase();
-    const result = await db.collection("products").deleteOne({
+    const result = await db.collection("photo_reviews").deleteOne({
       _id: new ObjectId(id),
     });
 
     if (result.deletedCount === 0) {
       return NextResponse.json(
-        { error: "Продукт не знайдено" },
+        { error: "Відгук не знайдено" },
         { status: 404 }
       );
     }
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ message: "Відгук видалено" });
   } catch (error) {
-    console.error("Delete product error:", error);
+    console.error("Error deleting photo review:", error);
     return NextResponse.json(
-      { error: "Помилка видалення продукту" },
+      { error: "Помилка видалення відгуку" },
       { status: 500 }
     );
   }

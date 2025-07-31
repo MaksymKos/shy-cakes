@@ -117,27 +117,13 @@ export default function AdminDashboard() {
           <div className="bg-white rounded-lg shadow p-6 flex items-center justify-between">
             <div>
               <h2 className="text-xl font-semibold mb-2">Відгуки</h2>
-              <p className="text-gray-600">Модерація відгуків</p>
+              <p className="text-gray-600">Відгуки з фотографіями тортів та описами</p>
             </div>
             <button
-              onClick={() => router.push('/admin/reviews')}
-              className="bg-yellow-600 text-white px-6 py-3 rounded-lg hover:bg-yellow-700 transition-colors"
+              onClick={() => router.push('/admin/photo-reviews')}
+              className="bg-pink-500 text-white px-6 py-3 rounded-lg hover:bg-pink-600 transition-colors cursor-pointer"
             >
-              Модерувати відгуки
-            </button>
-          </div>
-
-          {/* Повідомлення */}
-          <div className="bg-white rounded-lg shadow p-6 flex items-center justify-between">
-            <div>
-              <h2 className="text-xl font-semibold mb-2">Повідомлення</h2>
-              <p className="text-gray-600">Контактні повідомлення</p>
-            </div>
-            <button
-              onClick={() => router.push('/admin/messages')}
-              className="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition-colors"
-            >
-              Переглянути повідомлення
+              Управляти відгуками
             </button>
           </div>
         </div>

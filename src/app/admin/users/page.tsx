@@ -23,7 +23,7 @@ export default function AdminUsers() {
 
   useEffect(() => {
     if (status === 'loading') return;
-    
+
     if (!session || session.user?.role !== 'admin') {
       router.push('/auth/signin');
       return;
@@ -83,8 +83,8 @@ export default function AdminUsers() {
   };
 
   const getRoleColor = (role: string) => {
-    return role === 'admin' 
-      ? 'bg-purple-100 text-purple-800' 
+    return role === 'admin'
+      ? 'bg-purple-100 text-purple-800'
       : 'bg-blue-100 text-blue-800';
   };
 
@@ -92,8 +92,8 @@ export default function AdminUsers() {
     return role === 'admin' ? 'Адміністратор' : 'Користувач';
   };
 
-  const filteredUsers = filter === 'all' 
-    ? users 
+  const filteredUsers = filter === 'all'
+    ? users
     : users.filter(user => user.role === filter);
 
   if (status === 'loading' || loading) {
@@ -108,44 +108,47 @@ export default function AdminUsers() {
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Управління користувачами</h1>
-          <button
-            onClick={() => router.push('/admin')}
-            className="text-gray-600 hover:text-gray-800"
-          >
-            ← Назад до панелі
-          </button>
+          <div className="flex items-center space-x-4">
+            <button
+              onClick={() => router.push('/admin')}
+              className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              <span>Назад до панелі</span>
+            </button>
+            <div className="h-6 w-px bg-gray-300"></div>
+            <h1 className="text-3xl font-bold text-gray-900">Управління користувачами</h1>
+          </div>
         </div>
 
         <div className="mb-6">
           <div className="flex space-x-4">
             <button
               onClick={() => setFilter('all')}
-              className={`px-4 py-2 rounded ${
-                filter === 'all' 
-                  ? 'bg-blue-600 text-white' 
+              className={`px-4 py-2 rounded ${filter === 'all'
+                  ? 'bg-blue-600 text-white'
                   : 'bg-white text-gray-700 border'
-              }`}
+                }`}
             >
               Всі ({users.length})
             </button>
             <button
               onClick={() => setFilter('user')}
-              className={`px-4 py-2 rounded ${
-                filter === 'user' 
-                  ? 'bg-blue-600 text-white' 
+              className={`px-4 py-2 rounded ${filter === 'user'
+                  ? 'bg-blue-600 text-white'
                   : 'bg-white text-gray-700 border'
-              }`}
+                }`}
             >
               Користувачі ({users.filter(u => u.role === 'user').length})
             </button>
             <button
               onClick={() => setFilter('admin')}
-              className={`px-4 py-2 rounded ${
-                filter === 'admin' 
-                  ? 'bg-purple-600 text-white' 
+              className={`px-4 py-2 rounded ${filter === 'admin'
+                  ? 'bg-purple-600 text-white'
                   : 'bg-white text-gray-700 border'
-              }`}
+                }`}
             >
               Адміністратори ({users.filter(u => u.role === 'admin').length})
             </button>
@@ -156,7 +159,7 @@ export default function AdminUsers() {
           <div className="px-6 py-4 border-b border-gray-200">
             <h2 className="text-lg font-semibold">Список користувачів</h2>
           </div>
-          
+
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
@@ -223,7 +226,7 @@ export default function AdminUsers() {
                             Зробити користувачем
                           </button>
                         )}
-                        
+
                         <button
                           onClick={() => deleteUser(user._id)}
                           className="bg-red-600 text-white px-3 py-1 rounded text-xs hover:bg-red-700"
@@ -232,7 +235,7 @@ export default function AdminUsers() {
                           Видалити
                         </button>
                       </div>
-                      
+
                       {user._id === session?.user?.id && (
                         <div className="text-xs text-gray-500 mt-1">
                           (Це ваш акаунт)

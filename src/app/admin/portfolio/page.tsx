@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
 interface PortfolioItem {
@@ -79,6 +80,7 @@ function ImageUpload({ onImageUpload, currentImage }: ImageUploadProps) {
 }
 
 export default function PortfolioAdmin() {
+  const router = useRouter();
   const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingItem, setEditingItem] = useState<PortfolioItem | null>(null);
@@ -191,7 +193,19 @@ export default function PortfolioAdmin() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">Управління портфоліо</h1>
+      <div className="flex items-center space-x-4 mb-8">
+        <button
+          onClick={() => router.push('/admin')}
+          className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          <span>Назад до панелі</span>
+        </button>
+        <div className="h-6 w-px bg-gray-300"></div>
+        <h1 className="text-3xl font-bold text-gray-900">Управління портфоліо</h1>
+      </div>
 
       {/* Форма додавання */}
       <div className="bg-white p-6 rounded-lg shadow-md mb-8">

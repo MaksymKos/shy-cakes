@@ -122,7 +122,7 @@ export default function AdminProductsPage() {
         },
         body: JSON.stringify({
           ...newProduct,
-          price: parseFloat(newProduct.price),
+          price: parseInt(newProduct.price),
           images: imageUrls
         }),
       });
@@ -179,7 +179,7 @@ export default function AdminProductsPage() {
         },
         body: JSON.stringify({
           ...newProduct,
-          price: parseFloat(newProduct.price),
+          price: parseInt(newProduct.price),
           images: imageUrls
         }),
       });
@@ -282,9 +282,21 @@ export default function AdminProductsPage() {
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold">📦 Управління товарами</h1>
-            <p className="mt-2 text-gray-600">Знайдено {products.length} товарів</p>
+          <div className="flex items-center space-x-4">
+            <button
+              onClick={() => router.push('/admin')}
+              className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              <span>Назад до панелі</span>
+            </button>
+            <div className="h-6 w-px bg-gray-300"></div>
+            <div>
+              <h1 className="text-3xl font-bold">📦 Управління товарами</h1>
+              <p className="mt-2 text-gray-600">Знайдено {products.length} товарів</p>
+            </div>
           </div>
 
           <button
@@ -355,11 +367,11 @@ export default function AdminProductsPage() {
                     type="number"
                     required
                     min="0"
-                    step="0.01"
+                    step="1"
                     value={newProduct.price}
                     onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
                     className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-500"
-                    placeholder="0.00"
+                    placeholder="0"
                   />
                 </div>
 

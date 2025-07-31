@@ -27,7 +27,7 @@ export default function AdminOrders() {
 
   useEffect(() => {
     if (status === 'loading') return;
-    
+
     if (!session || session.user?.role !== 'admin') {
       router.push('/auth/signin');
       return;
@@ -90,8 +90,8 @@ export default function AdminOrders() {
     }
   };
 
-  const filteredOrders = filter === 'all' 
-    ? orders 
+  const filteredOrders = filter === 'all'
+    ? orders
     : orders.filter(order => order.status === filter);
 
   if (status === 'loading' || loading) {
@@ -106,54 +106,56 @@ export default function AdminOrders() {
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Управління замовленнями</h1>
-          <button
-            onClick={() => router.push('/admin')}
-            className="text-gray-600 hover:text-gray-800"
-          >
-            ← Назад до панелі
-          </button>
+          <div className="flex items-center space-x-4">
+            <button
+              onClick={() => router.push('/admin')}
+              className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              <span>Назад до панелі</span>
+            </button>
+            <div className="h-6 w-px bg-gray-300"></div>
+            <h1 className="text-3xl font-bold text-gray-900">Управління замовленнями</h1>
+          </div>
         </div>
 
         <div className="mb-6">
           <div className="flex space-x-4">
             <button
               onClick={() => setFilter('all')}
-              className={`px-4 py-2 rounded ${
-                filter === 'all' 
-                  ? 'bg-blue-600 text-white' 
+              className={`px-4 py-2 rounded ${filter === 'all'
+                  ? 'bg-blue-600 text-white'
                   : 'bg-white text-gray-700 border'
-              }`}
+                }`}
             >
               Всі ({orders.length})
             </button>
             <button
               onClick={() => setFilter('pending')}
-              className={`px-4 py-2 rounded ${
-                filter === 'pending' 
-                  ? 'bg-yellow-600 text-white' 
+              className={`px-4 py-2 rounded ${filter === 'pending'
+                  ? 'bg-yellow-600 text-white'
                   : 'bg-white text-gray-700 border'
-              }`}
+                }`}
             >
               Очікують ({orders.filter(o => o.status === 'pending').length})
             </button>
             <button
               onClick={() => setFilter('confirmed')}
-              className={`px-4 py-2 rounded ${
-                filter === 'confirmed' 
-                  ? 'bg-blue-600 text-white' 
+              className={`px-4 py-2 rounded ${filter === 'confirmed'
+                  ? 'bg-blue-600 text-white'
                   : 'bg-white text-gray-700 border'
-              }`}
+                }`}
             >
               Підтверджені ({orders.filter(o => o.status === 'confirmed').length})
             </button>
             <button
               onClick={() => setFilter('in-progress')}
-              className={`px-4 py-2 rounded ${
-                filter === 'in-progress' 
-                  ? 'bg-purple-600 text-white' 
+              className={`px-4 py-2 rounded ${filter === 'in-progress'
+                  ? 'bg-purple-600 text-white'
                   : 'bg-white text-gray-700 border'
-              }`}
+                }`}
             >
               В роботі ({orders.filter(o => o.status === 'in-progress').length})
             </button>
@@ -164,7 +166,7 @@ export default function AdminOrders() {
           <div className="px-6 py-4 border-b border-gray-200">
             <h2 className="text-lg font-semibold">Замовлення</h2>
           </div>
-          
+
           <div className="divide-y divide-gray-200">
             {filteredOrders.map((order) => (
               <div key={order._id} className="p-6">
@@ -189,14 +191,14 @@ export default function AdminOrders() {
                     <p className="text-sm text-gray-600">{order.customerEmail}</p>
                     <p className="text-sm text-gray-600">{order.customerPhone}</p>
                   </div>
-                  
+
                   <div>
                     <h4 className="font-medium text-gray-900">Торт</h4>
                     <p className="text-sm text-gray-600">{order.cakeType}</p>
                     <p className="text-sm text-gray-600">Розмір: {order.size}</p>
                     <p className="text-sm text-gray-600">Доставка: {new Date(order.deliveryDate).toLocaleDateString('uk-UA')}</p>
                   </div>
-                  
+
                   <div>
                     <h4 className="font-medium text-gray-900">Ціна</h4>
                     <p className="text-lg font-semibold text-gray-900">{order.totalPrice} грн</p>
@@ -229,7 +231,7 @@ export default function AdminOrders() {
                       </button>
                     </>
                   )}
-                  
+
                   {order.status === 'confirmed' && (
                     <button
                       onClick={() => updateOrderStatus(order._id, 'in-progress')}
@@ -238,7 +240,7 @@ export default function AdminOrders() {
                       Почати роботу
                     </button>
                   )}
-                  
+
                   {order.status === 'in-progress' && (
                     <button
                       onClick={() => updateOrderStatus(order._id, 'completed')}

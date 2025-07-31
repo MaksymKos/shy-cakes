@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
     const productData = {
       name: body.name?.trim(),
       description: body.description?.trim(),
-      price: parseFloat(body.price),
+      price: parseInt(body.price),
       category: body.category,
       images: body.images || [],
       available: body.available !== false,

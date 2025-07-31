@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import PageBannerSimple from '@/components/PageBannerSimple/pagebannersimple';
 import { FILTER_CATEGORIES, ProductCategoryValue } from '@/constants/categories';
@@ -17,6 +18,7 @@ interface Product {
 }
 
 export default function CatalogPage() {
+  const router = useRouter();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
@@ -47,6 +49,10 @@ export default function CatalogPage() {
 
   const formatPrice = (price: number) => {
     return `${Math.round(price)} ₴`;
+  };
+
+  const handleProductClick = (productId: string) => {
+    router.push(`/catalog/${productId}`);
   };
 
   return (
@@ -104,7 +110,11 @@ export default function CatalogPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {products.map((product) => (
-              <div key={product._id} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+              <div
+                key={product._id}
+                onClick={() => handleProductClick(product._id)}
+                className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1"
+              >
                 {/* Зображення товару */}
                 <div className="relative h-64 bg-gray-200">
                   {product.images && product.images.length > 0 ? (
@@ -146,7 +156,14 @@ export default function CatalogPage() {
                       {formatPrice(product.price)} / кг
                     </span>
 
-                    <button className="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg transition-colors duration-200 text-sm font-medium">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        // Тут можна додати логіку швидкого замовлення
+                        console.log('Quick order for:', product.name);
+                      }}
+                      className="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg transition-colors duration-200 text-sm font-medium cursor-pointer"
+                    >
                       Замовити
                     </button>
                   </div>

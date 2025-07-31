@@ -155,7 +155,7 @@ export function validateCreateOrder(data: OrderInput): CreateCakeOrder {
   }
 
   const price =
-    typeof data.price === "string" ? parseFloat(data.price) : data.price;
+    typeof data.price === "string" ? parseInt(data.price) : data.price;
   if (!price || price <= 0) {
     throw new ValidationError("Ціна має бути більше 0");
   }

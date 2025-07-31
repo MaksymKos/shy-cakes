@@ -41,6 +41,16 @@ export interface Review extends BaseDocument {
   customerName: string;
 }
 
+export interface PhotoReview extends BaseDocument {
+  cakeName: string;
+  cakeDescription: string;
+  totalPrice: number;
+  totalWeight: number;
+  images: string[]; // Масив URL зображень для слайдера
+  completedDate: Date; // Дата виконання замовлення
+  isApproved: boolean;
+}
+
 export interface PortfolioItem extends BaseDocument {
   title: string;
   image: string; // URL до зображення
