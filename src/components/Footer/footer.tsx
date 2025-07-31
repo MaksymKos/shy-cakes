@@ -15,7 +15,7 @@ export default function Footer() {
               </div>
 
               <p className="mt-8 text-xl font-bold text-[#000]">
-                Щоб звя`затись зі мною
+                Щоб зв&apos;язатись зі мною
               </p>
 
               <ul className="mt-8 flex gap-6">

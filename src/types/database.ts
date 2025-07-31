@@ -10,7 +10,7 @@ export interface User extends BaseDocument {
   email: string;
   name: string;
   password: string;
-  role: 'user' | 'admin';
+  role: "user" | "admin";
   phone?: string;
   avatar?: string;
 }
@@ -18,11 +18,11 @@ export interface User extends BaseDocument {
 export interface CakeOrder extends BaseDocument {
   userId: ObjectId;
   cakeType: string;
-  size: 'small' | 'medium' | 'large';
+  size: "small" | "medium" | "large";
   flavor: string;
   description?: string;
   price: number;
-  status: 'pending' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled';
+  status: "pending" | "confirmed" | "in_progress" | "completed" | "cancelled";
   deliveryDate: Date;
   deliveryAddress: string;
   customerInfo: {
@@ -43,11 +43,7 @@ export interface Review extends BaseDocument {
 
 export interface PortfolioItem extends BaseDocument {
   title: string;
-  description: string;
-  images: string[]; // URLs до зображень
-  category: string;
-  isVisible: boolean;
-  tags: string[];
+  image: string; // URL до зображення
 }
 
 export interface ContactMessage extends BaseDocument {
@@ -68,14 +64,29 @@ export interface DatabaseCollections {
   messages: ContactMessage;
 }
 
-export type CreateUser = Omit<User, '_id' | 'createdAt' | 'updatedAt'>;
-export type CreateCakeOrder = Omit<CakeOrder, '_id' | 'createdAt' | 'updatedAt'>;
-export type CreateReview = Omit<Review, '_id' | 'createdAt' | 'updatedAt'>;
-export type CreatePortfolioItem = Omit<PortfolioItem, '_id' | 'createdAt' | 'updatedAt'>;
-export type CreateContactMessage = Omit<ContactMessage, '_id' | 'createdAt' | 'updatedAt'>;
+export type CreateUser = Omit<User, "_id" | "createdAt" | "updatedAt">;
+export type CreateCakeOrder = Omit<
+  CakeOrder,
+  "_id" | "createdAt" | "updatedAt"
+>;
+export type CreateReview = Omit<Review, "_id" | "createdAt" | "updatedAt">;
+export type CreatePortfolioItem = Omit<
+  PortfolioItem,
+  "_id" | "createdAt" | "updatedAt"
+>;
+export type CreateContactMessage = Omit<
+  ContactMessage,
+  "_id" | "createdAt" | "updatedAt"
+>;
 
-export type UpdateUser = Partial<Omit<User, '_id'>> & { _id: ObjectId };
-export type UpdateCakeOrder = Partial<Omit<CakeOrder, '_id'>> & { _id: ObjectId };
-export type UpdateReview = Partial<Omit<Review, '_id'>> & { _id: ObjectId };
-export type UpdatePortfolioItem = Partial<Omit<PortfolioItem, '_id'>> & { _id: ObjectId };
-export type UpdateContactMessage = Partial<Omit<ContactMessage, '_id'>> & { _id: ObjectId };
+export type UpdateUser = Partial<Omit<User, "_id">> & { _id: ObjectId };
+export type UpdateCakeOrder = Partial<Omit<CakeOrder, "_id">> & {
+  _id: ObjectId;
+};
+export type UpdateReview = Partial<Omit<Review, "_id">> & { _id: ObjectId };
+export type UpdatePortfolioItem = Partial<Omit<PortfolioItem, "_id">> & {
+  _id: ObjectId;
+};
+export type UpdateContactMessage = Partial<Omit<ContactMessage, "_id">> & {
+  _id: ObjectId;
+};

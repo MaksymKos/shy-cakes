@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+/* Custom utility classes */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -68,8 +77,42 @@
 }
 
 body {
-  /* margin-top: 100px; */
   background: var(--background);
   color: var(--foreground);
   font-family: "Raleway", sans-serif;
+}
+
+/* Header spacing utility */
+.header-spacing {
+  padding-top: 100px; /* Height of fixed header */
+}
+
+/* Responsive header spacing */
+@media (max-width: 1024px) {
+  .header-spacing {
+    padding-top: 96px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-spacing {
+    padding-top: 88px;
+  }
+}
+
+/* Line clamp utilities for text truncation */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }

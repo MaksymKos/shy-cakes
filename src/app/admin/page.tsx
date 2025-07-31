@@ -9,95 +9,133 @@ export default function AdminDashboard() {
   const router = useRouter();
 
   useEffect(() => {
-    if (status === 'loading') return;
-    
-    if (!session || session.user?.role !== 'admin') {
-      router.push('/auth/signin');
-      return;
-    }
+    if (status === 'loading') return; // Чекаємо завантаження сесії
+
+    // Додаткова затримка для надійності
+    const timer = setTimeout(() => {
+      if (status === 'unauthenticated' || !session) {
+        router.push('/auth/signin');
+        return;
+      }
+
+      // Перевіряємо роль тільки після того, як сесія точно завантажена
+      if (session && (session.user as { role?: string })?.role !== 'admin') {
+        router.push('/auth/signin');
+        return;
+      }
+    }, 100);
+
+    return () => clearTimeout(timer);
   }, [session, status, router]);
 
   if (status === 'loading') {
-    return <div className="p-8">Завантаження...</div>;
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Завантаження...</p>
+        </div>
+      </div>
+    );
   }
 
-  if (!session || session.user?.role !== 'admin') {
-    return null;
+  // Якщо не авторизований або не адмін - не показуємо нічого (useEffect перенаправить)
+  if (status === 'unauthenticated' || !session || (session.user as { role?: string })?.role !== 'admin') {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Перевірка доступу...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-gray-50">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Адмін панель</h1>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Управління тортами */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-semibold mb-4">Торти</h2>
-            <p className="text-gray-600 mb-4">Додавання та редагування тортів</p>
-            <button 
-              onClick={() => router.push('/admin/cakes')}
-              className="bg-pink-600 text-white px-4 py-2 rounded hover:bg-pink-700"
+
+        <div className="space-y-4">
+          {/* Управління товарами */}
+          <div className="bg-white rounded-lg shadow p-6 flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-semibold mb-2">Товари</h2>
+              <p className="text-gray-600">Додавання та редагування товарів</p>
+            </div>
+            <button
+              onClick={() => router.push('/admin/products')}
+              className="bg-pink-600 text-white px-6 py-3 rounded-lg hover:bg-pink-700 transition-colors"
             >
-              Управляти тортами
+              Управляти товарами
             </button>
           </div>
 
           {/* Управління замовленнями */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-semibold mb-4">Замовлення</h2>
-            <p className="text-gray-600 mb-4">Перегляд та обробка замовлень</p>
-            <button 
+          <div className="bg-white rounded-lg shadow p-6 flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-semibold mb-2">Замовлення</h2>
+              <p className="text-gray-600">Перегляд та обробка замовлень</p>
+            </div>
+            <button
               onClick={() => router.push('/admin/orders')}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
             >
               Переглянути замовлення
             </button>
           </div>
 
           {/* Управління користувачами */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-semibold mb-4">Користувачі</h2>
-            <p className="text-gray-600 mb-4">Управління користувачами</p>
-            <button 
+          <div className="bg-white rounded-lg shadow p-6 flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-semibold mb-2">Користувачі</h2>
+              <p className="text-gray-600">Управління користувачами</p>
+            </div>
+            <button
               onClick={() => router.push('/admin/users')}
-              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+              className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors"
             >
               Управляти користувачами
             </button>
           </div>
 
           {/* Управління портфоліо */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-semibold mb-4">Портфоліо</h2>
-            <p className="text-gray-600 mb-4">Додавання робіт до портфоліо</p>
-            <button 
+          <div className="bg-white rounded-lg shadow p-6 flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-semibold mb-2">Портфоліо</h2>
+              <p className="text-gray-600">Додавання робіт до портфоліо</p>
+            </div>
+            <button
               onClick={() => router.push('/admin/portfolio')}
-              className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
+              className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors"
             >
               Управляти портфоліо
             </button>
           </div>
 
           {/* Управління відгуками */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-semibold mb-4">Відгуки</h2>
-            <p className="text-gray-600 mb-4">Модерація відгуків</p>
-            <button 
+          <div className="bg-white rounded-lg shadow p-6 flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-semibold mb-2">Відгуки</h2>
+              <p className="text-gray-600">Модерація відгуків</p>
+            </div>
+            <button
               onClick={() => router.push('/admin/reviews')}
-              className="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700"
+              className="bg-yellow-600 text-white px-6 py-3 rounded-lg hover:bg-yellow-700 transition-colors"
             >
               Модерувати відгуки
             </button>
           </div>
 
           {/* Повідомлення */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-semibold mb-4">Повідомлення</h2>
-            <p className="text-gray-600 mb-4">Контактні повідомлення</p>
-            <button 
+          <div className="bg-white rounded-lg shadow p-6 flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-semibold mb-2">Повідомлення</h2>
+              <p className="text-gray-600">Контактні повідомлення</p>
+            </div>
+            <button
               onClick={() => router.push('/admin/messages')}
-              className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
+              className="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition-colors"
             >
               Переглянути повідомлення
             </button>

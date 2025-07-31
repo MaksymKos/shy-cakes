@@ -4,8 +4,8 @@ import Image from "next/image";
 import Link from 'next/link';
 import { useState } from 'react';
 import { useSession, signOut } from "next-auth/react";
-import { Dialog, DialogPanel, PopoverGroup } from '@headlessui/react'
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
+import { Dialog, DialogPanel, PopoverGroup, Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
+import { Bars3Icon, XMarkIcon, ChevronDownIcon, UserIcon } from '@heroicons/react/24/outline'
 
 export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -13,16 +13,17 @@ export default function Header() {
 
     if (status === "loading") {
         return (
-            <header className="bg-white border-b border-gray-300 fixed top-0 left-0 z-10 w-full">
-                <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 lg:px-8">
+            <header className="bg-white shadow-sm border-b border-gray-200 fixed top-0 left-0 z-50 w-full">
+                <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 lg:px-8">
                     <div className="flex lg:flex-1">
                         <Link href="/" className="-m-1.5 p-1.5">
                             <Image
                                 src="/images/logo.png"
-                                width={120}
-                                height={120}
-                                alt='logo'
+                                width={100}
+                                height={80}
+                                alt='Shy Cakes Logo'
                                 quality={100}
+                                className="h-auto w-auto"
                             />
                         </Link>
                     </div>
@@ -30,22 +31,22 @@ export default function Header() {
                         <button
                             type="button"
                             onClick={() => setMobileMenuOpen(true)}
-                            className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
+                            className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700 hover:text-gray-900 transition-colors"
                         >
                             <span className="sr-only">Open main menu</span>
-                            <Bars3Icon aria-hidden="true" className="size-9 cursor-pointer" />
+                            <Bars3Icon aria-hidden="true" className="size-7 cursor-pointer" />
                         </button>
                     </div>
-                    <PopoverGroup className="hidden lg:flex lg:gap-x-12">
-                        <Link className="text-gray-700 transition font-semibold hover:text-gray-500/75" href="/">Головна</Link>
-                        <Link className="text-gray-700 transition font-semibold hover:text-gray-500/75" href="/catalog/"> Каталог </Link>
-                        <Link className="text-gray-700 transition font-semibold hover:text-gray-500/75" href="/reviews/"> Відгуки </Link>
-                        <Link className="text-gray-700 transition font-semibold hover:text-gray-500/75" href="/portfolio/"> Портфоліо </Link>
-                        <Link className="text-gray-700 transition font-semibold hover:text-gray-500/75" href="/contact/"> Контакти </Link>
-                        <Link className="text-gray-700 transition font-semibold hover:text-gray-500/75" href="/about/"> Про мене </Link>
+                    <PopoverGroup className="hidden lg:flex lg:gap-x-8">
+                        <Link className="text-gray-700 transition font-medium hover:text-pink-600 px-3 py-2 rounded-md hover:bg-pink-50" href="/">Головна</Link>
+                        <Link className="text-gray-700 transition font-medium hover:text-pink-600 px-3 py-2 rounded-md hover:bg-pink-50" href="/catalog/">Каталог</Link>
+                        <Link className="text-gray-700 transition font-medium hover:text-pink-600 px-3 py-2 rounded-md hover:bg-pink-50" href="/reviews/">Відгуки</Link>
+                        <Link className="text-gray-700 transition font-medium hover:text-pink-600 px-3 py-2 rounded-md hover:bg-pink-50" href="/portfolio/">Портфоліо</Link>
+                        <Link className="text-gray-700 transition font-medium hover:text-pink-600 px-3 py-2 rounded-md hover:bg-pink-50" href="/contact/">Контакти</Link>
+                        <Link className="text-gray-700 transition font-medium hover:text-pink-600 px-3 py-2 rounded-md hover:bg-pink-50" href="/about/">Про мене</Link>
                     </PopoverGroup>
-                    <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-                        <div className="animate-pulse h-8 w-20 bg-gray-200 rounded"></div>
+                    <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:items-center">
+                        <div className="animate-pulse h-10 w-36 bg-gray-200 rounded-lg"></div>
                     </div>
                 </nav>
             </header>
@@ -53,16 +54,17 @@ export default function Header() {
     }
 
     return (
-        <header className="bg-white border-b border-gray-300 fixed top-0 left-0 z-10 w-full">
-            <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 lg:px-8">
+        <header className="bg-white shadow-sm border-b border-gray-200 fixed top-0 left-0 z-50 w-full">
+            <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 lg:px-8">
                 <div className="flex lg:flex-1">
                     <Link href="/" className="-m-1.5 p-1.5">
                         <Image
                             src="/images/logo.png"
-                            width={120}
-                            height={120}
-                            alt='logo'
+                            width={100}
+                            height={80}
+                            alt='Shy Cakes Logo'
                             quality={100}
+                            className="h-auto w-auto"
                         />
                     </Link>
                 </div>
@@ -70,50 +72,108 @@ export default function Header() {
                     <button
                         type="button"
                         onClick={() => setMobileMenuOpen(true)}
-                        className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
+                        className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700 hover:text-gray-900 transition-colors"
                     >
                         <span className="sr-only">Open main menu</span>
-                        <Bars3Icon aria-hidden="true" className="size-9 cursor-pointer" />
+                        <Bars3Icon aria-hidden="true" className="size-7 cursor-pointer" />
                     </button>
                 </div>
-                <PopoverGroup className="hidden lg:flex lg:gap-x-12">
-                    <Link className="text-gray-700 transition font-semibold hover:text-gray-500/75" href="/">Головна</Link>
-                    <Link className="text-gray-700 transition font-semibold hover:text-gray-500/75" href="/catalog/"> Каталог </Link>
-                    <Link className="text-gray-700 transition font-semibold hover:text-gray-500/75" href="/reviews/"> Відгуки </Link>
-                    <Link className="text-gray-700 transition font-semibold hover:text-gray-500/75" href="/portfolio/"> Портфоліо </Link>
-                    <Link className="text-gray-700 transition font-semibold hover:text-gray-500/75" href="/contact/"> Контакти </Link>
-                    <Link className="text-gray-700 transition font-semibold hover:text-gray-500/75" href="/about/"> Про мене </Link>
+                <PopoverGroup className="hidden lg:flex lg:gap-x-8">
+                    <Link className="text-gray-700 transition font-medium hover:text-pink-600 px-3 py-2 rounded-md hover:bg-pink-50" href="/">Головна</Link>
+                    <Link className="text-gray-700 transition font-medium hover:text-pink-600 px-3 py-2 rounded-md hover:bg-pink-50" href="/catalog/">Каталог</Link>
+                    <Link className="text-gray-700 transition font-medium hover:text-pink-600 px-3 py-2 rounded-md hover:bg-pink-50" href="/reviews/">Відгуки</Link>
+                    <Link className="text-gray-700 transition font-medium hover:text-pink-600 px-3 py-2 rounded-md hover:bg-pink-50" href="/portfolio/">Портфоліо</Link>
+                    <Link className="text-gray-700 transition font-medium hover:text-pink-600 px-3 py-2 rounded-md hover:bg-pink-50" href="/contact/">Контакти</Link>
+                    <Link className="text-gray-700 transition font-medium hover:text-pink-600 px-3 py-2 rounded-md hover:bg-pink-50" href="/about/">Про мене</Link>
                 </PopoverGroup>
-                <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+                <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:items-center">
                     {session ? (
-                        <div className="flex items-center gap-4">
-                            <span className="text-sm text-gray-700">Привіт, {session.user?.name}!</span>
-                            {session.user?.role === 'admin' && (
-                                <Link
-                                    href="/admin"
-                                    className="text-purple-600 border border-purple-600 hover:bg-purple-50 font-medium rounded-lg text-sm px-4 py-2 text-center transition-colors duration-200"
-                                >
-                                    Адмін панель
-                                </Link>
+                        <Popover className="relative">
+                            {({ close }) => (
+                                <>
+                                    <PopoverButton className="flex items-center gap-2 text-gray-700 hover:text-pink-600 font-medium px-3 py-2 rounded-md transition-colors focus:outline-none cursor-pointer">
+                                        <UserIcon className="h-5 w-5" />
+                                        <span>Особистий кабінет</span>
+                                        <ChevronDownIcon className="h-4 w-4" />
+                                    </PopoverButton>
+
+                                    <PopoverPanel className="absolute right-0 z-10 mt-2 w-56 origin-top-right bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
+                                        <div className="p-2">
+                                            <div className="px-4 py-3 border-b border-gray-100">
+                                                <p className="text-sm font-medium text-gray-900">Привіт, {session.user?.name}!</p>
+                                                <p className="text-xs text-gray-500">{session.user?.email}</p>
+                                            </div>
+
+                                            <div className="py-2">
+                                                {session.user?.role !== 'admin' && (
+                                                    <>
+                                                        <Link
+                                                            href="/profile"
+                                                            onClick={() => close()}
+                                                            className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-pink-50 hover:text-pink-600 rounded-md transition-colors cursor-pointer"
+                                                        >
+                                                            <UserIcon className="h-4 w-4" />
+                                                            Мій профіль
+                                                        </Link>
+
+                                                        <Link
+                                                            href="/orders"
+                                                            onClick={() => close()}
+                                                            className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-pink-50 hover:text-pink-600 rounded-md transition-colors cursor-pointer"
+                                                        >
+                                                            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                                            </svg>
+                                                            Мої замовлення
+                                                        </Link>
+                                                    </>
+                                                )}
+
+                                                {session.user?.role === 'admin' && (
+                                                    <Link
+                                                        href="/admin"
+                                                        onClick={() => close()}
+                                                        className="flex items-center gap-3 px-4 py-2 text-sm text-purple-600 hover:bg-purple-50 rounded-md transition-colors"
+                                                    >
+                                                        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                        </svg>
+                                                        Адмін панель
+                                                    </Link>
+                                                )}
+
+                                                <div className="border-t border-gray-100 mt-2 pt-2">
+                                                    <button
+                                                        onClick={() => {
+                                                            close();
+                                                            signOut();
+                                                        }}
+                                                        className="flex items-center gap-3 w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors text-left cursor-pointer"
+                                                    >
+                                                        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                                        </svg>
+                                                        Вийти
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </PopoverPanel>
+                                </>
                             )}
-                            <button
-                                onClick={() => signOut()}
-                                className="text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-                            >
-                                Вийти
-                            </button>
-                        </div>
+                        </Popover>
                     ) : (
-                        <div className="flex gap-2">
+                        <div className="flex gap-3">
                             <Link
                                 href="/auth/signin"
-                                className="text-cyan-600 border border-cyan-600 hover:bg-cyan-50 font-medium rounded-lg text-sm px-5 py-2.5 text-center transition-colors duration-200"
+                                className="text-pink-600 border border-pink-600 hover:bg-pink-50 font-medium rounded-lg text-sm px-5 py-2.5 text-center transition-colors duration-200"
                             >
                                 Увійти
                             </Link>
                             <Link
                                 href="/auth/signup"
-                                className="text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                                className="text-white bg-gradient-to-r from-pink-400 via-pink-500 to-pink-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-pink-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center transition-all duration-200"
                             >
                                 Реєстрація
                             </Link>
@@ -122,61 +182,101 @@ export default function Header() {
                 </div>
             </nav>
             <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
-                <div className="fixed inset-0 z-10" />
-                <DialogPanel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+                <div className="fixed inset-0 z-50" />
+                <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
                     <div className="flex items-center justify-between">
-                        <a href="#" className="-m-1.5 p-1.5">
+                        <Link href="/" className="-m-1.5 p-1.5" onClick={() => setMobileMenuOpen(false)}>
                             <Image
                                 src="/images/logo.png"
-                                width={100}
-                                height={100}
-                                alt='logo'
+                                width={80}
+                                height={60}
+                                alt='Shy Cakes Logo'
                                 quality={100}
+                                className="h-auto w-auto"
                             />
-                        </a>
+                        </Link>
                         <button
                             type="button"
                             onClick={() => setMobileMenuOpen(false)}
-                            className="-m-2.5 rounded-md p-2.5 text-gray-700"
+                            className="-m-2.5 rounded-md p-2.5 text-gray-700 hover:text-gray-900 transition-colors"
                         >
                             <span className="sr-only">Close menu</span>
-                            <XMarkIcon aria-hidden="true" className="size-9 cursor-pointer" />
+                            <XMarkIcon aria-hidden="true" className="size-7 cursor-pointer" />
                         </button>
                     </div>
                     <div className="mt-6 flow-root">
                         <div className="-my-6 divide-y divide-gray-500/10">
                             <div className="space-y-2 py-6">
-                                <Link href="/" className="-mx-3 block rounded-lg px-3 py-2 text-base/7 text-gray-900 hover:bg-gray-50">Головна</Link>
-                                <a className="-mx-3 block rounded-lg px-3 py-2 text-base/7 text-gray-900 hover:bg-gray-50" href="#"> Каталог </a>
-                                <a className="-mx-3 block rounded-lg px-3 py-2 text-base/7 text-gray-900 hover:bg-gray-50" href="#"> Відгуки </a>
-                                <Link className="-mx-3 block rounded-lg px-3 py-2 text-base/7 text-gray-900 hover:bg-gray-50" href="/portfolio/"> Портфоліо </Link>
-                                <Link className="-mx-3 block rounded-lg px-3 py-2 text-base/7 text-gray-900 hover:bg-gray-50" href="/contact/"> Контакти </Link>
-                                <a className="-mx-3 block rounded-lg px-3 py-2 text-base/7 text-gray-900 hover:bg-gray-50" href="#"> Про мене </a>
+                                <Link href="/" className="-mx-3 block rounded-lg px-3 py-2 text-base font-medium text-gray-900 hover:bg-pink-50 hover:text-pink-600 transition-colors" onClick={() => setMobileMenuOpen(false)}>Головна</Link>
+                                <Link href="/catalog/" className="-mx-3 block rounded-lg px-3 py-2 text-base font-medium text-gray-900 hover:bg-pink-50 hover:text-pink-600 transition-colors" onClick={() => setMobileMenuOpen(false)}>Каталог</Link>
+                                <Link href="/reviews/" className="-mx-3 block rounded-lg px-3 py-2 text-base font-medium text-gray-900 hover:bg-pink-50 hover:text-pink-600 transition-colors" onClick={() => setMobileMenuOpen(false)}>Відгуки</Link>
+                                <Link href="/portfolio/" className="-mx-3 block rounded-lg px-3 py-2 text-base font-medium text-gray-900 hover:bg-pink-50 hover:text-pink-600 transition-colors" onClick={() => setMobileMenuOpen(false)}>Портфоліо</Link>
+                                <Link href="/contact/" className="-mx-3 block rounded-lg px-3 py-2 text-base font-medium text-gray-900 hover:bg-pink-50 hover:text-pink-600 transition-colors" onClick={() => setMobileMenuOpen(false)}>Контакти</Link>
+                                <Link href="/about/" className="-mx-3 block rounded-lg px-3 py-2 text-base font-medium text-gray-900 hover:bg-pink-50 hover:text-pink-600 transition-colors" onClick={() => setMobileMenuOpen(false)}>Про мене</Link>
                             </div>
                             <div className="py-6">
                                 {session ? (
-                                    <div className="space-y-2">
-                                        <div className="mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900">
+                                    <div className="space-y-3">
+                                        <div className="mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold text-gray-900">
+                                            Особистий кабінет
+                                        </div>
+                                        <div className="mx-3 block rounded-lg px-3 py-1.5 text-sm text-gray-600">
                                             Привіт, {session.user?.name}!
                                         </div>
+
+                                        {session.user?.role !== 'admin' && (
+                                            <>
+                                                <Link
+                                                    href="/profile"
+                                                    className="mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold text-gray-900 hover:bg-pink-50 hover:text-pink-600 transition-colors"
+                                                    onClick={() => setMobileMenuOpen(false)}
+                                                >
+                                                    Мій профіль
+                                                </Link>
+
+                                                <Link
+                                                    href="/orders"
+                                                    className="mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold text-gray-900 hover:bg-pink-50 hover:text-pink-600 transition-colors"
+                                                    onClick={() => setMobileMenuOpen(false)}
+                                                >
+                                                    Мої замовлення
+                                                </Link>
+                                            </>
+                                        )}
+
+                                        {session.user?.role === 'admin' && (
+                                            <Link
+                                                href="/admin"
+                                                className="mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold text-purple-600 hover:bg-purple-50 transition-colors"
+                                                onClick={() => setMobileMenuOpen(false)}
+                                            >
+                                                Адмін панель
+                                            </Link>
+                                        )}
+
                                         <button
-                                            onClick={() => signOut()}
-                                            className="mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50 w-full text-left"
+                                            onClick={() => {
+                                                signOut();
+                                                setMobileMenuOpen(false);
+                                            }}
+                                            className="mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold text-red-600 hover:bg-red-50 w-full text-left transition-colors"
                                         >
                                             Вийти
                                         </button>
                                     </div>
                                 ) : (
-                                    <div className="space-y-2">
-                                        <Link 
-                                            href="/auth/signin" 
-                                            className="mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
+                                    <div className="space-y-3">
+                                        <Link
+                                            href="/auth/signin"
+                                            className="mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold text-pink-600 hover:bg-pink-50 transition-colors"
+                                            onClick={() => setMobileMenuOpen(false)}
                                         >
                                             Увійти
                                         </Link>
-                                        <Link 
-                                            href="/auth/signup" 
-                                            className="mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
+                                        <Link
+                                            href="/auth/signup"
+                                            className="mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold text-white bg-pink-600 hover:bg-pink-700 transition-colors"
+                                            onClick={() => setMobileMenuOpen(false)}
                                         >
                                             Реєстрація
                                         </Link>

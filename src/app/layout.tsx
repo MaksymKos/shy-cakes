@@ -6,7 +6,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Shy Cakes",
-  description: "Мусові торти, Бісквітні торти, Macarons, Ескімо, Cake-pops, Подарункові набори",
+  description: "Мусові торти, Бісквітні торти, Macarons, Ескімо, Продукти, Подарункові набори",
 };
 
 export default function RootLayout({
@@ -20,7 +20,9 @@ export default function RootLayout({
       <body className="antialiased" suppressHydrationWarning={true}>
         <SessionWrapper>
           <DynamicHeader />
-          {children}
+          <main className="min-h-screen pt-24 lg:pt-28">
+            {children}
+          </main>
           <Footer />
         </SessionWrapper>
       </body>

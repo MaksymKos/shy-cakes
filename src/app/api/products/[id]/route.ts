@@ -11,7 +11,10 @@ export async function PATCH(
     const { id } = await params;
 
     if (!ObjectId.isValid(id)) {
-      return NextResponse.json({ error: "Invalid cake ID" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Невірний ID продукту" },
+        { status: 400 }
+      );
     }
 
     const db = await getDatabase();
@@ -20,18 +23,29 @@ export async function PATCH(
       updatedAt: new Date(),
     };
 
+    // Remove undefined fields
+    Object.keys(updateData).forEach((key) => {
+      if (updateData[key] === undefined) {
+        delete updateData[key];
+      }
+    });
+
     const result = await db
-      .collection("cakes")
+      .collection("products")
       .updateOne({ _id: new ObjectId(id) }, { $set: updateData });
 
     if (result.matchedCount === 0) {
-      return NextResponse.json({ error: "Cake not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Продукт не знайдено" },
+        { status: 404 }
+      );
     }
 
     return NextResponse.json({ success: true });
-  } catch {
+  } catch (error) {
+    console.error("Update product error:", error);
     return NextResponse.json(
-      { error: "Failed to update cake" },
+      { error: "Помилка оновлення продукту" },
       { status: 500 }
     );
   }
@@ -45,22 +59,29 @@ export async function DELETE(
     const { id } = await params;
 
     if (!ObjectId.isValid(id)) {
-      return NextResponse.json({ error: "Invalid cake ID" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Невірний ID продукту" },
+        { status: 400 }
+      );
     }
 
     const db = await getDatabase();
-    const result = await db.collection("cakes").deleteOne({
+    const result = await db.collection("products").deleteOne({
       _id: new ObjectId(id),
     });
 
     if (result.deletedCount === 0) {
-      return NextResponse.json({ error: "Cake not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Продукт не знайдено" },
+        { status: 404 }
+      );
     }
 
     return NextResponse.json({ success: true });
-  } catch {
+  } catch (error) {
+    console.error("Delete product error:", error);
     return NextResponse.json(
-      { error: "Failed to delete cake" },
+      { error: "Помилка видалення продукту" },
       { status: 500 }
     );
   }

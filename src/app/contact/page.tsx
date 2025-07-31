@@ -3,13 +3,13 @@ import PageBannerSimple from '@/components/PageBannerSimple/pagebannersimple';
 export default function ContactPage() {
   return (
     <section>
-      <PageBannerSimple 
+      <PageBannerSimple
         currentPage='Контакти'
         title='Контакти'
-        text='Контакти' 
+        text='Контакти'
         image="/images/cataloge-banner.jpg"
       />
-      <div className="max-w-screen-md mx-auto px-4 py-8">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-white shadow-md rounded-lg p-6">
           <div>
             <h4 className="text-xl font-semibold mb-4 text-gray-800">Консультації та замовлення</h4>
