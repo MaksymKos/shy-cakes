@@ -17,33 +17,35 @@ import clientPromise from "./db";
 export async function getDatabase(): Promise<Db> {
   const maxRetries = 3;
   let lastError: Error | null = null;
-  
+
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       console.log(`Database connection attempt ${attempt}/${maxRetries}`);
       const client = await clientPromise;
       const dbName = process.env.MONGODB_DB || "shy-cakes";
       const db = client.db(dbName);
-      
+
       // Test the connection
       await db.admin().ping();
       console.log("Database connection successful");
-      
+
       return db;
     } catch (error) {
       lastError = error as Error;
       console.error(`Database connection attempt ${attempt} failed:`, error);
-      
+
       if (attempt < maxRetries) {
         const delay = attempt * 2000; // Exponential backoff: 2s, 4s, 6s
         console.log(`Retrying in ${delay}ms...`);
-        await new Promise(resolve => setTimeout(resolve, delay));
+        await new Promise((resolve) => setTimeout(resolve, delay));
       }
     }
   }
-  
+
   console.error("All database connection attempts failed:", lastError);
-  throw new Error(`Database connection failed after ${maxRetries} attempts: ${lastError?.message}`);
+  throw new Error(
+    `Database connection failed after ${maxRetries} attempts: ${lastError?.message}`
+  );
 }
 
 export async function getCollection<T extends keyof DatabaseCollections>(
