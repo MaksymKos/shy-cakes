@@ -26,6 +26,7 @@ function ImageUpload({ onImageUpload, currentImage }: ImageUploadProps) {
     setUploading(true);
     const formData = new FormData();
     formData.append('file', file);
+    formData.append('type', 'portfolio'); // Specify content type
 
     try {
       const response = await fetch('/api/upload', {

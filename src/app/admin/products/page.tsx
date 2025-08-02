@@ -88,6 +88,7 @@ export default function AdminProductsPage() {
     const uploadPromises = selectedFiles.map(async (file) => {
       const formData = new FormData();
       formData.append('file', file);
+      formData.append('type', 'products'); // Specify content type
 
       const response = await fetch('/api/upload', {
         method: 'POST',

@@ -133,6 +133,7 @@ export default function AdminPhotoReviewsPage() {
     const uploadPromises = selectedFiles.map(async (file) => {
       const formData = new FormData();
       formData.append('file', file);
+      formData.append('type', 'reviews'); // Specify content type
 
       const response = await fetch('/api/upload', {
         method: 'POST',
