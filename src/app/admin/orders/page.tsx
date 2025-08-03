@@ -17,6 +17,11 @@ interface Order {
   createdAt: string;
   updatedAt?: string;
 
+  // User association fields
+  userId?: string; // ID of the logged-in user who placed the order
+  userEmail?: string; // Email of the user for quick reference
+  isGuestOrder?: boolean; // Whether this is a guest order or from logged-in user
+
   // Product order fields
   productId?: string;
   productName?: string;
@@ -40,6 +45,9 @@ export default function AdminOrders() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>('all');
+  const [editingOrder, setEditingOrder] = useState<Order | null>(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [updating, setUpdating] = useState(false);
 
   useEffect(() => {
     if (status === 'loading') return;
@@ -84,6 +92,44 @@ export default function AdminOrders() {
     }
   };
 
+  const handleEditOrder = (order: Order) => {
+    setEditingOrder(order);
+    setShowEditModal(true);
+  };
+
+  const handleUpdateOrder = async (updatedData: Partial<Order>) => {
+    if (!editingOrder) return;
+
+    setUpdating(true);
+    try {
+      const response = await fetch(`/api/orders/${editingOrder._id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedData),
+      });
+
+      if (response.ok) {
+        setShowEditModal(false);
+        setEditingOrder(null);
+        fetchOrders();
+      } else {
+        alert('Помилка оновлення замовлення');
+      }
+    } catch (error) {
+      console.error('Error updating order:', error);
+      alert('Помилка оновлення замовлення');
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const closeEditModal = () => {
+    setShowEditModal(false);
+    setEditingOrder(null);
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending': return 'bg-yellow-100 text-yellow-800';
@@ -115,7 +161,11 @@ export default function AdminOrders() {
 
   const filteredOrders = filter === 'all'
     ? orders
-    : orders.filter(order => order.status === filter);
+    : filter === 'users'
+      ? orders.filter(order => !order.isGuestOrder)
+      : filter === 'guests'
+        ? orders.filter(order => order.isGuestOrder)
+        : orders.filter(order => order.status === filter);
 
   if (status === 'loading' || loading) {
     return <div className="p-8">Завантаження...</div>;
@@ -144,8 +194,18 @@ export default function AdminOrders() {
           </div>
         </div>
 
+        {/* Edit Modal */}
+        {showEditModal && editingOrder && (
+          <EditOrderModal
+            order={editingOrder}
+            onSave={handleUpdateOrder}
+            onClose={closeEditModal}
+            isUpdating={updating}
+          />
+        )}
+
         <div className="mb-6">
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 mb-4">
             <button
               onClick={() => setFilter('all')}
               className={`px-4 py-2 rounded ${filter === 'all'
@@ -201,6 +261,28 @@ export default function AdminOrders() {
               Скасовані ({orders.filter(o => o.status === 'cancelled').length})
             </button>
           </div>
+
+          {/* User Type Filters */}
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => setFilter('users')}
+              className={`px-4 py-2 rounded ${filter === 'users'
+                ? 'bg-blue-600 text-white'
+                : 'bg-white text-gray-700 border hover:bg-gray-50'
+                } transition-colors`}
+            >
+              👤 Від користувачів ({orders.filter(o => !o.isGuestOrder).length})
+            </button>
+            <button
+              onClick={() => setFilter('guests')}
+              className={`px-4 py-2 rounded ${filter === 'guests'
+                ? 'bg-orange-600 text-white'
+                : 'bg-white text-gray-700 border hover:bg-gray-50'
+                } transition-colors`}
+            >
+              🤝 Від гостей ({orders.filter(o => o.isGuestOrder).length})
+            </button>
+          </div>
         </div>
 
         <div className="bg-white rounded-lg shadow">
@@ -245,12 +327,24 @@ export default function AdminOrders() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                       </svg>
                       Клієнт
+                      {order.isGuestOrder ? (
+                        <span className="ml-2 px-2 py-1 text-xs bg-orange-100 text-orange-800 rounded-full">
+                          Гість
+                        </span>
+                      ) : (
+                        <span className="ml-2 px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">
+                          Користувач
+                        </span>
+                      )}
                     </h4>
                     <p className="text-sm text-gray-600 font-medium">{order.customerName}</p>
                     {order.customerEmail && (
                       <p className="text-sm text-gray-600">📧 {order.customerEmail}</p>
                     )}
                     <p className="text-sm text-gray-600">📞 {order.customerPhone}</p>
+                    {order.userId && (
+                      <p className="text-xs text-gray-500 mt-1">👤 ID: {order.userId.slice(-6)}</p>
+                    )}
                   </div>
 
                   {/* Product/Cake Information */}
@@ -357,6 +451,13 @@ export default function AdminOrders() {
                     </select>
                   </div>
 
+                  <button
+                    onClick={() => handleEditOrder(order)}
+                    className="bg-gray-600 text-white px-3 py-1 text-sm rounded hover:bg-gray-700 transition-colors"
+                  >
+                    ✏️ Редагувати
+                  </button>
+
                   {/* Quick action buttons for common workflows */}
                   <div className="flex space-x-2">
                     {order.status === 'pending' && (
@@ -405,6 +506,322 @@ export default function AdminOrders() {
             </div>
           )}
         </div>
+      </div>
+    </div>
+  );
+}
+
+// Edit Order Modal Component
+interface EditOrderModalProps {
+  order: Order;
+  onSave: (updatedData: Partial<Order>) => void;
+  onClose: () => void;
+  isUpdating: boolean;
+}
+
+function EditOrderModal({ order, onSave, onClose, isUpdating }: EditOrderModalProps) {
+  const [formData, setFormData] = useState({
+    customerName: order.customerName,
+    customerEmail: order.customerEmail || '',
+    customerPhone: order.customerPhone,
+    deliveryAddress: order.deliveryAddress || '',
+    deliveryDate: order.deliveryDate ? new Date(order.deliveryDate).toISOString().split('T')[0] : '',
+    deliveryTime: order.deliveryTime || '',
+    weight: order.weight || 0,
+    specialRequests: order.specialRequests || '',
+    paymentMethod: order.paymentMethod || 'cash',
+    totalAmount: order.totalAmount || order.totalPrice || 0,
+    productName: order.productName || '',
+    productPrice: order.productPrice || 0,
+    cakeType: order.cakeType || '',
+    size: order.size || '',
+    description: order.description || '',
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: name === 'weight' || name === 'totalAmount' || name === 'productPrice'
+        ? parseFloat(value) || 0
+        : value
+    }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const updatedData: Partial<Order> = {
+      customerName: formData.customerName,
+      customerEmail: formData.customerEmail,
+      customerPhone: formData.customerPhone,
+      deliveryAddress: formData.deliveryAddress,
+      deliveryDate: formData.deliveryDate,
+      deliveryTime: formData.deliveryTime,
+      specialRequests: formData.specialRequests,
+      paymentMethod: formData.paymentMethod as 'cash' | 'card' | 'transfer',
+    };
+
+    if (order.type === 'product') {
+      updatedData.weight = formData.weight;
+      updatedData.totalAmount = formData.totalAmount;
+      updatedData.productName = formData.productName;
+      updatedData.productPrice = formData.productPrice;
+    } else {
+      updatedData.cakeType = formData.cakeType;
+      updatedData.size = formData.size;
+      updatedData.description = formData.description;
+      updatedData.totalPrice = formData.totalAmount;
+    }
+
+    onSave(updatedData);
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="p-6 border-b border-gray-200">
+          <div className="flex justify-between items-center">
+            <h2 className="text-xl font-semibold text-gray-900">
+              Редагувати замовлення #{order._id.slice(-6)}
+            </h2>
+            <button
+              onClick={onClose}
+              className="text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+          {/* Customer Information */}
+          <div>
+            <h3 className="text-lg font-medium text-gray-900 mb-4">Інформація про клієнта</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Ім&apos;я клієнта *</label>
+                <input
+                  type="text"
+                  name="customerName"
+                  required
+                  value={formData.customerName}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <input
+                  type="email"
+                  name="customerEmail"
+                  value={formData.customerEmail}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Телефон *</label>
+                <input
+                  type="tel"
+                  name="customerPhone"
+                  required
+                  value={formData.customerPhone}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Спосіб оплати</label>
+                <select
+                  name="paymentMethod"
+                  value={formData.paymentMethod}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="cash">Готівка</option>
+                  <option value="card">Картка</option>
+                  <option value="transfer">Переказ</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Delivery Information */}
+          <div>
+            <h3 className="text-lg font-medium text-gray-900 mb-4">Доставка</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Адреса доставки</label>
+                <input
+                  type="text"
+                  name="deliveryAddress"
+                  value={formData.deliveryAddress}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Дата доставки *</label>
+                <input
+                  type="date"
+                  name="deliveryDate"
+                  required
+                  value={formData.deliveryDate}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Час доставки</label>
+                <input
+                  type="time"
+                  name="deliveryTime"
+                  value={formData.deliveryTime}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Product/Cake Specific Information */}
+          <div>
+            <h3 className="text-lg font-medium text-gray-900 mb-4">
+              {order.type === 'product' ? 'Інформація про товар' : 'Інформація про торт'}
+            </h3>
+            {order.type === 'product' ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Назва товару</label>
+                  <input
+                    type="text"
+                    name="productName"
+                    value={formData.productName}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {order.productUnit === 'piece' ? 'Кількість (шт)' : 'Вага (кг)'}
+                  </label>
+                  <input
+                    type="number"
+                    name="weight"
+                    step="0.1"
+                    min="0"
+                    value={formData.weight}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Ціна за {order.productUnit === 'piece' ? 'шт' : 'кг'} (₴)
+                  </label>
+                  <input
+                    type="number"
+                    name="productPrice"
+                    step="0.01"
+                    min="0"
+                    value={formData.productPrice}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Загальна сума (₴)</label>
+                  <input
+                    type="number"
+                    name="totalAmount"
+                    step="0.01"
+                    min="0"
+                    value={formData.totalAmount}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Тип торта</label>
+                  <input
+                    type="text"
+                    name="cakeType"
+                    value={formData.cakeType}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Розмір</label>
+                  <input
+                    type="text"
+                    name="size"
+                    value={formData.size}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Загальна сума (₴)</label>
+                  <input
+                    type="number"
+                    name="totalAmount"
+                    step="0.01"
+                    min="0"
+                    value={formData.totalAmount}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Special Requests / Description */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              {order.type === 'product' ? 'Особливі побажання' : 'Опис замовлення'}
+            </label>
+            <textarea
+              name={order.type === 'product' ? 'specialRequests' : 'description'}
+              value={order.type === 'product' ? formData.specialRequests : formData.description}
+              onChange={handleInputChange}
+              rows={3}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex justify-end gap-4 pt-4 border-t border-gray-200">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              Скасувати
+            </button>
+            <button
+              type="submit"
+              disabled={isUpdating}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-blue-400 transition-colors flex items-center gap-2"
+            >
+              {isUpdating ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  Оновлення...
+                </>
+              ) : (
+                '💾 Зберегти зміни'
+              )}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

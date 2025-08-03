@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import PageBannerSimple from '@/components/PageBannerSimple/pagebannersimple';
 import { ProductCategoryValue } from '@/constants/categories';
@@ -48,6 +49,7 @@ export default function OrderPage() {
 function OrderContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const { data: session, status } = useSession();
     const productId = searchParams.get('productId');
 
     const [product, setProduct] = useState<Product | null>(null);
@@ -64,6 +66,32 @@ function OrderContent() {
         specialRequests: '',
         paymentMethod: 'cash'
     });
+
+    // Auto-fill form with user's saved information
+    useEffect(() => {
+        if (status === 'loading') return;
+
+        if (session?.user) {
+            const user = session.user as typeof session.user & {
+                shippingInfo?: {
+                    fullName: string;
+                    phone: string;
+                    address: string;
+                    city: string;
+                    postalCode: string;
+                    notes: string;
+                };
+            };
+
+            setFormData(prev => ({
+                ...prev,
+                customerName: user.name || prev.customerName,
+                customerEmail: user.email || prev.customerEmail,
+                customerPhone: user.phone || prev.customerPhone,
+                deliveryAddress: user.shippingInfo?.address || prev.deliveryAddress,
+            }));
+        }
+    }, [session, status]);
 
     // Load product if productId is provided
     useEffect(() => {
@@ -217,7 +245,28 @@ function OrderContent() {
 
                     {/* Customer Information */}
                     <div className="bg-white p-6 rounded-lg shadow-lg">
-                        <h2 className="text-xl font-semibold text-gray-900 mb-4">Контактна інформація</h2>
+                        <div className="flex items-center justify-between mb-4">
+                            <h2 className="text-xl font-semibold text-gray-900">Контактна інформація</h2>
+                            {session?.user && (
+                                <div className="text-sm text-blue-600">
+                                    <a href="/profile" className="hover:text-blue-800 transition-colors">
+                                        💾 Зберегти цю інформацію в профілі
+                                    </a>
+                                </div>
+                            )}
+                        </div>
+
+                        {session?.user && (session.user as typeof session.user & { shippingInfo?: { address: string } }).shippingInfo && (
+                            <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                                <div className="flex items-center text-green-700 text-sm">
+                                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Форма автоматично заповнена з вашого профілю
+                                </div>
+                            </div>
+                        )}
+
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label htmlFor="customerName" className="block text-sm font-medium text-gray-700 mb-1">
