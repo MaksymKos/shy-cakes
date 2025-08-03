@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import PageBannerSimple from '@/components/PageBannerSimple/pagebannersimple';
@@ -31,6 +31,21 @@ interface OrderFormData {
 }
 
 export default function OrderPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500"></div>
+                    <p className="mt-2 text-gray-600">Завантаження...</p>
+                </div>
+            </div>
+        }>
+            <OrderContent />
+        </Suspense>
+    );
+}
+
+function OrderContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const productId = searchParams.get('productId');
