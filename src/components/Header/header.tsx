@@ -40,6 +40,7 @@ export default function Header() {
                     <PopoverGroup className="hidden lg:flex lg:gap-x-8">
                         <Link className="text-gray-700 transition font-medium hover:text-pink-600 px-3 py-2 rounded-md hover:bg-pink-50" href="/">Головна</Link>
                         <Link className="text-gray-700 transition font-medium hover:text-pink-600 px-3 py-2 rounded-md hover:bg-pink-50" href="/catalog/">Каталог</Link>
+                        <Link className="text-gray-700 transition font-medium hover:text-pink-600 px-3 py-2 rounded-md hover:bg-pink-50" href="/order/">Замовлення</Link>
                         <Link className="text-gray-700 transition font-medium hover:text-pink-600 px-3 py-2 rounded-md hover:bg-pink-50" href="/reviews/">Відгуки</Link>
                         <Link className="text-gray-700 transition font-medium hover:text-pink-600 px-3 py-2 rounded-md hover:bg-pink-50" href="/portfolio/">Портфоліо</Link>
                         <Link className="text-gray-700 transition font-medium hover:text-pink-600 px-3 py-2 rounded-md hover:bg-pink-50" href="/contact/">Контакти</Link>
@@ -220,6 +221,7 @@ export default function Header() {
                             <div className="space-y-2 py-6">
                                 <Link href="/" className="-mx-3 block rounded-lg px-3 py-2 text-base font-medium text-gray-900 hover:bg-pink-50 hover:text-pink-600 transition-colors" onClick={() => setMobileMenuOpen(false)}>Головна</Link>
                                 <Link href="/catalog/" className="-mx-3 block rounded-lg px-3 py-2 text-base font-medium text-gray-900 hover:bg-pink-50 hover:text-pink-600 transition-colors" onClick={() => setMobileMenuOpen(false)}>Каталог</Link>
+                                <Link href="/order/" className="-mx-3 block rounded-lg px-3 py-2 text-base font-medium text-gray-900 hover:bg-pink-50 hover:text-pink-600 transition-colors" onClick={() => setMobileMenuOpen(false)}>Замовлення</Link>
                                 <Link href="/reviews/" className="-mx-3 block rounded-lg px-3 py-2 text-base font-medium text-gray-900 hover:bg-pink-50 hover:text-pink-600 transition-colors" onClick={() => setMobileMenuOpen(false)}>Відгуки</Link>
                                 <Link href="/portfolio/" className="-mx-3 block rounded-lg px-3 py-2 text-base font-medium text-gray-900 hover:bg-pink-50 hover:text-pink-600 transition-colors" onClick={() => setMobileMenuOpen(false)}>Портфоліо</Link>
                                 <Link href="/contact/" className="-mx-3 block rounded-lg px-3 py-2 text-base font-medium text-gray-900 hover:bg-pink-50 hover:text-pink-600 transition-colors" onClick={() => setMobileMenuOpen(false)}>Контакти</Link>

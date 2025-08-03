@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { PRODUCT_CATEGORIES, ProductCategoryValue } from '@/constants/categories';
+import { PRODUCT_UNITS, UNIT_LABELS, type ProductUnit } from '@/constants/units';
 
 interface Product {
   _id: string;
@@ -13,6 +14,7 @@ interface Product {
   price: number;
   category: ProductCategoryValue;
   available: boolean;
+  unit: ProductUnit;
   images?: string[];
   createdAt?: string;
   updatedAt?: string;
@@ -31,10 +33,25 @@ export default function AdminProductsPage() {
     description: '',
     price: '',
     category: '',
+    unit: 'kg' as ProductUnit,
     available: true
   });
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+
+  // Helper function to reset form
+  const resetForm = () => {
+    setNewProduct({
+      name: '',
+      description: '',
+      price: '',
+      category: '',
+      unit: 'kg' as ProductUnit,
+      available: true
+    });
+    setSelectedFiles([]);
+    setPreviewUrls([]);
+  };
 
   useEffect(() => {
     if (status === 'loading') return; // Чекаємо завантаження сесії
@@ -129,9 +146,7 @@ export default function AdminProductsPage() {
       });
 
       if (response.ok) {
-        setNewProduct({ name: '', description: '', price: '', category: '', available: true });
-        setSelectedFiles([]);
-        setPreviewUrls([]);
+        resetForm();
         setShowAddForm(false);
         fetchProducts();
       } else {
@@ -153,6 +168,7 @@ export default function AdminProductsPage() {
       description: product.description,
       price: product.price.toString(),
       category: product.category,
+      unit: product.unit || 'kg',
       available: product.available
     });
     setPreviewUrls(product.images || []);
@@ -187,9 +203,7 @@ export default function AdminProductsPage() {
 
       if (response.ok) {
         setEditingProduct(null);
-        setNewProduct({ name: '', description: '', price: '', category: '', available: true });
-        setSelectedFiles([]);
-        setPreviewUrls([]);
+        resetForm();
         setShowAddForm(false);
         fetchProducts();
       } else {
@@ -239,9 +253,7 @@ export default function AdminProductsPage() {
 
   const cancelEdit = () => {
     setEditingProduct(null);
-    setNewProduct({ name: '', description: '', price: '', category: '', available: true });
-    setSelectedFiles([]);
-    setPreviewUrls([]);
+    resetForm();
   };
 
   if (status === 'loading') {
@@ -346,6 +358,19 @@ export default function AdminProductsPage() {
                         {category.label}
                       </option>
                     ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Одиниця виміру</label>
+                  <select
+                    required
+                    value={newProduct.unit}
+                    onChange={(e) => setNewProduct({ ...newProduct, unit: e.target.value as ProductUnit })}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-500"
+                  >
+                    <option value={PRODUCT_UNITS.KG}>{UNIT_LABELS[PRODUCT_UNITS.KG].full} ({UNIT_LABELS[PRODUCT_UNITS.KG].short})</option>
+                    <option value={PRODUCT_UNITS.PIECE}>{UNIT_LABELS[PRODUCT_UNITS.PIECE].full} ({UNIT_LABELS[PRODUCT_UNITS.PIECE].short})</option>
                   </select>
                 </div>
               </div>
@@ -507,8 +532,15 @@ export default function AdminProductsPage() {
                 </div>
 
                 <p className="text-gray-600 text-sm mb-3 line-clamp-2">{product.description}</p>
-                <p className="text-pink-600 font-bold text-xl mb-2">{product.price} грн</p>
-                <p className="text-sm text-gray-500 mb-4">Категорія: {product.category}</p>
+                <div className="mb-2">
+                  <p className="text-pink-600 font-bold text-xl">
+                    {Math.round(product.price)} ₴ {product.unit ? UNIT_LABELS[product.unit]?.perUnit : '/ кг'}
+                  </p>
+                </div>
+                <div className="text-sm text-gray-500 mb-4 space-y-1">
+                  <p>📂 Категорія: {product.category}</p>
+                  <p>📏 Одиниця: {product.unit ? UNIT_LABELS[product.unit]?.full : 'кілограм'} ({product.unit ? UNIT_LABELS[product.unit]?.short : 'кг'})</p>
+                </div>
 
                 <div className="flex gap-2">
                   <button

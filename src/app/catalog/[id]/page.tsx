@@ -13,6 +13,7 @@ interface Product {
   category: ProductCategoryValue;
   images: string[];
   available: boolean;
+  unit: 'kg' | 'piece'; // New field for unit type
   createdAt: string;
 }
 
@@ -22,6 +23,29 @@ export default function ProductPage() {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [likedProducts, setLikedProducts] = useState<Set<string>>(new Set());
+
+  // Load liked products from localStorage
+  useEffect(() => {
+    const savedLikes = localStorage.getItem('likedProducts');
+    if (savedLikes) {
+      try {
+        const likesArray = JSON.parse(savedLikes);
+        setLikedProducts(new Set(likesArray));
+      } catch (error) {
+        console.error('Error loading liked products:', error);
+      }
+    }
+  }, []);
+
+  // Save liked products to localStorage whenever it changes
+  useEffect(() => {
+    if (likedProducts.size > 0) {
+      localStorage.setItem('likedProducts', JSON.stringify(Array.from(likedProducts)));
+    } else {
+      localStorage.removeItem('likedProducts');
+    }
+  }, [likedProducts]);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -50,8 +74,21 @@ export default function ProductPage() {
     }
   }, [params.id, router]);
 
-  const formatPrice = (price: number) => {
-    return `${Math.round(price)} ₴`;
+  const formatPrice = (price: number, unit: 'kg' | 'piece' = 'kg') => {
+    const unitText = unit === 'kg' ? '/ кг' : '/ шт';
+    return `${Math.round(price)} ₴ ${unitText}`;
+  };
+
+  const toggleLike = (productId: string) => {
+    setLikedProducts(prev => {
+      const newLiked = new Set(prev);
+      if (newLiked.has(productId)) {
+        newLiked.delete(productId);
+      } else {
+        newLiked.add(productId);
+      }
+      return newLiked;
+    });
   };
 
   if (loading) {
@@ -105,7 +142,14 @@ export default function ProductPage() {
               </button>
             </li>
             <li>/</li>
-            <li className="text-gray-900 font-medium">{product.name}</li>
+            <li className="text-gray-900 font-medium flex items-center gap-2">
+              {product.name}
+              {likedProducts.has(product._id) && (
+                <svg className="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                </svg>
+              )}
+            </li>
           </ol>
         </nav>
 
@@ -129,6 +173,22 @@ export default function ProductPage() {
                   </div>
                 </div>
               )}
+
+              {/* Like button on main image */}
+              <button
+                onClick={() => toggleLike(product._id)}
+                className="absolute top-4 right-4 p-3 rounded-full bg-white/90 hover:bg-white transition-all duration-200 shadow-lg hover:shadow-xl"
+              >
+                {likedProducts.has(product._id) ? (
+                  <svg className="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                  </svg>
+                ) : (
+                  <svg className="w-6 h-6 text-gray-400 hover:text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                  </svg>
+                )}
+              </button>
             </div>
 
             {/* Мініатюри */}
@@ -139,8 +199,8 @@ export default function ProductPage() {
                     key={index}
                     onClick={() => setSelectedImageIndex(index)}
                     className={`relative w-20 h-20 rounded-lg overflow-hidden border-2 transition-colors cursor-pointer ${selectedImageIndex === index
-                        ? 'border-pink-500'
-                        : 'border-gray-200 hover:border-gray-300'
+                      ? 'border-pink-500'
+                      : 'border-gray-200 hover:border-gray-300'
                       }`}
                   >
                     <Image
@@ -171,7 +231,7 @@ export default function ProductPage() {
 
             {/* Ціна */}
             <div className="text-4xl font-bold text-pink-600">
-              {formatPrice(product.price)} / кг
+              {formatPrice(product.price, product.unit)}
             </div>
 
             {/* Опис */}
@@ -184,13 +244,36 @@ export default function ProductPage() {
 
             {/* Кнопки дій */}
             <div className="space-y-4">
-              <button className="w-full bg-pink-500 hover:bg-pink-600 text-white py-4 px-6 rounded-lg text-lg font-semibold transition-colors cursor-pointer">
+              <button
+                onClick={() => router.push(`/order?productId=${product._id}`)}
+                className="w-full bg-pink-500 hover:bg-pink-600 text-white py-4 px-6 rounded-lg text-lg font-semibold transition-colors cursor-pointer"
+              >
                 🛒 Замовити товар
               </button>
 
               <div className="grid grid-cols-2 gap-4">
-                <button className="border border-gray-300 hover:border-pink-500 text-gray-700 hover:text-pink-600 py-3 px-4 rounded-lg transition-colors cursor-pointer">
-                  💝 У бажання
+                <button
+                  onClick={() => toggleLike(product._id)}
+                  className={`flex items-center justify-center gap-2 py-3 px-4 rounded-lg transition-all duration-200 cursor-pointer ${likedProducts.has(product._id)
+                    ? 'bg-red-50 border border-red-500 text-red-600'
+                    : 'border border-gray-300 hover:border-pink-500 text-gray-700 hover:text-pink-600'
+                    }`}
+                >
+                  {likedProducts.has(product._id) ? (
+                    <>
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                      </svg>
+                      В улюблених
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                      </svg>
+                      У бажання
+                    </>
+                  )}
                 </button>
                 <button className="border border-gray-300 hover:border-pink-500 text-gray-700 hover:text-pink-600 py-3 px-4 rounded-lg transition-colors cursor-pointer">
                   📤 Поділитися
@@ -212,7 +295,7 @@ export default function ProductPage() {
                 </div>
                 <div className="flex justify-between">
                   <span>Одиниця виміру:</span>
-                  <span className="font-medium">кг</span>
+                  <span className="font-medium">{product.unit === 'kg' ? 'кг' : 'шт'}</span>
                 </div>
               </div>
             </div>
@@ -233,7 +316,30 @@ export default function ProductPage() {
 function SimilarProducts({ currentProduct }: { currentProduct: Product }) {
   const [similarProducts, setSimilarProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [likedProducts, setLikedProducts] = useState<Set<string>>(new Set());
   const router = useRouter();
+
+  // Load liked products from localStorage
+  useEffect(() => {
+    const savedLikes = localStorage.getItem('likedProducts');
+    if (savedLikes) {
+      try {
+        const likesArray = JSON.parse(savedLikes);
+        setLikedProducts(new Set(likesArray));
+      } catch (error) {
+        console.error('Error loading liked products:', error);
+      }
+    }
+  }, []);
+
+  // Save liked products to localStorage whenever it changes
+  useEffect(() => {
+    if (likedProducts.size > 0) {
+      localStorage.setItem('likedProducts', JSON.stringify(Array.from(likedProducts)));
+    } else {
+      localStorage.removeItem('likedProducts');
+    }
+  }, [likedProducts]);
 
   useEffect(() => {
     const fetchSimilarProducts = async () => {
@@ -258,8 +364,23 @@ function SimilarProducts({ currentProduct }: { currentProduct: Product }) {
     fetchSimilarProducts();
   }, [currentProduct]);
 
-  const formatPrice = (price: number) => {
-    return `${Math.round(price)} ₴`;
+  const formatPrice = (price: number, unit: 'kg' | 'piece' = 'kg') => {
+    const unitText = unit === 'kg' ? '/ кг' : '/ шт';
+    return `${Math.round(price)} ₴ ${unitText}`;
+  };
+
+  const toggleLike = (productId: string, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent navigation when clicking like button
+
+    setLikedProducts(prev => {
+      const newLiked = new Set(prev);
+      if (newLiked.has(productId)) {
+        newLiked.delete(productId);
+      } else {
+        newLiked.add(productId);
+      }
+      return newLiked;
+    });
   };
 
   if (loading) {
@@ -301,14 +422,41 @@ function SimilarProducts({ currentProduct }: { currentProduct: Product }) {
                 <div className="text-gray-400 text-3xl">📸</div>
               </div>
             )}
+
+            {/* Like button */}
+            <button
+              onClick={(e) => toggleLike(product._id, e)}
+              className="absolute top-2 right-2 p-2 rounded-full bg-white/80 hover:bg-white transition-all duration-200 shadow-md hover:shadow-lg"
+            >
+              {likedProducts.has(product._id) ? (
+                <svg className="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                </svg>
+              ) : (
+                <svg className="w-4 h-4 text-gray-400 hover:text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+              )}
+            </button>
           </div>
 
           <div className="p-4">
             <h3 className="font-semibold text-lg mb-2 text-gray-900 line-clamp-1">
               {product.name}
             </h3>
-            <div className="text-lg font-bold text-pink-600">
-              {formatPrice(product.price)} / кг
+            <div className="flex items-center justify-between">
+              <div className="text-lg font-bold text-pink-600">
+                {formatPrice(product.price, product.unit)}
+              </div>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  router.push(`/order?productId=${product._id}`);
+                }}
+                className="bg-pink-500 hover:bg-pink-600 text-white px-3 py-1 rounded text-sm transition-colors"
+              >
+                Замовити
+              </button>
             </div>
           </div>
         </div>

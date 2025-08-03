@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import PageBannerSimple from '@/components/PageBannerSimple/pagebannersimple';
 import { FILTER_CATEGORIES, ProductCategoryValue } from '@/constants/categories';
+import { UNIT_LABELS, type ProductUnit } from '@/constants/units';
 
 interface Product {
   _id: string;
@@ -15,6 +16,7 @@ interface Product {
   category: ProductCategoryValue;
   images: string[];
   available: boolean;
+  unit: ProductUnit; // Updated to use ProductUnit type
   createdAt: string;
 }
 
@@ -95,8 +97,9 @@ export default function CatalogPage() {
     fetchProducts();
   }, [selectedCategory, searchTerm, showOnlyLiked, likedProducts]);
 
-  const formatPrice = (price: number) => {
-    return `${Math.round(price)} ₴`;
+  const formatPrice = (price: number, unit: ProductUnit = 'kg') => {
+    const unitText = UNIT_LABELS[unit].perUnit;
+    return `${Math.round(price)} ₴ ${unitText}`;
   };
 
   const handleProductClick = (productId: string) => {
@@ -164,8 +167,8 @@ export default function CatalogPage() {
               <button
                 onClick={() => setShowOnlyLiked(!showOnlyLiked)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 border ${showOnlyLiked
-                    ? 'bg-pink-500 text-white border-pink-500'
-                    : 'bg-white text-gray-700 border-gray-300 hover:border-pink-300 hover:text-pink-600'
+                  ? 'bg-pink-500 text-white border-pink-500'
+                  : 'bg-white text-gray-700 border-gray-300 hover:border-pink-300 hover:text-pink-600'
                   }`}
               >
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -286,14 +289,13 @@ export default function CatalogPage() {
 
                   <div className="flex items-center justify-between">
                     <span className="text-xl font-bold text-pink-600">
-                      {formatPrice(product.price)} / кг
+                      {formatPrice(product.price, product.unit)}
                     </span>
 
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        // Тут можна додати логіку швидкого замовлення
-                        console.log('Quick order for:', product.name);
+                        router.push(`/order?productId=${product._id}`);
                       }}
                       className="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg transition-colors duration-200 text-sm font-medium cursor-pointer"
                     >

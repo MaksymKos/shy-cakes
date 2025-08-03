@@ -14,6 +14,7 @@ interface Product {
     category: ProductCategoryValue;
     images: string[];
     available: boolean;
+    unit: 'kg' | 'piece'; // New field for unit type
     createdAt: string;
 }
 
@@ -65,8 +66,9 @@ export default function LikedProductsPage() {
         fetchLikedProducts();
     }, [likedProducts]);
 
-    const formatPrice = (price: number) => {
-        return `${Math.round(price)} ₴`;
+    const formatPrice = (price: number, unit: 'kg' | 'piece' = 'kg') => {
+        const unitText = unit === 'kg' ? '/ кг' : '/ шт';
+        return `${Math.round(price)} ₴ ${unitText}`;
     };
 
     const handleProductClick = (productId: string) => {
@@ -200,7 +202,7 @@ export default function LikedProductsPage() {
 
                                         <div className="flex items-center justify-between">
                                             <span className="text-xl font-bold text-pink-600">
-                                                {formatPrice(product.price)} / кг
+                                                {formatPrice(product.price, product.unit)}
                                             </span>
 
                                             <button
