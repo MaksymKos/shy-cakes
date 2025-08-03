@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useCart } from '@/contexts/CartContext';
 import PageBannerSimple from '@/components/PageBannerSimple/pagebannersimple';
 import { FILTER_CATEGORIES, ProductCategoryValue } from '@/constants/categories';
 import { UNIT_LABELS, type ProductUnit } from '@/constants/units';
@@ -22,6 +23,7 @@ interface Product {
 
 export default function CatalogPage() {
   const router = useRouter();
+  const { addToCart } = useCart();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
@@ -118,6 +120,23 @@ export default function CatalogPage() {
       }
       return newLiked;
     });
+  };
+
+  const handleAddToCart = (product: Product, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent navigation
+
+    const defaultQuantity = product.unit === 'kg' ? 0.5 : 1;
+
+    addToCart({
+      productId: product._id,
+      productName: product.name,
+      productPrice: product.price,
+      productUnit: product.unit,
+      productImage: product.images?.[0]
+    }, defaultQuantity);
+
+    // Show success message - you could replace this with a toast notification
+    alert(`${product.name} додано до кошика!`);
   };
 
   return (
@@ -287,17 +306,29 @@ export default function CatalogPage() {
                     {product.description}
                   </p>
 
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between mb-3">
                     <span className="text-xl font-bold text-pink-600">
                       {formatPrice(product.price, product.unit)}
                     </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={(e) => handleAddToCart(product, e)}
+                      className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg transition-colors duration-200 text-sm font-medium cursor-pointer flex items-center justify-center gap-1"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                      </svg>
+                      Кошик
+                    </button>
 
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         router.push(`/order?productId=${product._id}`);
                       }}
-                      className="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg transition-colors duration-200 text-sm font-medium cursor-pointer"
+                      className="bg-pink-500 hover:bg-pink-600 text-white px-3 py-2 rounded-lg transition-colors duration-200 text-sm font-medium cursor-pointer"
                     >
                       Замовити
                     </button>

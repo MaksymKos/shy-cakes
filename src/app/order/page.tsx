@@ -25,7 +25,6 @@ interface OrderFormData {
     customerEmail: string;
     deliveryAddress: string;
     deliveryDate: string;
-    deliveryTime: string;
     weight: number;
     specialRequests: string;
     paymentMethod: 'cash' | 'card' | 'transfer';
@@ -61,7 +60,6 @@ function OrderContent() {
         customerEmail: '',
         deliveryAddress: '',
         deliveryDate: '',
-        deliveryTime: '',
         weight: 1,
         specialRequests: '',
         paymentMethod: 'cash'
@@ -381,20 +379,6 @@ function OrderContent() {
                                     required
                                     min={getMinDate()}
                                     value={formData.deliveryDate}
-                                    onChange={handleInputChange}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                                />
-                            </div>
-
-                            <div>
-                                <label htmlFor="deliveryTime" className="block text-sm font-medium text-gray-700 mb-1">
-                                    Бажаний час доставки
-                                </label>
-                                <input
-                                    type="time"
-                                    id="deliveryTime"
-                                    name="deliveryTime"
-                                    value={formData.deliveryTime}
                                     onChange={handleInputChange}
                                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                                 />

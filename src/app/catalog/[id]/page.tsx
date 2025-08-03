@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { useCart } from '@/contexts/CartContext';
 import { ProductCategoryValue } from '@/constants/categories';
 
 interface Product {
@@ -20,10 +21,12 @@ interface Product {
 export default function ProductPage() {
   const params = useParams();
   const router = useRouter();
+  const { addToCart } = useCart();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [likedProducts, setLikedProducts] = useState<Set<string>>(new Set());
+  const [quantity, setQuantity] = useState(1);
 
   // Load liked products from localStorage
   useEffect(() => {
@@ -55,6 +58,8 @@ export default function ProductPage() {
           const data = await response.json();
           if (data.available) {
             setProduct(data);
+            // Set initial quantity based on unit type
+            setQuantity(data.unit === 'kg' ? 0.5 : 1);
           } else {
             router.push('/catalog');
           }
@@ -89,6 +94,35 @@ export default function ProductPage() {
       }
       return newLiked;
     });
+  };
+
+  const handleQuantityChange = (newQuantity: number) => {
+    if (!product) return;
+
+    const minQuantity = product.unit === 'kg' ? 0.5 : 1;
+    const maxQuantity = product.unit === 'kg' ? 20 : 100;
+
+    if (newQuantity >= minQuantity && newQuantity <= maxQuantity) {
+      setQuantity(newQuantity);
+    }
+  };
+
+  const handleAddToCart = () => {
+    if (!product) return;
+
+    addToCart({
+      productId: product._id,
+      productName: product.name,
+      productPrice: product.price,
+      productUnit: product.unit,
+      productImage: product.images?.[0]
+    }, quantity);
+
+    // Show success message
+    alert(`${product.name} додано до кошика!`);
+
+    // Reset quantity
+    setQuantity(product.unit === 'kg' ? 0.5 : 1);
   };
 
   if (loading) {
@@ -242,14 +276,67 @@ export default function ProductPage() {
               </p>
             </div>
 
-            {/* Кнопки дій */}
+            {/* Кількість і кнопки дій */}
             <div className="space-y-4">
-              <button
-                onClick={() => router.push(`/order?productId=${product._id}`)}
-                className="w-full bg-pink-500 hover:bg-pink-600 text-white py-4 px-6 rounded-lg text-lg font-semibold transition-colors cursor-pointer"
-              >
-                🛒 Замовити товар
-              </button>
+              {/* Селектор кількості */}
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {product.unit === 'kg' ? 'Вага (кг)' : 'Кількість (шт)'}
+                </label>
+                <div className="flex items-center space-x-4">
+                  <button
+                    onClick={() => handleQuantityChange(quantity - (product.unit === 'kg' ? 0.5 : 1))}
+                    className="w-10 h-10 rounded-full bg-white border border-gray-300 hover:border-pink-500 flex items-center justify-center transition-colors"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                    </svg>
+                  </button>
+
+                  <div className="text-center min-w-[100px]">
+                    <input
+                      type="number"
+                      value={quantity}
+                      onChange={(e) => handleQuantityChange(parseFloat(e.target.value) || 0)}
+                      min={product.unit === 'kg' ? 0.5 : 1}
+                      max={product.unit === 'kg' ? 20 : 100}
+                      step={product.unit === 'kg' ? 0.5 : 1}
+                      className="w-20 text-center border border-gray-300 rounded px-3 py-2 text-lg font-semibold"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      {product.unit === 'kg' ? 'кг' : 'шт'}
+                    </p>
+                  </div>
+
+                  <button
+                    onClick={() => handleQuantityChange(quantity + (product.unit === 'kg' ? 0.5 : 1))}
+                    className="w-10 h-10 rounded-full bg-white border border-gray-300 hover:border-pink-500 flex items-center justify-center transition-colors"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                  </button>
+                </div>
+                <p className="text-sm text-gray-600 mt-2">
+                  Загальна сума: <span className="font-semibold text-pink-600">{Math.round(product.price * quantity)} ₴</span>
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 gap-3">
+                <button
+                  onClick={handleAddToCart}
+                  className="w-full bg-pink-500 hover:bg-pink-600 text-white py-4 px-6 rounded-lg text-lg font-semibold transition-colors cursor-pointer"
+                >
+                  🛒 Додати до кошика
+                </button>
+
+                <button
+                  onClick={() => router.push(`/order?productId=${product._id}`)}
+                  className="w-full border-2 border-pink-500 text-pink-600 hover:bg-pink-50 py-4 px-6 rounded-lg text-lg font-semibold transition-colors cursor-pointer"
+                >
+                  ⚡ Замовити зараз
+                </button>
+              </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <button

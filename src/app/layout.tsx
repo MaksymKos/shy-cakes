@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import DynamicHeader from "@/components/Header/DynamicHeader";
 import Footer from "@/components/Footer/footer";
 import SessionWrapper from '@/components/utils/SessionWrapper';
+import { CartProvider } from '@/contexts/CartContext';
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -19,11 +20,13 @@ export default function RootLayout({
     <html lang="uk">
       <body className="antialiased" suppressHydrationWarning={true}>
         <SessionWrapper>
-          <DynamicHeader />
-          <main className="min-h-screen pt-24 lg:pt-28">
-            {children}
-          </main>
-          <Footer />
+          <CartProvider>
+            <DynamicHeader />
+            <main className="min-h-screen pt-24 lg:pt-28">
+              {children}
+            </main>
+            <Footer />
+          </CartProvider>
         </SessionWrapper>
       </body>
     </html>

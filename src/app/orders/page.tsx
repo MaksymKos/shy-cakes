@@ -10,14 +10,11 @@ interface Order {
     orderId?: number;
     type: 'product' | 'cake';
     customerName: string;
-    customerEmail: string;
+    customerEmail?: string;
     customerPhone: string;
-    deliveryAddress?: string;
+    deliveryAddress: string;
     deliveryDate: string;
-    deliveryTime?: string;
-    status: 'pending' | 'confirmed' | 'in-progress' | 'completed' | 'cancelled';
-    createdAt: string;
-    updatedAt?: string;
+    status: string;
 
     // User association fields
     userId?: string;
@@ -191,15 +188,6 @@ export default function MyOrders() {
                                                     {order.type === 'product' ? '🛒 Товар' : '🎂 Індивідуальний торт'}
                                                 </span>
                                             </h3>
-                                            <p className="text-sm text-gray-500">
-                                                Замовлено: {new Date(order.createdAt).toLocaleDateString('uk-UA', {
-                                                    year: 'numeric',
-                                                    month: 'long',
-                                                    day: 'numeric',
-                                                    hour: '2-digit',
-                                                    minute: '2-digit'
-                                                })}
-                                            </p>
                                         </div>
                                         <span className={`inline-flex px-3 py-1 text-sm font-medium rounded-full ${getStatusColor(order.status)}`}>
                                             {getStatusText(order.status)}
@@ -255,9 +243,6 @@ export default function MyOrders() {
                                                     day: 'numeric'
                                                 })}
                                             </p>
-                                            {order.deliveryTime && (
-                                                <p className="text-sm text-gray-600">🕐 {order.deliveryTime}</p>
-                                            )}
                                             {order.deliveryAddress && (
                                                 <p className="text-sm text-gray-600">📍 {order.deliveryAddress}</p>
                                             )}
