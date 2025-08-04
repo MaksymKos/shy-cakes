@@ -3,6 +3,7 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 interface User {
   _id: string;
@@ -38,9 +39,12 @@ export default function AdminUsers() {
       if (response.ok) {
         const data = await response.json();
         setUsers(data);
+      } else {
+        toast.error('Помилка завантаження користувачів');
       }
     } catch (error) {
       console.error('Error fetching users:', error);
+      toast.error('Помилка завантаження користувачів');
     } finally {
       setLoading(false);
     }
@@ -58,16 +62,26 @@ export default function AdminUsers() {
 
       if (response.ok) {
         fetchUsers();
+        toast.success('Роль користувача оновлено');
+      } else {
+        const error = await response.json();
+        toast.error(error.error || 'Помилка оновлення ролі користувача');
       }
     } catch (error) {
       console.error('Error updating user:', error);
+      toast.error('Помилка оновлення ролі користувача');
     }
   };
 
   const deleteUser = async (userId: string) => {
-    if (!confirm('Ви впевнені, що хочете видалити цього користувача?')) {
-      return;
-    }
+    // Показуємо попередження через toast
+    toast.warning('Натисніть ще раз для підтвердження видалення', {
+      onClick: () => confirmDeleteUser(userId),
+      autoClose: 5000,
+    });
+  };
+
+  const confirmDeleteUser = async (userId: string) => {
 
     try {
       const response = await fetch(`/api/users/${userId}`, {
@@ -76,9 +90,14 @@ export default function AdminUsers() {
 
       if (response.ok) {
         fetchUsers();
+        toast.success('Користувача видалено');
+      } else {
+        const error = await response.json();
+        toast.error(error.error || 'Помилка видалення користувача');
       }
     } catch (error) {
       console.error('Error deleting user:', error);
+      toast.error('Помилка видалення користувача');
     }
   };
 
@@ -128,8 +147,8 @@ export default function AdminUsers() {
             <button
               onClick={() => setFilter('all')}
               className={`px-4 py-2 rounded ${filter === 'all'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-white text-gray-700 border'
+                ? 'bg-blue-600 text-white'
+                : 'bg-white text-gray-700 border'
                 }`}
             >
               Всі ({users.length})
@@ -137,8 +156,8 @@ export default function AdminUsers() {
             <button
               onClick={() => setFilter('user')}
               className={`px-4 py-2 rounded ${filter === 'user'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-white text-gray-700 border'
+                ? 'bg-blue-600 text-white'
+                : 'bg-white text-gray-700 border'
                 }`}
             >
               Користувачі ({users.filter(u => u.role === 'user').length})
@@ -146,8 +165,8 @@ export default function AdminUsers() {
             <button
               onClick={() => setFilter('admin')}
               className={`px-4 py-2 rounded ${filter === 'admin'
-                  ? 'bg-purple-600 text-white'
-                  : 'bg-white text-gray-700 border'
+                ? 'bg-purple-600 text-white'
+                : 'bg-white text-gray-700 border'
                 }`}
             >
               Адміністратори ({users.filter(u => u.role === 'admin').length})

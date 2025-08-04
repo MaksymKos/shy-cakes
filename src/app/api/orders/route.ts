@@ -45,6 +45,10 @@ export async function POST(request: NextRequest) {
         const session = await getServerSession(authOptions);
 
         const body = await request.json();
+
+        // Debug logging
+        console.log("Order request body:", JSON.stringify(body, null, 2));
+
         const {
             customerName,
             customerEmail,
@@ -59,10 +63,7 @@ export async function POST(request: NextRequest) {
             productPrice,
             productUnit,
             totalAmount,
-            // Legacy cake order fields (for backward compatibility)
-            cakeType,
-            size,
-            description,
+            referenceImages, // Add reference images field
         } = body;
 
         // Determine if this is a guest order or from a logged-in user
@@ -85,14 +86,18 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Validate required fields for cake orders (legacy)
+        // Validate required fields for custom orders (without product)
         if (
             !productId &&
-            (!customerName || !customerEmail || !cakeType || !deliveryDate)
+            (!customerName ||
+                !customerPhone ||
+                !deliveryAddress ||
+                !deliveryDate ||
+                !specialRequests)
         ) {
             return NextResponse.json(
                 {
-                    error: "Customer name, email, cake type, and delivery date are required",
+                    error: "Імʼя, телефон, адреса доставки, дата доставки та опис замовлення є обовʼязковими для індивідуального замовлення",
                 },
                 { status: 400 }
             );
@@ -144,6 +149,7 @@ export async function POST(request: NextRequest) {
                 productPrice: parseFloat(productPrice),
                 productUnit,
                 totalAmount: parseFloat(totalAmount),
+                referenceImages: referenceImages || [], // Add reference images
                 status: "pending",
                 // User association fields
                 userId,
@@ -153,18 +159,20 @@ export async function POST(request: NextRequest) {
                 updatedAt: new Date(),
             };
         } else {
-            // Legacy cake order
+            // Custom order (individual order)
             orderData = {
                 orderId,
-                type: "cake",
+                type: "custom",
                 customerName,
                 customerEmail,
                 customerPhone,
-                cakeType,
-                size,
-                description,
+                deliveryAddress,
                 deliveryDate: new Date(deliveryDate),
-                totalPrice: parseInt(totalAmount || 0),
+                weight: parseFloat(weight) || 1,
+                specialRequests, // This contains the description for custom orders
+                paymentMethod,
+                totalAmount: parseFloat(totalAmount) || 0,
+                referenceImages: referenceImages || [], // Add reference images for custom orders
                 status: "pending",
                 // User association fields
                 userId,

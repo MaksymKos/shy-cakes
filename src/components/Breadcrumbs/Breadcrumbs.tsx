@@ -1,17 +1,25 @@
-export default function Breadcrumbs({ path }: {path: string}) {
+import Link from 'next/link';
+
+export default function Breadcrumbs({ path }: { path: string }) {
   return (
-      <ol className="flex items-center whitespace-nowrap">
-        <li className="inline-flex items-center">
-          <a className="flex items-center text-sm text-gray-500 hover:text-black-600 focus:outline-hidden focus:text-blue-600 dark:text-neutral-500 dark:hover:text-blue-500 dark:focus:text-blue-500" href="#">
-            Головна
-          </a>
-          <svg className="shrink-0 mx-2 size-4 text-gray-400 dark:text-neutral-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="m9 18 6-6-6-6"></path>
+    <ol className="flex items-center text-sm">
+      <li className="inline-flex items-center">
+        <Link
+          className="flex items-center text-white/90 hover:text-white transition-colors font-medium"
+          href="/"
+        >
+          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
           </svg>
-        </li>
-        <li className="inline-flex items-center text-sm font-semibold text-gray-800 truncate dark:text-neutral-200" aria-current="page">
-          {path}
-        </li>
-      </ol>
+          Головна
+        </Link>
+        <svg className="mx-2 w-4 h-4 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+      </li>
+      <li className="text-white font-medium" aria-current="page">
+        {path}
+      </li>
+    </ol>
   )
 }

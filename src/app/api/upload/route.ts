@@ -86,7 +86,7 @@ export async function POST(request: NextRequest) {
             }
         );
 
-        return NextResponse.json({ url: uploadResponse.secure_url });
+        return NextResponse.json({ secure_url: uploadResponse.secure_url });
     } catch (error) {
         console.error("Upload error:", error);
         return NextResponse.json(

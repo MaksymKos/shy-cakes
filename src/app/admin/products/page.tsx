@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
 import Image from 'next/image';
 import { PRODUCT_CATEGORIES, ProductCategoryValue } from '@/constants/categories';
 import { PRODUCT_UNITS, UNIT_LABELS, type ProductUnit } from '@/constants/units';
@@ -84,9 +85,12 @@ export default function AdminProductsPage() {
       if (response.ok) {
         const data = await response.json();
         setProducts(data);
+      } else {
+        toast.error('Помилка завантаження товарів');
       }
     } catch (error) {
       console.error('Error fetching products:', error);
+      toast.error('Помилка завантаження товарів');
     } finally {
       setLoading(false);
     }
@@ -149,13 +153,14 @@ export default function AdminProductsPage() {
         resetForm();
         setShowAddForm(false);
         fetchProducts();
+        toast.success('Товар успішно додано');
       } else {
         const errorData = await response.json();
-        alert(errorData.error || 'Помилка збереження товару');
+        toast.error(errorData.error || 'Помилка збереження товару');
       }
     } catch (error) {
       console.error('Error adding product:', error);
-      alert('Помилка збереження товару');
+      toast.error('Помилка збереження товару');
     } finally {
       setUploading(false);
     }
@@ -206,20 +211,28 @@ export default function AdminProductsPage() {
         resetForm();
         setShowAddForm(false);
         fetchProducts();
+        toast.success('Товар успішно оновлено');
       } else {
         const errorData = await response.json();
-        alert(errorData.error || 'Помилка оновлення товару');
+        toast.error(errorData.error || 'Помилка оновлення товару');
       }
     } catch (error) {
       console.error('Error updating product:', error);
-      alert('Помилка оновлення товару');
+      toast.error('Помилка оновлення товару');
     } finally {
       setUploading(false);
     }
   };
 
   const handleDeleteProduct = async (productId: string) => {
-    if (!confirm('Ви впевнені, що хочете видалити цей товар?')) return;
+    // Показуємо попередження через toast
+    toast.warning('Натисніть ще раз для підтвердження видалення товару', {
+      onClick: () => confirmDeleteProduct(productId),
+      autoClose: 5000,
+    });
+  };
+
+  const confirmDeleteProduct = async (productId: string) => {
 
     try {
       const response = await fetch(`/api/products/${productId}`, {
@@ -228,13 +241,14 @@ export default function AdminProductsPage() {
 
       if (response.ok) {
         fetchProducts();
+        toast.success('Товар успішно видалено');
       } else {
         const errorData = await response.json();
-        alert(errorData.error || 'Помилка видалення товару');
+        toast.error(errorData.error || 'Помилка видалення товару');
       }
     } catch (error) {
       console.error('Error deleting product:', error);
-      alert('Помилка видалення товару');
+      toast.error('Помилка видалення товару');
     }
   };
 

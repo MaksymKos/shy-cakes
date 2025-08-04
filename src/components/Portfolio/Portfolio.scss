@@ -1,55 +1,78 @@
+/* Simplified Portfolio Styles */
 .portfolio-grid {
-  display: -webkit-box; /* Not needed if autoprefixing */
-  display: -ms-flexbox; /* Not needed if autoprefixing */
-  display: flex;
-  margin-left: -30px; /* gutter size offset */
-  width: auto;
+    display: flex;
+    margin-left: -16px;
+    width: auto;
 }
+
 .portfolio-grid_column {
-  padding-left: 30px; /* gutter size */
-  background-clip: padding-box;
+    padding-left: 16px;
+    background-clip: padding-box;
 }
 
-/* Style your items */
 .portfolio-grid_column > div {
-  cursor: pointer;
-  margin-bottom: 30px;
-  transition: all 0.5s ease-in;
-  object-fit: none;
+    cursor: pointer;
+    margin-bottom: 16px;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 
-  img {
-    border-radius: 5px;
-  }
-  &:hover {
-    transform: scale(1.02);
-  }
+    img {
+        border-radius: 8px;
+        transition: transform 0.3s ease;
+    }
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+        img {
+            transform: scale(1.02);
+        }
+    }
 }
 
-/* Portfolio item with overlay */
 .portfolio-item {
-  position: relative;
-  overflow: hidden;
-  border-radius: 5px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    background: white;
 
-  .portfolio-overlay {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
-    color: white;
-    padding: 20px 15px 15px;
-    transform: translateY(100%);
-    transition: transform 0.3s ease-in-out;
+    .portfolio-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+        color: white;
+        padding: 1rem;
+        transform: translateY(100%);
+        transition: transform 0.3s ease;
 
-    .portfolio-title {
-      font-size: 16px;
-      font-weight: 600;
-      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0;
+        }
     }
-  }
 
-  &:hover .portfolio-overlay {
-    transform: translateY(0);
-  }
+    &:hover .portfolio-overlay {
+        transform: translateY(0);
+    }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .portfolio-grid {
+        margin-left: -12px;
+    }
+
+    .portfolio-grid_column {
+        padding-left: 12px;
+    }
+
+    .portfolio-grid_column > div {
+        margin-bottom: 12px;
+    }
 }

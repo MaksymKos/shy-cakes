@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useCart } from '@/contexts/CartContext';
 import { ProductCategoryValue } from '@/constants/categories';
+import { toast } from 'react-toastify';
 
 interface Product {
   _id: string;
@@ -119,7 +120,7 @@ export default function ProductPage() {
     }, quantity);
 
     // Show success message
-    alert(`${product.name} додано до кошика!`);
+    toast.success(`${product.name} додано до кошика!`);
 
     // Reset quantity
     setQuantity(product.unit === 'kg' ? 0.5 : 1);

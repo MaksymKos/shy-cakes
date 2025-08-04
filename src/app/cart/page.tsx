@@ -7,6 +7,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '@/contexts/CartContext';
 import PageBannerSimple from '@/components/PageBannerSimple/pagebannersimple';
+import { toast } from 'react-toastify';
 
 interface OrderFormData {
     customerName: string;
@@ -105,11 +106,11 @@ export default function CartPage() {
 
             // Clear cart and redirect
             clearCart();
-            alert(`Всі замовлення успішно відправлені!\nЗагальна сума: ${Math.round(getTotalPrice())} ₴\nМи зв'яжемося з вами найближчим часом.`);
+            toast.success(`Всі замовлення успішно відправлені!\nЗагальна сума: ${Math.round(getTotalPrice())} ₴\nМи зв'яжемося з вами найближчим часом.`);
             router.push('/orders');
         } catch (error) {
             console.error('Error submitting orders:', error);
-            alert('Помилка при оформленні замовлень. Спробуйте ще раз.');
+            toast.error('Помилка при оформленні замовлень. Спробуйте ще раз.');
         } finally {
             setSubmitting(false);
         }

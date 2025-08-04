@@ -3,6 +3,8 @@ import DynamicHeader from "@/components/Header/DynamicHeader";
 import Footer from "@/components/Footer/footer";
 import SessionWrapper from '@/components/utils/SessionWrapper';
 import { CartProvider } from '@/contexts/CartContext';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -26,6 +28,18 @@ export default function RootLayout({
               {children}
             </main>
             <Footer />
+            <ToastContainer
+              position="top-right"
+              autoClose={4000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="light"
+            />
           </CartProvider>
         </SessionWrapper>
       </body>

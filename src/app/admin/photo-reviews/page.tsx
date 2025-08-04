@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
 import Image from 'next/image';
 
 interface PhotoReview {
@@ -59,9 +60,12 @@ export default function AdminPhotoReviewsPage() {
       if (response.ok) {
         const data = await response.json();
         setReviews(data);
+      } else {
+        toast.error('Помилка завантаження відгуків');
       }
     } catch (error) {
       console.error('Error fetching photo reviews:', error);
+      toast.error('Помилка завантаження відгуків');
     } finally {
       setLoading(false);
     }
@@ -168,7 +172,7 @@ export default function AdminPhotoReviewsPage() {
 
       // Валідація: має бути хоча б одне зображення
       if (imageUrls.length === 0) {
-        alert('Будь ласка, додайте хоча б одну фотографію торту');
+        toast.warning('Будь ласка, додайте хоча б одну фотографію торту');
         return;
       }
 
@@ -198,14 +202,14 @@ export default function AdminPhotoReviewsPage() {
       if (response.ok) {
         fetchReviews();
         resetForm();
-        alert(editingReview ? 'Відгук оновлено!' : 'Відгук додано!');
+        toast.success(editingReview ? 'Відгук оновлено!' : 'Відгук додано!');
       } else {
         const error = await response.json();
-        alert(error.error || 'Помилка збереження відгуку');
+        toast.error(error.error || 'Помилка збереження відгуку');
       }
     } catch (error) {
       console.error('Error saving photo review:', error);
-      alert('Помилка збереження відгуку');
+      toast.error('Помилка збереження відгуку');
     } finally {
       setSubmitting(false);
     }
@@ -234,7 +238,14 @@ export default function AdminPhotoReviewsPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Ви впевнені, що хочете видалити цей відгук?')) return;
+    // Показуємо попередження через toast
+    toast.warning('Натисніть ще раз для підтвердження видалення відгуку', {
+      onClick: () => confirmDeleteReview(id),
+      autoClose: 5000,
+    });
+  };
+
+  const confirmDeleteReview = async (id: string) => {
 
     try {
       const response = await fetch(`/api/photo-reviews/${id}`, {
@@ -243,13 +254,13 @@ export default function AdminPhotoReviewsPage() {
 
       if (response.ok) {
         fetchReviews();
-        alert('Відгук видалено!');
+        toast.success('Відгук видалено!');
       } else {
-        alert('Помилка видалення відгуку');
+        toast.error('Помилка видалення відгуку');
       }
     } catch (error) {
       console.error('Error deleting photo review:', error);
-      alert('Помилка видалення відгуку');
+      toast.error('Помилка видалення відгуку');
     }
   };
 
@@ -263,9 +274,14 @@ export default function AdminPhotoReviewsPage() {
 
       if (response.ok) {
         fetchReviews();
+        toast.success(review.isApproved ? 'Відгук відхилено' : 'Відгук схвалено');
+      } else {
+        const error = await response.json();
+        toast.error(error.error || 'Помилка зміни статусу відгуку');
       }
     } catch (error) {
       console.error('Error toggling approval:', error);
+      toast.error('Помилка зміни статусу відгуку');
     }
   };
 

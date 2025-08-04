@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import PageBannerSimple from '@/components/PageBannerSimple/pagebannersimple';
 import { ProductCategoryValue } from '@/constants/categories';
+import { toast } from 'react-toastify';
 
 interface Product {
     _id: string;
@@ -28,6 +29,7 @@ interface OrderFormData {
     weight: number;
     specialRequests: string;
     paymentMethod: 'cash' | 'card' | 'transfer';
+    referenceImages?: string[];
 }
 
 export default function OrderPage() {
@@ -54,6 +56,7 @@ function OrderContent() {
     const [product, setProduct] = useState<Product | null>(null);
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
+    const [uploadingImages, setUploadingImages] = useState(false);
     const [formData, setFormData] = useState<OrderFormData>({
         customerName: '',
         customerPhone: '',
@@ -62,7 +65,8 @@ function OrderContent() {
         deliveryDate: '',
         weight: 1,
         specialRequests: '',
-        paymentMethod: 'cash'
+        paymentMethod: 'cash',
+        referenceImages: []
     });
 
     // Auto-fill form with user's saved information
@@ -117,6 +121,88 @@ function OrderContent() {
         fetchProduct();
     }, [productId]);
 
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files;
+        if (!files || files.length === 0) return;
+
+        const currentCount = formData.referenceImages?.length || 0;
+        if (currentCount >= 5) {
+            toast.warning('Максимум 5 зображень');
+            return;
+        }
+
+        setUploadingImages(true);
+
+        try {
+            const uploadedUrls: string[] = [];
+
+            for (const file of Array.from(files)) {
+                if (currentCount + uploadedUrls.length >= 5) {
+                    toast.warning('Досягнуто максимум 5 зображень');
+                    break;
+                }
+
+                // Перевірка розміру файлу (5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    toast.warning(`Файл ${file.name} завеликий (максимум 5МБ)`);
+                    continue;
+                }
+
+                // Перевірка типу файлу
+                if (!file.type.startsWith('image/')) {
+                    toast.warning(`Файл ${file.name} не є зображенням`);
+                    continue;
+                }
+
+                const formData = new FormData();
+                formData.append('file', file);
+
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Upload response:', data); // Debug log
+                    if (data.secure_url && data.secure_url.trim() !== '') {
+                        uploadedUrls.push(data.secure_url);
+                        console.log('Added URL to uploadedUrls:', data.secure_url); // Debug log
+                    }
+                } else {
+                    const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+                    console.error('Upload error:', errorData);
+                    toast.error(`Помилка завантаження файлу ${file.name}: ${errorData.error || 'Невідома помилка'}`);
+                }
+            }
+
+            // Фільтруємо порожні URL перед додаванням
+            const validUrls = uploadedUrls.filter(url => url && url.trim() !== '');
+
+            if (validUrls.length > 0) {
+                console.log('Setting formData with validUrls:', validUrls); // Debug log
+                setFormData(prev => ({
+                    ...prev,
+                    referenceImages: [...(prev.referenceImages || []), ...validUrls]
+                }));
+                toast.success(`${validUrls.length} зображень завантажено успішно!`);
+            }
+
+        } catch (error) {
+            console.error('Error uploading images:', error);
+            toast.error('Помилка завантаження зображень');
+        } finally {
+            setUploadingImages(false);
+        }
+    };
+
+    const removeImage = (indexToRemove: number) => {
+        setFormData(prev => ({
+            ...prev,
+            referenceImages: prev.referenceImages?.filter((_, index) => index !== indexToRemove) || []
+        }));
+    };
+
     const formatPrice = (price: number, unit: 'kg' | 'piece' = 'kg') => {
         const unitText = unit === 'kg' ? '/ кг' : '/ шт';
         return `${Math.round(price)} ₴ ${unitText}`;
@@ -160,16 +246,16 @@ function OrderContent() {
 
             if (response.ok) {
                 const result = await response.json();
-                alert(`Замовлення успішно відправлено! Номер замовлення: ${result._id}\nМи зв'яжемося з вами найближчим часом.`);
+                toast.success(`Замовлення успішно відправлено! Номер замовлення: ${result._id}\nМи зв'яжемося з вами найближчим часом.`);
                 router.push('/catalog');
             } else {
                 const error = await response.json();
-                throw new Error(error.message || 'Помилка при створенні замовлення');
+                toast.error(error.message || 'Помилка при створенні замовлення');
             }
 
         } catch (error) {
             console.error('Error submitting order:', error);
-            alert('Помилка при відправці замовлення. Спробуйте ще раз.');
+            toast.error('Помилка при відправці замовлення. Спробуйте ще раз.');
         } finally {
             setSubmitting(false);
         }
@@ -419,6 +505,103 @@ function OrderContent() {
                                     }
                                 />
                             </div>
+
+                            {/* Photo Upload Section for Custom Orders */}
+                            {!product && (
+                                <div className="md:col-span-2">
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Референсні зображення (необов&apos;язково)
+                                    </label>
+                                    <p className="text-xs text-gray-500 mb-3">
+                                        Додайте до 5 зображень, щоб показати як має виглядати ваш торт або десерт
+                                    </p>
+
+                                    {/* Upload Area */}
+                                    <div className="space-y-4">
+                                        <div className="flex items-center justify-center w-full">
+                                            <label
+                                                htmlFor="image-upload"
+                                                className={`flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors ${uploadingImages || (formData.referenceImages?.length || 0) >= 5
+                                                    ? 'opacity-50 cursor-not-allowed'
+                                                    : ''
+                                                    }`}
+                                            >
+                                                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                                    <div className="w-8 h-8 mb-3 text-gray-400">
+                                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                                        </svg>
+                                                    </div>
+                                                    <p className="mb-2 text-sm text-gray-500">
+                                                        {uploadingImages ? (
+                                                            <span className="font-semibold">Завантаження...</span>
+                                                        ) : (
+                                                            <>
+                                                                <span className="font-semibold">Натисніть для завантаження</span> або перетягніть файли
+                                                            </>
+                                                        )}
+                                                    </p>
+                                                    <p className="text-xs text-gray-500">PNG, JPG до 5MB кожен</p>
+                                                </div>
+                                                <input
+                                                    id="image-upload"
+                                                    type="file"
+                                                    className="hidden"
+                                                    multiple
+                                                    accept="image/*"
+                                                    onChange={handleImageUpload}
+                                                    disabled={uploadingImages || (formData.referenceImages?.length || 0) >= 5}
+                                                />
+                                            </label>
+                                        </div>
+
+                                        {/* Uploaded Images Preview */}
+                                        {formData.referenceImages && formData.referenceImages.filter(url => url && url.trim() !== '').length > 0 && (
+                                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                                                {formData.referenceImages
+                                                    .map((imageUrl, originalIndex) => {
+                                                        // Пропускаємо порожні URL
+                                                        if (!imageUrl || imageUrl.trim() === '') return null;
+
+                                                        return (
+                                                            <div key={originalIndex} className="relative group">
+                                                                <div className="relative w-full h-24 rounded-lg overflow-hidden bg-gray-200">
+                                                                    <Image
+                                                                        src={imageUrl}
+                                                                        alt={`Референс ${originalIndex + 1}`}
+                                                                        fill
+                                                                        className="object-cover"
+                                                                        unoptimized={true}
+                                                                        onError={(e) => {
+                                                                            console.error('Image failed to load:', imageUrl);
+                                                                            const target = e.target as HTMLImageElement;
+                                                                            target.style.display = 'none';
+                                                                        }}
+                                                                    />
+                                                                </div>
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => removeImage(originalIndex)}
+                                                                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600 transition-colors group-hover:opacity-100 opacity-75"
+                                                                >
+                                                                    ×
+                                                                </button>
+                                                            </div>
+                                                        );
+                                                    })
+                                                    .filter(Boolean) // Видаляємо null елементи
+                                                }
+                                            </div>
+                                        )}
+
+                                        {formData.referenceImages && formData.referenceImages.filter(url => url && url.trim() !== '').length > 0 && (
+                                            <p className="text-xs text-gray-500">
+                                                Завантажено {formData.referenceImages.filter(url => url && url.trim() !== '').length} з 5 можливих зображень
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
 

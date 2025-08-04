@@ -3,10 +3,11 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 interface Order {
   _id: string;
-  type: 'product' | 'cake';
+  type: 'product' | 'cake' | 'custom';
   customerName: string;
   customerEmail: string;
   customerPhone: string;
@@ -31,6 +32,7 @@ interface Order {
   specialRequests?: string;
   paymentMethod?: string;
   totalAmount?: number;
+  referenceImages?: string[]; // Add reference images field
 
   // Legacy cake order fields
   cakeType?: string;
@@ -66,9 +68,12 @@ export default function AdminOrders() {
       if (response.ok) {
         const data = await response.json();
         setOrders(data);
+      } else {
+        toast.error('Помилка завантаження замовлень');
       }
     } catch (error) {
       console.error('Error fetching orders:', error);
+      toast.error('Помилка завантаження замовлень');
     } finally {
       setLoading(false);
     }
@@ -86,9 +91,13 @@ export default function AdminOrders() {
 
       if (response.ok) {
         fetchOrders();
+      } else {
+        const error = await response.json();
+        toast.error(error.error || 'Помилка оновлення статусу замовлення');
       }
     } catch (error) {
       console.error('Error updating order:', error);
+      toast.error('Помилка оновлення статусу замовлення');
     }
   };
 
@@ -114,12 +123,13 @@ export default function AdminOrders() {
         setShowEditModal(false);
         setEditingOrder(null);
         fetchOrders();
+        toast.success('Замовлення успішно оновлено');
       } else {
-        alert('Помилка оновлення замовлення');
+        toast.error('Помилка оновлення замовлення');
       }
     } catch (error) {
       console.error('Error updating order:', error);
-      alert('Помилка оновлення замовлення');
+      toast.error('Помилка оновлення замовлення');
     } finally {
       setUpdating(false);
     }
@@ -308,9 +318,18 @@ export default function AdminOrders() {
                           minute: '2-digit'
                         })}
                       </p>
-                      <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${order.type === 'product' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'
+                      <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${order.type === 'product'
+                          ? 'bg-blue-100 text-blue-800'
+                          : order.type === 'custom'
+                            ? 'bg-purple-100 text-purple-800'
+                            : 'bg-purple-100 text-purple-800'
                         }`}>
-                        {order.type === 'product' ? '🛒 Товар з каталогу' : '🎂 Індивідуальний торт'}
+                        {order.type === 'product'
+                          ? '🛒 Товар з каталогу'
+                          : order.type === 'custom'
+                            ? '🎨 Індивідуальне замовлення'
+                            : '🎂 Індивідуальний торт'
+                        }
                       </span>
                     </div>
                   </div>
@@ -357,6 +376,13 @@ export default function AdminOrders() {
                           </svg>
                           Товар
                         </>
+                      ) : order.type === 'custom' ? (
+                        <>
+                          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C20.832 18.477 19.246 18 17.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                          </svg>
+                          Індивідуальне замовлення
+                        </>
                       ) : (
                         <>
                           <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -371,6 +397,11 @@ export default function AdminOrders() {
                         <p className="text-sm text-gray-600 font-medium">{order.productName}</p>
                         <p className="text-sm text-gray-600">⚖️ {formatWeightDisplay(order.weight || 0, order.productUnit)}</p>
                         <p className="text-sm text-gray-600">💰 Ціна за {order.productUnit === 'piece' ? 'шт' : 'кг'}: {order.productPrice} ₴</p>
+                      </>
+                    ) : order.type === 'custom' ? (
+                      <>
+                        <p className="text-sm text-gray-600 font-medium">Індивідуальне замовлення</p>
+                        <p className="text-sm text-gray-600">🎨 Замовлення за власним дизайном</p>
                       </>
                     ) : (
                       <>
@@ -427,11 +458,50 @@ export default function AdminOrders() {
                       <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                       </svg>
-                      {order.type === 'product' ? 'Особливі побажання' : 'Опис замовлення'}
+                      {order.type === 'product' ? 'Особливі побажання' : order.type === 'custom' ? 'Опис замовлення' : 'Опис замовлення'}
                     </h4>
                     <p className="text-sm text-gray-600 bg-white p-3 rounded border">
                       {order.specialRequests || order.description}
                     </p>
+                  </div>
+                )}
+
+                {/* Reference Images */}
+                {order.referenceImages && order.referenceImages.length > 0 && (
+                  <div className="mb-4">
+                    <h4 className="font-medium text-gray-900 mb-2 flex items-center">
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      Референсні зображення ({order.referenceImages.length})
+                    </h4>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                      {order.referenceImages
+                        .filter(imageUrl => imageUrl && imageUrl.trim() !== '')
+                        .map((imageUrl, index) => (
+                          <div key={index} className="relative group">
+                            <div className="relative w-full h-24 rounded border overflow-hidden bg-gray-100 cursor-pointer"
+                              onClick={() => window.open(imageUrl, '_blank')}>
+                              <img
+                                src={imageUrl}
+                                alt={`Референс ${index + 1}`}
+                                className="absolute inset-0 w-full h-full object-cover hover:opacity-90 transition-opacity"
+                                onError={(e) => {
+                                  console.error('Image failed to load:', imageUrl);
+                                  const target = e.target as HTMLImageElement;
+                                  target.style.display = 'none';
+                                }}
+                              />
+                            </div>
+                            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 rounded border cursor-pointer flex items-center justify-center"
+                              onClick={() => window.open(imageUrl, '_blank')}>
+                              <svg className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                              </svg>
+                            </div>
+                          </div>
+                        ))}
+                    </div>
                   </div>
                 )}
 

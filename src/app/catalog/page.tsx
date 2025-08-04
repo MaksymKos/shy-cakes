@@ -8,6 +8,7 @@ import { useCart } from '@/contexts/CartContext';
 import PageBannerSimple from '@/components/PageBannerSimple/pagebannersimple';
 import { FILTER_CATEGORIES, ProductCategoryValue } from '@/constants/categories';
 import { UNIT_LABELS, type ProductUnit } from '@/constants/units';
+import { toast } from 'react-toastify';
 
 interface Product {
   _id: string;
@@ -135,8 +136,8 @@ export default function CatalogPage() {
       productImage: product.images?.[0]
     }, defaultQuantity);
 
-    // Show success message - you could replace this with a toast notification
-    alert(`${product.name} додано до кошика!`);
+    // Show success message
+    toast.success(`${product.name} додано до кошика!`);
   };
 
   return (

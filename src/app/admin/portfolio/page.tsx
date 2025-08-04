@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
 import Image from 'next/image';
 
 interface PortfolioItem {
@@ -37,12 +38,13 @@ function ImageUpload({ onImageUpload, currentImage }: ImageUploadProps) {
       if (response.ok) {
         const data = await response.json();
         onImageUpload(data.url);
+        toast.success('Зображення успішно завантажено');
       } else {
-        alert('Помилка завантаження файлу');
+        toast.error('Помилка завантаження файлу');
       }
     } catch (error) {
       console.error('Upload error:', error);
-      alert('Помилка завантаження файлу');
+      toast.error('Помилка завантаження файлу');
     } finally {
       setUploading(false);
     }
@@ -96,9 +98,12 @@ export default function PortfolioAdmin() {
       if (response.ok) {
         const data = await response.json();
         setPortfolioItems(data);
+      } else {
+        toast.error('Помилка завантаження портфоліо');
       }
     } catch (error) {
       console.error('Fetch error:', error);
+      toast.error('Помилка завантаження портфоліо');
     } finally {
       setLoading(false);
     }
@@ -112,7 +117,7 @@ export default function PortfolioAdmin() {
     e.preventDefault();
 
     if (!formData.title.trim() || !formData.image) {
-      alert('Заповніть всі поля');
+      toast.warning('Заповніть всі поля');
       return;
     }
 
@@ -128,13 +133,14 @@ export default function PortfolioAdmin() {
       if (response.ok) {
         setFormData({ title: '', image: '' });
         fetchPortfolioItems();
+        toast.success('Елемент портфоліо успішно створено');
       } else {
         const error = await response.json();
-        alert(error.error || 'Помилка створення елементу портфоліо');
+        toast.error(error.error || 'Помилка створення елементу портфоліо');
       }
     } catch (error) {
       console.error('Create error:', error);
-      alert('Помилка створення елементу портфоліо');
+      toast.error('Помилка створення елементу портфоліо');
     }
   };
 
@@ -142,7 +148,7 @@ export default function PortfolioAdmin() {
     e.preventDefault();
 
     if (!editingItem || !editingItem.title.trim() || !editingItem.image) {
-      alert('Заповніть всі поля');
+      toast.warning('Заповніть всі поля');
       return;
     }
 
@@ -161,20 +167,26 @@ export default function PortfolioAdmin() {
       if (response.ok) {
         setEditingItem(null);
         fetchPortfolioItems();
+        toast.success('Елемент портфоліо успішно оновлено');
       } else {
         const error = await response.json();
-        alert(error.error || 'Помилка оновлення елементу портфоліо');
+        toast.error(error.error || 'Помилка оновлення елементу портфоліо');
       }
     } catch (error) {
       console.error('Update error:', error);
-      alert('Помилка оновлення елементу портфоліо');
+      toast.error('Помилка оновлення елементу портфоліо');
     }
   };
 
   const handleDeleteItem = async (id: string) => {
-    if (!confirm('Ви впевнені, що хочете видалити цей елемент?')) {
-      return;
-    }
+    // Показуємо попередження через toast
+    toast.warning('Натисніть ще раз для підтвердження видалення', {
+      onClick: () => confirmDeleteItem(id),
+      autoClose: 5000,
+    });
+  };
+
+  const confirmDeleteItem = async (id: string) => {
 
     try {
       const response = await fetch(`/api/portfolio/${id}`, {
@@ -183,12 +195,13 @@ export default function PortfolioAdmin() {
 
       if (response.ok) {
         fetchPortfolioItems();
+        toast.success('Елемент портфоліо успішно видалено');
       } else {
-        alert('Помилка видалення елементу портфоліо');
+        toast.error('Помилка видалення елементу портфоліо');
       }
     } catch (error) {
       console.error('Delete error:', error);
-      alert('Помилка видалення елементу портфоліо');
+      toast.error('Помилка видалення елементу портфоліо');
     }
   };
 
