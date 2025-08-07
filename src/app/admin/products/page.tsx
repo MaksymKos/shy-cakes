@@ -233,7 +233,6 @@ export default function AdminProductsPage() {
   };
 
   const confirmDeleteProduct = async (productId: string) => {
-
     try {
       const response = await fetch(`/api/products/${productId}`, {
         method: 'DELETE',
@@ -306,9 +305,9 @@ export default function AdminProductsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 sm:mb-8 space-y-4 sm:space-y-0">
           <div className="flex items-center space-x-4">
             <button
               onClick={() => router.push('/admin')}
@@ -317,12 +316,12 @@ export default function AdminProductsPage() {
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
-              <span>Назад до панелі</span>
+              <span className="text-sm sm:text-base">Назад до панелі</span>
             </button>
             <div className="h-6 w-px bg-gray-300"></div>
             <div>
-              <h1 className="text-3xl font-bold">📦 Управління товарами</h1>
-              <p className="mt-2 text-gray-600">Знайдено {products.length} товарів</p>
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold">📦 Управління товарами</h1>
+              <p className="mt-2 text-gray-600 text-sm sm:text-base">Знайдено {products.length} товарів</p>
             </div>
           </div>
 
@@ -332,7 +331,7 @@ export default function AdminProductsPage() {
               setEditingProduct(null);
               cancelEdit();
             }}
-            className="bg-pink-600 text-white px-6 py-3 rounded-lg hover:bg-pink-700 transition-colors font-semibold cursor-pointer"
+            className="w-full sm:w-auto bg-pink-600 text-white px-4 sm:px-6 py-3 rounded-lg hover:bg-pink-700 transition-colors font-semibold cursor-pointer text-sm sm:text-base"
           >
             + Додати товар
           </button>

@@ -36,7 +36,7 @@ export default function AdminPhotoReviewsPage() {
   });
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
-  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [uploadingImages, setUploadingImages] = useState(false);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -63,8 +63,7 @@ export default function AdminPhotoReviewsPage() {
       } else {
         toast.error('Помилка завантаження відгуків');
       }
-    } catch (error) {
-      console.error('Error fetching photo reviews:', error);
+    } catch {
       toast.error('Помилка завантаження відгуків');
     } finally {
       setLoading(false);
@@ -75,84 +74,121 @@ export default function AdminPhotoReviewsPage() {
     const files = e.target.files;
     if (files) {
       const fileArray = Array.from(files);
-      setSelectedFiles(prev => [...prev, ...fileArray]);
 
-      // Створюємо URL для попереднього перегляду
-      fileArray.forEach(file => {
+      // Validate files before adding
+      const validFiles = fileArray.filter(file => {
+        // Check file type
+        if (!file.type.startsWith('image/')) {
+          toast.error(`Файл ${file.name} не є зображенням`);
+          return false;
+        }
+
+        // Check file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+          toast.error(`Файл ${file.name} занадто великий. Максимум 5MB`);
+          return false;
+        }
+
+        return true;
+      });
+
+      if (validFiles.length === 0) return;
+
+      // Create preview URLs for all valid files
+      const newPreviewUrls: string[] = [];
+      let loadedCount = 0;
+
+      const processFile = (file: File, index: number) => {
         const reader = new FileReader();
         reader.onload = (event) => {
           if (event.target?.result) {
-            setPreviewUrls(prev => [...prev, event.target!.result as string]);
+            newPreviewUrls[index] = event.target.result as string;
+            loadedCount++;
+
+            // When all files are loaded, update state
+            if (loadedCount === validFiles.length) {
+              setSelectedFiles(prev => [...prev, ...validFiles]);
+              setPreviewUrls(prev => [...prev, ...newPreviewUrls]);
+
+              if (validFiles.length !== fileArray.length) {
+                toast.warning(`Додано ${validFiles.length} з ${fileArray.length} файлів`);
+              } else {
+                toast.success(`Додано ${validFiles.length} файлів для завантаження`);
+              }
+            }
           }
         };
         reader.readAsDataURL(file);
-      });
+      };
+
+      validFiles.forEach(processFile);
     }
   };
 
-  const removeFile = (index: number) => {
-    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
-    setPreviewUrls(prev => prev.filter((_, i) => i !== index));
-  };
-
-  const handleDragStart = (e: React.DragEvent, index: number) => {
-    setDraggedIndex(index);
-    e.dataTransfer.effectAllowed = 'move';
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-  };
-
-  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
-    e.preventDefault();
-
-    if (draggedIndex === null || draggedIndex === dropIndex) {
-      setDraggedIndex(null);
-      return;
+  const removeExistingImage = (index: number) => {
+    if (editingReview && editingReview.images) {
+      const newImages = [...editingReview.images];
+      newImages.splice(index, 1);
+      setEditingReview({ ...editingReview, images: newImages });
     }
+  };
 
-    // Змінюємо порядок файлів
+  const moveExistingImage = (fromIndex: number, toIndex: number) => {
+    if (editingReview && editingReview.images) {
+      const newImages = [...editingReview.images];
+      const [movedImage] = newImages.splice(fromIndex, 1);
+      newImages.splice(toIndex, 0, movedImage);
+      setEditingReview({ ...editingReview, images: newImages });
+    }
+  };
+
+  const movePreviewImage = (fromIndex: number, toIndex: number) => {
     const newFiles = [...selectedFiles];
     const newPreviews = [...previewUrls];
 
-    const draggedFile = newFiles[draggedIndex];
-    const draggedPreview = newPreviews[draggedIndex];
+    const [movedFile] = newFiles.splice(fromIndex, 1);
+    const [movedPreview] = newPreviews.splice(fromIndex, 1);
 
-    newFiles.splice(draggedIndex, 1);
-    newPreviews.splice(draggedIndex, 1);
-
-    newFiles.splice(dropIndex, 0, draggedFile);
-    newPreviews.splice(dropIndex, 0, draggedPreview);
+    newFiles.splice(toIndex, 0, movedFile);
+    newPreviews.splice(toIndex, 0, movedPreview);
 
     setSelectedFiles(newFiles);
     setPreviewUrls(newPreviews);
-    setDraggedIndex(null);
   };
 
   const uploadImages = async (): Promise<string[]> => {
     if (selectedFiles.length === 0) return [];
 
-    const uploadPromises = selectedFiles.map(async (file) => {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('type', 'reviews'); // Specify content type
+    setUploadingImages(true);
+    try {
+      const uploadPromises = selectedFiles.map(async (file) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('type', 'reviews'); // Specify content type
 
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+          throw new Error(`Failed to upload ${file.name}: ${errorData.error}`);
+        }
+
+        const data = await response.json();
+        return data.secure_url; // Fix: use secure_url instead of url
       });
 
-      if (!response.ok) {
-        throw new Error(`Failed to upload ${file.name}`);
-      }
-
-      const data = await response.json();
-      return data.url;
-    });
-
-    return Promise.all(uploadPromises);
+      const uploadedUrls = await Promise.all(uploadPromises);
+      toast.success(`Завантажено ${uploadedUrls.length} зображень на сервер`);
+      return uploadedUrls;
+    } catch (error) {
+      toast.error('Помилка завантаження зображень');
+      throw error;
+    } finally {
+      setUploadingImages(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -207,8 +243,7 @@ export default function AdminPhotoReviewsPage() {
         const error = await response.json();
         toast.error(error.error || 'Помилка збереження відгуку');
       }
-    } catch (error) {
-      console.error('Error saving photo review:', error);
+    } catch {
       toast.error('Помилка збереження відгуку');
     } finally {
       setSubmitting(false);
@@ -246,7 +281,6 @@ export default function AdminPhotoReviewsPage() {
   };
 
   const confirmDeleteReview = async (id: string) => {
-
     try {
       const response = await fetch(`/api/photo-reviews/${id}`, {
         method: 'DELETE',
@@ -256,10 +290,10 @@ export default function AdminPhotoReviewsPage() {
         fetchReviews();
         toast.success('Відгук видалено!');
       } else {
-        toast.error('Помилка видалення відгуку');
+        const errorData = await response.json();
+        toast.error(errorData.error || 'Помилка видалення відгуку');
       }
-    } catch (error) {
-      console.error('Error deleting photo review:', error);
+    } catch {
       toast.error('Помилка видалення відгуку');
     }
   };
@@ -279,13 +313,21 @@ export default function AdminPhotoReviewsPage() {
         const error = await response.json();
         toast.error(error.error || 'Помилка зміни статусу відгуку');
       }
-    } catch (error) {
-      console.error('Error toggling approval:', error);
+    } catch {
       toast.error('Помилка зміни статусу відгуку');
     }
   };
 
   const resetForm = () => {
+    // Clean up blob URLs to prevent memory leaks
+    previewUrls.forEach(url => {
+      if (url.startsWith('data:')) {
+        // Data URLs don't need to be revoked
+      } else if (url.startsWith('blob:')) {
+        URL.revokeObjectURL(url);
+      }
+    });
+
     setFormData({
       cakeName: '',
       cakeDescription: '',
@@ -297,8 +339,8 @@ export default function AdminPhotoReviewsPage() {
     });
     setSelectedFiles([]);
     setPreviewUrls([]);
-    setDraggedIndex(null);
     setEditingReview(null);
+    setUploadingImages(false);
   };
 
   const formatPrice = (price: number) => {
@@ -306,7 +348,7 @@ export default function AdminPhotoReviewsPage() {
   };
 
   const formatWeight = (weight: number) => {
-    return `${weight.toFixed(1)} кг`;
+    return `${weight} кг`;
   };
 
   if (status === 'loading' || loading) {
@@ -321,12 +363,12 @@ export default function AdminPhotoReviewsPage() {
   }
 
   return (
-    <div className="min-h-screen">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-gray-50">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
 
         {/* Header */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-          <div className="flex justify-between items-center">
+        <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-4 sm:space-y-0">
             <div className="flex items-center space-x-4">
               <button
                 onClick={() => router.push('/admin')}
@@ -335,27 +377,27 @@ export default function AdminPhotoReviewsPage() {
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
-                <span>Назад до панелі</span>
+                <span className="text-sm sm:text-base">Назад до панелі</span>
               </button>
               <div className="h-6 w-px bg-gray-300"></div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">Фото-відгуки</h1>
-                <p className="text-gray-600 mt-1">Управління відгуками з фотографіями тортів</p>
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Фото-відгуки</h1>
+                <p className="text-gray-600 mt-1 text-sm sm:text-base">Управління відгуками з фотографіями тортів</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Форма додавання/редагування */}
-        <div id="review-form" className="bg-white rounded-lg shadow-sm p-6 mb-8">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-bold text-gray-900">
+        <div id="review-form" className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 space-y-2 sm:space-y-0">
+            <h2 className="text-lg sm:text-xl font-bold text-gray-900">
               {editingReview ? 'Редагувати відгук' : 'Додати новий відгук'}
             </h2>
             {editingReview && (
               <button
                 onClick={resetForm}
-                className="text-sm text-gray-500 hover:text-gray-700 flex items-center space-x-1"
+                className="text-sm text-gray-500 hover:text-gray-700 flex items-center space-x-1 self-start sm:self-auto"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -452,84 +494,157 @@ export default function AdminPhotoReviewsPage() {
                 Фотографії торту *
               </label>
 
-              {/* Завантаження файлів */}
-              <div className="mb-4">
-                <input
-                  type="file"
-                  multiple
-                  accept="image/*"
-                  onChange={handleFileSelect}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
-                />
-                <p className="text-sm text-gray-500 mt-2">
-                  Виберіть одну або декілька фотографій торту (JPG, PNG, WEBP)
-                </p>
-              </div>
-
-              {/* Попередній перегляд нових файлів */}
-              {previewUrls.length > 0 && (
+              {/* Existing Images (for edit mode) */}
+              {editingReview && editingReview.images && editingReview.images.length > 0 && (
                 <div className="mb-4">
-                  <h4 className="text-sm font-medium text-gray-700 mb-2">Нові фотографії: (перетягніть для зміни порядку)</h4>
-                  <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
+                  <h4 className="text-sm font-medium text-gray-700 mb-2">
+                    Поточні зображення: (перетягніть для зміни порядку)
+                  </h4>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4">
+                    {editingReview.images.map((image, index) => (
+                      <div
+                        key={index}
+                        className="relative group cursor-move"
+                        draggable
+                        onDragStart={(e) => {
+                          e.dataTransfer.setData('text/plain', index.toString());
+                          e.dataTransfer.setData('source', 'existing');
+                        }}
+                        onDragOver={(e) => e.preventDefault()}
+                        onDrop={(e) => {
+                          e.preventDefault();
+                          const fromIndex = parseInt(e.dataTransfer.getData('text/plain'));
+                          const source = e.dataTransfer.getData('source');
+                          if (source === 'existing' && fromIndex !== index) {
+                            moveExistingImage(fromIndex, index);
+                          }
+                        }}
+                      >
+                        <div className="relative">
+                          <Image
+                            src={image}
+                            alt={`Review ${index + 1}`}
+                            width={120}
+                            height={120}
+                            className="object-cover rounded-lg border-2 border-gray-200 hover:border-pink-300 transition-colors"
+                          />
+                          {/* Position indicator */}
+                          <div className="absolute top-1 left-1 bg-pink-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
+                            {index + 1}
+                          </div>
+                          {/* Drag handle */}
+                          <div className="absolute top-1 right-7 bg-gray-800 bg-opacity-70 text-white rounded p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
+                            </svg>
+                          </div>
+                          {/* Remove button */}
+                          <button
+                            type="button"
+                            onClick={() => removeExistingImage(index)}
+                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <input
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={handleFileSelect}
+                disabled={submitting || uploadingImages}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100 disabled:opacity-50 disabled:cursor-not-allowed"
+              />
+
+              {uploadingImages && (
+                <div className="flex items-center space-x-2 mt-2 text-pink-600">
+                  <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  <span className="text-sm">Завантаження зображень...</span>
+                </div>
+              )}
+
+              {/* New Images Preview */}
+              {previewUrls.length > 0 && (
+                <div className="mt-4">
+                  <h4 className="text-sm font-medium text-gray-700 mb-2">
+                    Попередній перегляд: (перетягніть для зміни порядку)
+                  </h4>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4">
                     {previewUrls.map((url, index) => (
                       <div
                         key={index}
-                        className={`relative aspect-square bg-gray-200 rounded-lg overflow-hidden cursor-move transition-opacity ${draggedIndex === index ? 'opacity-50' : ''
-                          }`}
+                        className="relative group cursor-move"
                         draggable
-                        onDragStart={(e) => handleDragStart(e, index)}
-                        onDragOver={handleDragOver}
-                        onDrop={(e) => handleDrop(e, index)}
+                        onDragStart={(e) => {
+                          e.dataTransfer.setData('text/plain', index.toString());
+                          e.dataTransfer.setData('source', 'preview');
+                        }}
+                        onDragOver={(e) => e.preventDefault()}
+                        onDrop={(e) => {
+                          e.preventDefault();
+                          const fromIndex = parseInt(e.dataTransfer.getData('text/plain'));
+                          const source = e.dataTransfer.getData('source');
+                          if (source === 'preview' && fromIndex !== index) {
+                            movePreviewImage(fromIndex, index);
+                          }
+                        }}
                       >
-                        <Image
-                          src={url}
-                          alt={`Попередній перегляд ${index + 1}`}
-                          fill
-                          className="object-cover"
-                        />
-                        <div className="absolute top-1 left-1 bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
-                          {index + 1}
+                        <div className="relative">
+                          <Image
+                            src={url}
+                            alt={`Preview ${index + 1}`}
+                            width={120}
+                            height={120}
+                            className="object-cover rounded-lg border-2 border-gray-200 hover:border-pink-300 transition-colors"
+                          />
+                          {/* Position indicator */}
+                          <div className="absolute top-1 left-1 bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
+                            {index + 1}
+                          </div>
+                          {/* Drag handle */}
+                          <div className="absolute top-1 right-7 bg-gray-800 bg-opacity-70 text-white rounded p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
+                            </svg>
+                          </div>
+                          {/* Remove button */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              // Clean up the blob URL before removing
+                              const urlToRemove = previewUrls[index];
+                              if (urlToRemove && urlToRemove.startsWith('blob:')) {
+                                URL.revokeObjectURL(urlToRemove);
+                              }
+
+                              // Remove the file and preview URL at this index
+                              setSelectedFiles(prev => prev.filter((_, i) => i !== index));
+                              setPreviewUrls(prev => prev.filter((_, i) => i !== index));
+                            }}
+                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                          </button>
                         </div>
-                        <button
-                          type="button"
-                          onClick={() => removeFile(index)}
-                          className="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
-                        >
-                          ×
-                        </button>
                       </div>
                     ))}
                   </div>
-                  <p className="text-sm text-gray-500 mt-2">
-                    Перший номер буде головною фотографією в слайдері
-                  </p>
                 </div>
               )}
-
-              {/* Існуючі зображення при редагуванні */}
-              {editingReview && editingReview.images.length > 0 && (
-                <div className="mb-4">
-                  <h4 className="text-sm font-medium text-gray-700 mb-2">Поточні фотографії:</h4>
-                  <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
-                    {editingReview.images.map((image, index) => (
-                      <div key={index} className="relative aspect-square bg-gray-200 rounded-lg overflow-hidden">
-                        <Image
-                          src={image}
-                          alt={`Поточне фото ${index + 1}`}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                  <p className="text-sm text-gray-500 mt-2">
-                    Додайте нові фотографії вище, щоб замінити поточні
-                  </p>
-                </div>
-              )}
-            </div>
-
-            <div className="flex items-center">
+            </div>            <div className="flex items-center">
               <label className="flex items-center space-x-3">
                 <input
                   type="checkbox"
@@ -586,12 +701,12 @@ export default function AdminPhotoReviewsPage() {
               </div>
             ) : (
               reviews.map((review) => (
-                <div key={review._id} className="p-6">
-                  <div className="flex justify-between items-start mb-4">
+                <div key={review._id} className="p-4 sm:p-6">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-4 space-y-3 sm:space-y-0">
                     <div className="flex-1">
-                      <div className="flex items-center space-x-3 mb-2">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-3 mb-2 space-y-1 sm:space-y-0">
                         <h3 className="text-lg font-semibold text-gray-900">{review.cakeName}</h3>
-                        <span className="text-pink-600 font-bold">
+                        <span className="text-pink-600 font-bold text-sm sm:text-base">
                           {formatPrice(review.totalPrice)} / {formatWeight(review.totalWeight)}
                         </span>
                         <span className={`px-2 py-1 rounded-full text-xs font-medium ${review.isApproved
@@ -612,25 +727,45 @@ export default function AdminPhotoReviewsPage() {
                   {/* Images Grid */}
                   {review.images.length > 0 && (
                     <div className="mb-4">
-                      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
+                      <h4 className="text-sm font-medium text-gray-700 mb-3">
+                        Фотографії торту ({review.images.length})
+                      </h4>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
                         {review.images.map((image, index) => (
-                          <div key={index} className="relative aspect-square bg-gray-200 rounded-lg overflow-hidden">
-                            <Image
-                              src={image}
-                              alt={`Торт ${index + 1}`}
-                              fill
-                              className="object-cover"
-                            />
+                          <div
+                            key={index}
+                            className="relative group bg-gray-200 rounded-lg overflow-hidden border-2 border-gray-200 hover:border-pink-300 transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md"
+                            onClick={() => window.open(image, '_blank')}
+                          >
+                            <div className="aspect-square">
+                              <Image
+                                src={image}
+                                alt={`Торт ${index + 1}`}
+                                width={120}
+                                height={120}
+                                className="object-cover rounded-lg"
+                              />
+                            </div>
+                            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-200 flex items-center justify-center">
+                              <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-white rounded-full p-2">
+                                <svg className="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                              </div>
+                            </div>
+                            <div className="absolute top-1 left-1 bg-pink-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
+                              {index + 1}
+                            </div>
                           </div>
                         ))}
                       </div>
                     </div>
                   )}
 
-                  <div className="flex justify-end space-x-2">
+                  <div className="flex flex-col sm:flex-row sm:justify-end space-y-2 sm:space-y-0 sm:space-x-2">
                     <button
                       onClick={() => toggleApproval(review)}
-                      className={`px-3 py-1 rounded-lg text-sm transition-colors ${review.isApproved
+                      className={`px-3 py-2 rounded-lg text-sm transition-colors ${review.isApproved
                         ? 'bg-red-100 hover:bg-red-200 text-red-700'
                         : 'bg-green-100 hover:bg-green-200 text-green-700'
                         }`}
@@ -640,14 +775,14 @@ export default function AdminPhotoReviewsPage() {
 
                     <button
                       onClick={() => handleEdit(review)}
-                      className="px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg text-sm transition-colors"
+                      className="px-3 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg text-sm transition-colors"
                     >
                       Редагувати
                     </button>
 
                     <button
                       onClick={() => handleDelete(review._id)}
-                      className="px-3 py-1 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg text-sm transition-colors"
+                      className="px-3 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg text-sm transition-colors"
                     >
                       Видалити
                     </button>

@@ -34,8 +34,8 @@ export default function ReviewsPage() {
         const data = await response.json();
         setReviews(data);
       }
-    } catch (error) {
-      console.error('Error fetching reviews:', error);
+    } catch {
+      // Error handling already done by toast
     } finally {
       setLoading(false);
     }
@@ -58,11 +58,11 @@ export default function ReviewsPage() {
   };
 
   const formatPrice = (price: number) => {
-    return `${Math.round(price)} ₴`;
+    return `${Math.floor(price)} ₴`;
   };
 
   const formatWeight = (weight: number) => {
-    return `${Math.round(weight)} кг`;
+    return `${weight} кг`;
   };
 
   return (
@@ -92,65 +92,111 @@ export default function ReviewsPage() {
               <p className="mt-1 text-gray-500">Скоро тут з&apos;являться відгуки наших клієнтів</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="space-y-6">
               {reviews.map((review) => (
-                <div key={review._id} className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
-                  {/* Головне зображення */}
-                  <div className="relative h-48 bg-gray-200">
-                    {review.images.length > 0 && (
-                      <Image
-                        src={review.images[0]}
-                        alt="Торт"
-                        fill
-                        className="object-cover cursor-pointer"
-                        onClick={() => {
-                          setSelectedReview(review);
-                          setSelectedImageIndex(0);
-                        }}
-                      />
-                    )}
-                    {review.images.length > 1 && (
-                      <div className="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white px-2 py-1 rounded text-sm">
-                        +{review.images.length - 1} фото
+                <div key={review._id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                  <div className="flex flex-row items-stretch">
+                    {/* Photo Section */}
+                    <div className="flex flex-row items-center space-x-2 w-60 min-w-[240px] p-4">
+                      {review.images.length > 0 && (
+                        <div className="relative w-32 h-32 flex-shrink-0">
+                          <Image
+                            src={review.images[0]}
+                            alt="Торт"
+                            fill
+                            className="object-cover rounded-lg cursor-pointer hover:scale-105 transition-transform duration-300"
+                            onClick={() => {
+                              setSelectedReview(review);
+                              setSelectedImageIndex(0);
+                            }}
+                          />
+                          {review.images.length > 1 && (
+                            <div className="absolute bottom-2 right-2 bg-gradient-to-r from-pink-500 to-pink-600 text-white px-2 py-1 rounded-full text-xs font-semibold shadow-lg">
+                              +{review.images.length - 1}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                      {/* Thumbnails if more than 1 image */}
+                      {review.images.length > 1 && (
+                        <div className="flex flex-col space-y-2 ml-2">
+                          {review.images.slice(1, 4).map((img, idx) => (
+                            <div
+                              key={idx}
+                              className="relative w-12 h-12 rounded overflow-hidden border border-gray-200 cursor-pointer hover:ring-2 hover:ring-pink-400"
+                              onClick={() => {
+                                setSelectedReview(review);
+                                setSelectedImageIndex(idx + 1);
+                              }}
+                            >
+                              <Image
+                                src={img}
+                                alt={`Торт ${idx + 2}`}
+                                fill
+                                className="object-cover"
+                              />
+                            </div>
+                          ))}
+                          {review.images.length > 4 && (
+                            <div className="w-12 h-12 flex items-center justify-center bg-gray-100 rounded text-xs text-gray-500 font-semibold">
+                              +{review.images.length - 4}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Content Section */}
+                    <div className="flex-1 p-6 flex items-center justify-between">
+                      <div className="flex-1 pr-6">
+                        <div className="flex items-center justify-between mb-3">
+                          <h3 className="font-bold text-gray-900 text-xl leading-tight">{review.cakeName}</h3>
+                          <div className="flex items-center space-x-3 ml-4">
+                            <div className="bg-gradient-to-r from-pink-500 to-pink-600 text-white px-3 py-1 rounded-full font-bold text-sm">
+                              {formatPrice(review.totalPrice)}
+                            </div>
+                            <div className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full font-semibold text-sm">
+                              {formatWeight(review.totalWeight)}
+                            </div>
+                          </div>
+                        </div>
+
+                        <p className="text-gray-600 text-sm leading-relaxed mb-3 line-clamp-2">
+                          {review.cakeDescription.length > 150
+                            ? `${review.cakeDescription.substring(0, 150)}...`
+                            : review.cakeDescription}
+                        </p>
+
+                        <div className="flex items-center text-xs text-gray-500">
+                          <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                          {new Date(review.createdAt).toLocaleDateString('uk-UA', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                          })}
+                        </div>
                       </div>
-                    )}
-                  </div>
 
-                  {/* Контент */}
-                  <div className="p-4">
-                    <div className="flex justify-between items-start mb-2">
-                      <h3 className="font-semibold text-gray-900 text-lg">{review.cakeName}</h3>
-                      <span className="text-pink-600 font-bold">
-                        {formatPrice(review.totalPrice)} / {formatWeight(review.totalWeight)}
-                      </span>
-                    </div>
-
-                    <p className="text-gray-600 text-sm leading-relaxed mb-3">
-                      {review.cakeDescription.length > 120
-                        ? `${review.cakeDescription.substring(0, 120)}...`
-                        : review.cakeDescription}
-                    </p>
-
-                    <div className="text-xs text-gray-500 mb-4">
-                      {new Date(review.createdAt).toLocaleDateString('uk-UA')}
-                    </div>
-
-                    <div className="flex space-x-2">
-                      <button
-                        onClick={() => {
-                          setSelectedReview(review);
-                          setSelectedImageIndex(0);
-                        }}
-                        className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 px-3 rounded text-sm transition-colors"
-                      >
-                        Переглянути
-                      </button>
-                      <button
-                        onClick={() => handleOrderSame(review)}
-                        className="flex-1 bg-pink-600 hover:bg-pink-700 text-white py-2 px-3 rounded text-sm transition-colors"
-                      >
-                        Замовити
-                      </button>
+                      {/* Action Buttons */}
+                      <div className="flex space-x-3 flex-shrink-0">
+                        <button
+                          onClick={() => {
+                            setSelectedReview(review);
+                            setSelectedImageIndex(0);
+                          }}
+                          className="bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 px-4 rounded-lg text-sm font-semibold transition-all duration-300 hover:shadow-md transform hover:-translate-y-0.5"
+                        >
+                          Переглянути
+                        </button>
+                        <button
+                          onClick={() => handleOrderSame(review)}
+                          className="bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white py-2 px-4 rounded-lg text-sm font-semibold transition-all duration-300 hover:shadow-lg transform hover:-translate-y-0.5"
+                        >
+                          Замовити
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -162,21 +208,22 @@ export default function ReviewsPage() {
 
       {/* Модальне вікно перегляду */}
       {selectedReview && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="relative">
-              {/* Кнопка закриття */}
-              <button
-                onClick={() => setSelectedReview(null)}
-                className="absolute top-4 right-4 z-10 bg-white bg-opacity-80 hover:bg-opacity-100 text-gray-600 hover:text-gray-900 rounded-full p-2 transition-all"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+        <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl max-w-7xl w-full h-[90vh] overflow-hidden shadow-2xl">
+            {/* Кнопка закриття */}
+            <button
+              onClick={() => setSelectedReview(null)}
+              className="absolute top-6 right-6 z-20 bg-white hover:bg-gray-100 text-gray-600 hover:text-gray-900 rounded-full p-3 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-110"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
 
-              {/* Слайдер зображень */}
-              <div className="relative h-96">
+            {/* Основний контент в одну лінію */}
+            <div className="flex h-full">
+              {/* Лівий блок - зображення */}
+              <div className="w-1/2 relative bg-gradient-to-br from-gray-100 to-gray-200">
                 <Image
                   src={selectedReview.images[selectedImageIndex]}
                   alt={`Торт ${selectedImageIndex + 1}`}
@@ -184,13 +231,16 @@ export default function ReviewsPage() {
                   className="object-cover"
                 />
 
+                {/* Градієнтні накладки для кращого контрасту */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-black/10"></div>
+
                 {/* Стрілки навігації */}
                 {selectedReview.images.length > 1 && (
                   <>
                     {selectedImageIndex > 0 && (
                       <button
                         onClick={prevImage}
-                        className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-100 text-gray-800 rounded-full p-2 transition-all"
+                        className="absolute left-6 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full p-4 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-110"
                       >
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -201,7 +251,7 @@ export default function ReviewsPage() {
                     {selectedImageIndex < selectedReview.images.length - 1 && (
                       <button
                         onClick={nextImage}
-                        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-100 text-gray-800 rounded-full p-2 transition-all"
+                        className="absolute right-6 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full p-4 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-110"
                       >
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -213,61 +263,85 @@ export default function ReviewsPage() {
 
                 {/* Індикатор поточного зображення */}
                 {selectedReview.images.length > 1 && (
-                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-sm">
+                  <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-black/60 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-semibold">
                     {selectedImageIndex + 1} / {selectedReview.images.length}
+                  </div>
+                )}
+
+                {/* Мініатюри внизу зображення */}
+                {selectedReview.images.length > 1 && (
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <div className="flex space-x-2 overflow-x-auto scrollbar-hide">
+                      {selectedReview.images.map((image, index) => (
+                        <button
+                          key={index}
+                          onClick={() => setSelectedImageIndex(index)}
+                          className={`relative flex-shrink-0 w-12 h-12 rounded-lg overflow-hidden transition-all duration-300 ${index === selectedImageIndex
+                            ? 'ring-2 ring-pink-500 shadow-lg scale-105'
+                            : 'ring-1 ring-white/50 hover:ring-white hover:scale-105'
+                            }`}
+                        >
+                          <Image
+                            src={image}
+                            alt={`Торт ${index + 1}`}
+                            fill
+                            className="object-cover"
+                          />
+                          {index === selectedImageIndex && (
+                            <div className="absolute inset-0 bg-pink-500/20"></div>
+                          )}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
 
-              {/* Мініатюри */}
-              {selectedReview.images.length > 1 && (
-                <div className="p-4 border-b">
-                  <div className="flex space-x-2 overflow-x-auto">
-                    {selectedReview.images.map((image, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setSelectedImageIndex(index)}
-                        className={`relative flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden ${index === selectedImageIndex ? 'ring-2 ring-pink-500' : ''
-                          }`}
-                      >
-                        <Image
-                          src={image}
-                          alt={`Торт ${index + 1}`}
-                          fill
-                          className="object-cover"
-                        />
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Інформація про торт */}
-              <div className="p-6">
-                <div className="flex justify-between items-start mb-4">
-                  <h3 className="text-2xl font-bold text-gray-900">{selectedReview.cakeName}</h3>
-                  <span className="text-pink-600 font-bold text-xl">
-                    {formatPrice(selectedReview.totalPrice)} / {formatWeight(selectedReview.totalWeight)}
-                  </span>
-                </div>
-
-                <div className="space-y-4">
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Опис торта:</h4>
-                    <p className="text-gray-600 leading-relaxed">{selectedReview.cakeDescription}</p>
+              {/* Правий блок - інформація */}
+              <div className="w-1/2 p-8 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-3xl font-bold text-gray-900 leading-tight">{selectedReview.cakeName}</h3>
+                    <div className="flex items-center space-x-3">
+                      <div className="bg-gradient-to-r from-pink-500 to-pink-600 text-white px-4 py-2 rounded-full font-bold text-xl shadow-lg">
+                        {formatPrice(selectedReview.totalPrice)}
+                      </div>
+                      <div className="bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 px-4 py-2 rounded-full font-semibold text-lg">
+                        {formatWeight(selectedReview.totalWeight)}
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="text-sm text-gray-500">
-                    Створено: {new Date(selectedReview.createdAt).toLocaleDateString('uk-UA')}
+                  <div className="bg-gray-50 rounded-xl p-6 mb-6">
+                    <p className="text-gray-700 leading-relaxed text-lg">{selectedReview.cakeDescription}</p>
+                  </div>
+
+                  <div className="flex items-center justify-between text-sm text-gray-500 mb-8">
+                    <div className="flex items-center">
+                      <svg className="w-4 h-4 mr-2 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      Створено: {new Date(selectedReview.createdAt).toLocaleDateString('uk-UA', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      })}
+                    </div>
+                    <div className="flex items-center">
+                      <svg className="w-4 h-4 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      Готовий до замовлення
+                    </div>
                   </div>
                 </div>
 
-                <div className="mt-6 flex justify-center">
+                <div className="flex justify-center">
                   <button
                     onClick={() => handleOrderSame(selectedReview)}
-                    className="bg-pink-600 hover:bg-pink-700 text-white px-8 py-3 rounded-lg text-lg font-semibold transition-colors"
+                    className="bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white px-12 py-4 rounded-2xl text-xl font-bold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 hover:scale-105"
                   >
-                    Замовити такий самий торт
+                    🍰 Замовити такий самий торт
                   </button>
                 </div>
               </div>
