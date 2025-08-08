@@ -14,6 +14,7 @@ interface PhotoReview {
   images: string[];
   isApproved: boolean;
   createdAt: string;
+  completedDate: string; // Added property
 }
 
 export default function ReviewsPage() {
@@ -167,16 +168,6 @@ export default function ReviewsPage() {
                             : review.cakeDescription}
                         </p>
 
-                        <div className="flex items-center text-xs text-gray-500">
-                          <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                          </svg>
-                          {new Date(review.createdAt).toLocaleDateString('uk-UA', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric'
-                          })}
-                        </div>
                       </div>
 
                       {/* Action Buttons */}
@@ -186,13 +177,13 @@ export default function ReviewsPage() {
                             setSelectedReview(review);
                             setSelectedImageIndex(0);
                           }}
-                          className="bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 px-4 rounded-lg text-sm font-semibold transition-all duration-300 hover:shadow-md transform hover:-translate-y-0.5"
+                          className="bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 px-4 rounded-lg text-sm font-semibold transition-all duration-300 hover:shadow-md transform hover:-translate-y-0.5 cursor-pointer"
                         >
                           Переглянути
                         </button>
                         <button
                           onClick={() => handleOrderSame(review)}
-                          className="bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white py-2 px-4 rounded-lg text-sm font-semibold transition-all duration-300 hover:shadow-lg transform hover:-translate-y-0.5"
+                          className="bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white py-2 px-4 rounded-lg text-sm font-semibold transition-all duration-300 hover:shadow-lg transform hover:-translate-y-0.5 cursor-pointer"
                         >
                           Замовити
                         </button>
@@ -213,7 +204,7 @@ export default function ReviewsPage() {
             {/* Кнопка закриття */}
             <button
               onClick={() => setSelectedReview(null)}
-              className="absolute top-6 right-6 z-20 bg-white hover:bg-gray-100 text-gray-600 hover:text-gray-900 rounded-full p-3 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-110"
+              className="absolute top-6 right-6 z-20 bg-white hover:bg-gray-100 text-gray-600 hover:text-gray-900 rounded-full p-3 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-110 cursor-pointer"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -240,7 +231,7 @@ export default function ReviewsPage() {
                     {selectedImageIndex > 0 && (
                       <button
                         onClick={prevImage}
-                        className="absolute left-6 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full p-4 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-110"
+                        className="absolute left-6 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full p-4 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-110 cursor-pointer"
                       >
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -251,7 +242,7 @@ export default function ReviewsPage() {
                     {selectedImageIndex < selectedReview.images.length - 1 && (
                       <button
                         onClick={nextImage}
-                        className="absolute right-6 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full p-4 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-110"
+                        className="absolute right-6 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full p-4 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-110 cursor-pointer"
                       >
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -271,7 +262,7 @@ export default function ReviewsPage() {
                 {/* Мініатюри внизу зображення */}
                 {selectedReview.images.length > 1 && (
                   <div className="absolute bottom-4 left-4 right-4">
-                    <div className="flex space-x-2 overflow-x-auto scrollbar-hide">
+                    <div className="flex space-x-2 scrollbar-hide">
                       {selectedReview.images.map((image, index) => (
                         <button
                           key={index}
@@ -321,11 +312,11 @@ export default function ReviewsPage() {
                       <svg className="w-4 h-4 mr-2 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                       </svg>
-                      Створено: {new Date(selectedReview.createdAt).toLocaleDateString('uk-UA', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                      })}
+                        Виконано: {new Date(selectedReview.completedDate).toLocaleDateString('uk-UA', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
+                        })}
                     </div>
                     <div className="flex items-center">
                       <svg className="w-4 h-4 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -339,9 +330,9 @@ export default function ReviewsPage() {
                 <div className="flex justify-center">
                   <button
                     onClick={() => handleOrderSame(selectedReview)}
-                    className="bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white px-12 py-4 rounded-2xl text-xl font-bold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 hover:scale-105"
+                    className="bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white px-12 py-4 rounded-2xl text-xl font-bold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 hover:scale-105 cursor-pointer"
                   >
-                    🍰 Замовити такий самий торт
+                    🍰 Замовити такий торт
                   </button>
                 </div>
               </div>

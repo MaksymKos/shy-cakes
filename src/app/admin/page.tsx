@@ -65,7 +65,7 @@ export default function AdminDashboard() {
             </div>
             <button
               onClick={() => router.push('/admin/products')}
-              className="bg-pink-600 text-white px-6 py-3 rounded-lg hover:bg-pink-700 transition-colors"
+              className="bg-pink-600 text-white px-6 py-3 rounded-lg hover:bg-pink-700 transition-colors cursor-pointer"
             >
               Управляти товарами
             </button>
@@ -79,7 +79,7 @@ export default function AdminDashboard() {
             </div>
             <button
               onClick={() => router.push('/admin/orders')}
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors cursor-pointer"
             >
               Переглянути замовлення
             </button>
@@ -93,7 +93,7 @@ export default function AdminDashboard() {
             </div>
             <button
               onClick={() => router.push('/admin/users')}
-              className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors"
+              className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors cursor-pointer"
             >
               Управляти користувачами
             </button>
@@ -107,7 +107,7 @@ export default function AdminDashboard() {
             </div>
             <button
               onClick={() => router.push('/admin/portfolio')}
-              className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors"
+              className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors cursor-pointer"
             >
               Управляти портфоліо
             </button>
