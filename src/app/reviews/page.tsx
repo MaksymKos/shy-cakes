@@ -96,11 +96,11 @@ export default function ReviewsPage() {
             <div className="space-y-6">
               {reviews.map((review) => (
                 <div key={review._id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-                  <div className="flex flex-row items-stretch">
+                  <div className="flex flex-col lg:flex-row lg:items-stretch">
                     {/* Photo Section */}
-                    <div className="flex flex-row items-center space-x-2 w-60 min-w-[240px] p-4">
+                    <div className="flex flex-row items-center space-x-2 w-full lg:w-60 lg:min-w-[240px] p-4">
                       {review.images.length > 0 && (
-                        <div className="relative w-32 h-32 flex-shrink-0">
+                        <div className="relative w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0">
                           <Image
                             src={review.images[0]}
                             alt="Торт"
@@ -112,7 +112,7 @@ export default function ReviewsPage() {
                             }}
                           />
                           {review.images.length > 1 && (
-                            <div className="absolute bottom-2 right-2 bg-gradient-to-r from-pink-500 to-pink-600 text-white px-2 py-1 rounded-full text-xs font-semibold shadow-lg">
+                            <div className="absolute bottom-1 right-1 sm:bottom-2 sm:right-2 bg-gradient-to-r from-pink-500 to-pink-600 text-white px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full text-xs font-semibold shadow-lg">
                               +{review.images.length - 1}
                             </div>
                           )}
@@ -120,11 +120,11 @@ export default function ReviewsPage() {
                       )}
                       {/* Thumbnails if more than 1 image */}
                       {review.images.length > 1 && (
-                        <div className="flex flex-col space-y-2 ml-2">
+                        <div className="flex flex-col space-y-1 sm:space-y-2 ml-2">
                           {review.images.slice(1, 4).map((img, idx) => (
                             <div
                               key={idx}
-                              className="relative w-12 h-12 rounded overflow-hidden border border-gray-200 cursor-pointer hover:ring-2 hover:ring-pink-400"
+                              className="relative w-8 h-8 sm:w-12 sm:h-12 rounded overflow-hidden border border-gray-200 cursor-pointer hover:ring-2 hover:ring-pink-400"
                               onClick={() => {
                                 setSelectedReview(review);
                                 setSelectedImageIndex(idx + 1);
@@ -139,7 +139,7 @@ export default function ReviewsPage() {
                             </div>
                           ))}
                           {review.images.length > 4 && (
-                            <div className="w-12 h-12 flex items-center justify-center bg-gray-100 rounded text-xs text-gray-500 font-semibold">
+                            <div className="w-8 h-8 sm:w-12 sm:h-12 flex items-center justify-center bg-gray-100 rounded text-xs text-gray-500 font-semibold">
                               +{review.images.length - 4}
                             </div>
                           )}
@@ -148,30 +148,30 @@ export default function ReviewsPage() {
                     </div>
 
                     {/* Content Section */}
-                    <div className="flex-1 p-6 flex items-center justify-between">
-                      <div className="flex-1 pr-6">
-                        <div className="flex items-center justify-between mb-3">
-                          <h3 className="font-bold text-gray-900 text-xl leading-tight">{review.cakeName}</h3>
-                          <div className="flex items-center space-x-3 ml-4">
-                            <div className="bg-gradient-to-r from-pink-500 to-pink-600 text-white px-3 py-1 rounded-full font-bold text-sm">
+                    <div className="flex-1 p-4 lg:p-6 flex flex-col lg:flex-row lg:items-center lg:justify-between">
+                      <div className="flex-1 lg:pr-6 mb-4 lg:mb-0">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3">
+                          <h3 className="font-bold text-gray-900 text-lg sm:text-xl leading-tight mb-2 sm:mb-0">{review.cakeName}</h3>
+                          <div className="flex items-center space-x-2 sm:space-x-3 sm:ml-4">
+                            <div className="bg-gradient-to-r from-pink-500 to-pink-600 text-white px-2 py-1 sm:px-3 sm:py-1 rounded-full font-bold text-xs sm:text-sm">
                               {formatPrice(review.totalPrice)}
                             </div>
-                            <div className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full font-semibold text-sm">
+                            <div className="bg-gray-100 text-gray-700 px-2 py-1 sm:px-3 sm:py-1 rounded-full font-semibold text-xs sm:text-sm">
                               {formatWeight(review.totalWeight)}
                             </div>
                           </div>
                         </div>
 
-                        <p className="text-gray-600 text-sm leading-relaxed mb-3 line-clamp-2">
-                          {review.cakeDescription.length > 150
-                            ? `${review.cakeDescription.substring(0, 150)}...`
+                        <p className="text-gray-600 text-sm leading-relaxed mb-3 line-clamp-2 sm:line-clamp-3">
+                          {review.cakeDescription.length > 100
+                            ? `${review.cakeDescription.substring(0, 100)}...`
                             : review.cakeDescription}
                         </p>
 
                       </div>
 
                       {/* Action Buttons */}
-                      <div className="flex space-x-3 flex-shrink-0">
+                      <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3 flex-shrink-0">
                         <button
                           onClick={() => {
                             setSelectedReview(review);
@@ -199,27 +199,27 @@ export default function ReviewsPage() {
 
       {/* Модальне вікно перегляду */}
       {selectedReview && (
-        <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl max-w-7xl w-full h-[90vh] overflow-hidden shadow-2xl">
+        <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-2 sm:p-4 backdrop-blur-sm">
+          <div className="bg-white rounded-xl sm:rounded-2xl max-w-7xl w-full h-[95vh] sm:h-[90vh] overflow-hidden shadow-2xl">
             {/* Кнопка закриття */}
             <button
               onClick={() => setSelectedReview(null)}
-              className="absolute top-6 right-6 z-20 bg-white hover:bg-gray-100 text-gray-600 hover:text-gray-900 rounded-full p-3 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-110 cursor-pointer"
+              className="absolute top-3 right-3 sm:top-6 sm:right-6 z-20 bg-white hover:bg-gray-100 text-gray-600 hover:text-gray-900 rounded-full p-2 sm:p-3 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-110 cursor-pointer"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
 
-            {/* Основний контент в одну лінію */}
-            <div className="flex h-full">
-              {/* Лівий блок - зображення */}
-              <div className="w-1/2 relative bg-gradient-to-br from-gray-100 to-gray-200">
+            {/* Основний контент */}
+            <div className="flex flex-col lg:flex-row h-full">
+              {/* Блок зображення */}
+              <div className="w-full lg:w-1/2 relative bg-gradient-to-br from-gray-100 to-gray-200 h-1/2 lg:h-full">
                 <Image
                   src={selectedReview.images[selectedImageIndex]}
                   alt={`Торт ${selectedImageIndex + 1}`}
                   fill
-                  className="object-cover"
+                  className="object-contain"
                 />
 
                 {/* Градієнтні накладки для кращого контрасту */}
@@ -231,9 +231,9 @@ export default function ReviewsPage() {
                     {selectedImageIndex > 0 && (
                       <button
                         onClick={prevImage}
-                        className="absolute left-6 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full p-4 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-110 cursor-pointer"
+                        className="absolute left-2 sm:left-6 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full p-2 sm:p-4 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-110 cursor-pointer"
                       >
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-4 h-4 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                         </svg>
                       </button>
@@ -242,9 +242,9 @@ export default function ReviewsPage() {
                     {selectedImageIndex < selectedReview.images.length - 1 && (
                       <button
                         onClick={nextImage}
-                        className="absolute right-6 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full p-4 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-110 cursor-pointer"
+                        className="absolute right-2 sm:right-6 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full p-2 sm:p-4 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-110 cursor-pointer"
                       >
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-4 h-4 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
                       </button>
@@ -254,15 +254,15 @@ export default function ReviewsPage() {
 
                 {/* Індикатор поточного зображення */}
                 {selectedReview.images.length > 1 && (
-                  <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-black/60 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-semibold">
+                  <div className="absolute bottom-3 sm:bottom-6 left-1/2 transform -translate-x-1/2 bg-black/60 backdrop-blur-sm text-white px-3 py-1 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-semibold">
                     {selectedImageIndex + 1} / {selectedReview.images.length}
                   </div>
                 )}
 
-                {/* Мініатюри внизу зображення */}
+                {/* Мініатюри внизу зображення - тільки для десктопу */}
                 {selectedReview.images.length > 1 && (
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <div className="flex space-x-2 scrollbar-hide">
+                  <div className="hidden lg:block absolute bottom-4 left-4 right-4">
+                    <div className="flex space-x-2 scrollbar-hide overflow-x-auto">
                       {selectedReview.images.map((image, index) => (
                         <button
                           key={index}
@@ -288,38 +288,38 @@ export default function ReviewsPage() {
                 )}
               </div>
 
-              {/* Правий блок - інформація */}
-              <div className="w-1/2 p-8 flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-3xl font-bold text-gray-900 leading-tight">{selectedReview.cakeName}</h3>
-                    <div className="flex items-center space-x-3">
-                      <div className="bg-gradient-to-r from-pink-500 to-pink-600 text-white px-4 py-2 rounded-full font-bold text-xl shadow-lg">
+              {/* Блок інформації */}
+              <div className="w-full lg:w-1/2 p-4 sm:p-6 lg:p-8 flex flex-col justify-between h-1/2 lg:h-full overflow-y-auto">
+                <div className="space-y-4 sm:space-y-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                    <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 leading-tight mb-3 sm:mb-0">{selectedReview.cakeName}</h3>
+                    <div className="flex items-center space-x-2 sm:space-x-3">
+                      <div className="bg-gradient-to-r from-pink-500 to-pink-600 text-white px-3 py-1 sm:px-4 sm:py-2 rounded-full font-bold text-sm sm:text-lg lg:text-xl shadow-lg">
                         {formatPrice(selectedReview.totalPrice)}
                       </div>
-                      <div className="bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 px-4 py-2 rounded-full font-semibold text-lg">
+                      <div className="bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 px-3 py-1 sm:px-4 sm:py-2 rounded-full font-semibold text-sm sm:text-base lg:text-lg">
                         {formatWeight(selectedReview.totalWeight)}
                       </div>
                     </div>
                   </div>
 
-                  <div className="bg-gray-50 rounded-xl p-6 mb-6">
-                    <p className="text-gray-700 leading-relaxed text-lg">{selectedReview.cakeDescription}</p>
+                  <div className="bg-gray-50 rounded-xl p-4 sm:p-6">
+                    <p className="text-gray-700 leading-relaxed text-sm sm:text-base lg:text-lg">{selectedReview.cakeDescription}</p>
                   </div>
 
-                  <div className="flex items-center justify-between text-sm text-gray-500 mb-8">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-xs sm:text-sm text-gray-500 space-y-2 sm:space-y-0">
                     <div className="flex items-center">
-                      <svg className="w-4 h-4 mr-2 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-2 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                       </svg>
-                        Виконано: {new Date(selectedReview.completedDate).toLocaleDateString('uk-UA', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric'
-                        })}
+                      Виконано: {new Date(selectedReview.completedDate).toLocaleDateString('uk-UA', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      })}
                     </div>
                     <div className="flex items-center">
-                      <svg className="w-4 h-4 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                       Готовий до замовлення
@@ -327,10 +327,10 @@ export default function ReviewsPage() {
                   </div>
                 </div>
 
-                <div className="flex justify-center">
+                <div className="flex justify-center mt-4 sm:mt-6">
                   <button
                     onClick={() => handleOrderSame(selectedReview)}
-                    className="bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white px-12 py-4 rounded-2xl text-xl font-bold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 hover:scale-105 cursor-pointer"
+                    className="bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white px-6 py-3 sm:px-8 sm:py-4 lg:px-12 lg:py-4 rounded-xl sm:rounded-2xl text-base sm:text-lg lg:text-xl font-bold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 hover:scale-105 cursor-pointer w-full sm:w-auto"
                   >
                     🍰 Замовити такий торт
                   </button>
