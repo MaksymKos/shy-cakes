@@ -50,14 +50,14 @@ export default function AdminProductsPage() {
       unit: 'kg' as ProductUnit,
       available: true
     });
-    
+
     // Clean up blob URLs to prevent memory leaks
     previewUrls.forEach(url => {
       if (url.startsWith('blob:')) {
         URL.revokeObjectURL(url);
       }
     });
-    
+
     setSelectedFiles([]);
     setPreviewUrls([]);
 
@@ -123,7 +123,7 @@ export default function AdminProductsPage() {
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    
+
     // Validate file types and sizes
     const validFiles = files.filter(file => {
       // Check file type
@@ -131,13 +131,13 @@ export default function AdminProductsPage() {
         toast.error(`Файл ${file.name} не є зображенням`);
         return false;
       }
-      
+
       // Check file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
         toast.error(`Файл ${file.name} занадто великий. Максимум 5MB`);
         return false;
       }
-      
+
       return true;
     });
 
@@ -247,14 +247,14 @@ export default function AdminProductsPage() {
       unit: product.unit || 'kg',
       available: product.available
     });
-    
+
     // Clear any existing preview URLs (from new file selection)
     previewUrls.forEach(url => {
       if (url.startsWith('blob:')) {
         URL.revokeObjectURL(url);
       }
     });
-    
+
     // Don't set preview URLs to existing images - they'll be shown separately
     setPreviewUrls([]);
     setSelectedFiles([]);
