@@ -5,24 +5,20 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import Image from 'next/image';
-
-interface PhotoReview {
-  _id: string;
-  cakeName: string;
-  cakeDescription: string;
-  totalPrice: number;
-  totalWeight: number;
-  images: string[];
-  completedDate: string;
-  isApproved: boolean;
-  createdAt: string;
-}
+import { usePhotoReviewsStore } from '@/store/photoReviewsStore';
+import type { PhotoReview } from '@/types/database';
 
 export default function AdminPhotoReviewsPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [reviews, setReviews] = useState<PhotoReview[]>([]);
-  const [loading, setLoading] = useState(true);
+  const {
+    photoReviews: reviews,
+    isLoading: loading,
+    fetchPhotoReviews,
+    addPhotoReview,
+    updatePhotoReview,
+    deletePhotoReview
+  } = usePhotoReviewsStore();
   const [editingReview, setEditingReview] = useState<PhotoReview | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [formData, setFormData] = useState({
@@ -51,25 +47,9 @@ export default function AdminPhotoReviewsPage() {
     }
 
     if (status === 'authenticated') {
-      fetchReviews();
+      fetchPhotoReviews();
     }
-  }, [status, session, router]);
-
-  const fetchReviews = async () => {
-    try {
-      const response = await fetch('/api/photo-reviews');
-      if (response.ok) {
-        const data = await response.json();
-        setReviews(data);
-      } else {
-        toast.error('Помилка завантаження відгуків');
-      }
-    } catch {
-      toast.error('Помилка завантаження відгуків');
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [status, session, router, fetchPhotoReviews]);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -221,30 +201,17 @@ export default function AdminPhotoReviewsPage() {
         completedDate: new Date(formData.completedDate)
       };
 
-      let response;
       if (editingReview) {
-        response = await fetch(`/api/photo-reviews/${editingReview._id}`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(reviewData),
-        });
+        await updatePhotoReview(editingReview._id?.toString() || '', reviewData);
+        toast.success('Відгук оновлено!');
       } else {
-        response = await fetch('/api/photo-reviews', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(reviewData),
-        });
+        await addPhotoReview(reviewData);
+        toast.success('Відгук додано!');
       }
 
-      if (response.ok) {
-        fetchReviews();
-        resetForm(); // Це вже закриє форму завдяки setShowForm(false) в resetForm
-        toast.success(editingReview ? 'Відгук оновлено!' : 'Відгук додано!');
-      } else {
-        const error = await response.json();
-        toast.error(error.error || 'Помилка збереження відгуку');
-      }
-    } catch {
+      resetForm(); // Це вже закриє форму завдяки setShowForm(false) в resetForm
+    } catch (error) {
+      console.error('Error saving review:', error);
       toast.error('Помилка збереження відгуку');
     } finally {
       setSubmitting(false);
@@ -258,7 +225,7 @@ export default function AdminPhotoReviewsPage() {
       cakeDescription: review.cakeDescription,
       totalPrice: review.totalPrice.toString(),
       totalWeight: review.totalWeight.toString(),
-      completedDate: review.completedDate ? review.completedDate.split('T')[0] : '',
+      completedDate: review.completedDate ? new Date(review.completedDate).toISOString().split('T')[0] : '',
       images: review.images,
       isApproved: review.isApproved
     });
@@ -286,18 +253,10 @@ export default function AdminPhotoReviewsPage() {
 
   const confirmDeleteReview = async (id: string) => {
     try {
-      const response = await fetch(`/api/photo-reviews/${id}`, {
-        method: 'DELETE',
-      });
-
-      if (response.ok) {
-        fetchReviews();
-        toast.success('Відгук видалено!');
-      } else {
-        const errorData = await response.json();
-        toast.error(errorData.error || 'Помилка видалення відгуку');
-      }
-    } catch {
+      await deletePhotoReview(id);
+      toast.success('Відгук видалено!');
+    } catch (error) {
+      console.error('Error deleting review:', error);
       toast.error('Помилка видалення відгуку');
     }
   };
@@ -707,8 +666,8 @@ export default function AdminPhotoReviewsPage() {
                 <p className="mt-1 text-sm text-gray-500">Додайте перший відгук використовуючи форму вище</p>
               </div>
             ) : (
-              reviews.map((review) => (
-                <div key={review._id} className="p-4 sm:p-6">
+              reviews.map((review: PhotoReview) => (
+                <div key={review._id?.toString()} className="p-4 sm:p-6">
                   <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-4 space-y-3 sm:space-y-0">
                     <div className="flex-1">
                       <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-3 mb-2 space-y-1 sm:space-y-0">
@@ -720,7 +679,7 @@ export default function AdminPhotoReviewsPage() {
                       <p className="text-gray-600 mb-3">{review.cakeDescription}</p>
                       <div className="text-sm text-gray-500 space-y-1">
                         <div>Дата виконання: {new Date(review.completedDate).toLocaleDateString('uk-UA')}</div>
-                        <div>Створено: {new Date(review.createdAt).toLocaleDateString('uk-UA')}</div>
+                        <div>Створено: {review.createdAt ? new Date(review.createdAt).toLocaleDateString('uk-UA') : 'N/A'}</div>
                       </div>
                     </div>
                   </div>
@@ -732,7 +691,7 @@ export default function AdminPhotoReviewsPage() {
                         Фотографії торту ({review.images.length})
                       </h4>
                       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-                        {review.images.map((image, index) => (
+                        {review.images.map((image: string, index: number) => (
                           <div
                             key={index}
                             className="relative group bg-gray-200 rounded-lg overflow-hidden border-2 border-gray-200 hover:border-pink-300 transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md"
@@ -772,7 +731,7 @@ export default function AdminPhotoReviewsPage() {
                     </button>
 
                     <button
-                      onClick={() => handleDelete(review._id)}
+                      onClick={() => handleDelete(review._id?.toString() || '')}
                       className="px-3 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg text-sm transition-colors cursor-pointer"
                     >
                       Видалити

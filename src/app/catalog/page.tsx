@@ -4,11 +4,9 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useCart } from '@/contexts/CartContext';
 import PageBannerSimple from '@/components/PageBannerSimple/pagebannersimple';
 import { FILTER_CATEGORIES, ProductCategoryValue } from '@/constants/categories';
 import { UNIT_LABELS, type ProductUnit } from '@/constants/units';
-import { toast } from 'react-toastify';
 
 interface Product {
   _id: string;
@@ -24,7 +22,6 @@ interface Product {
 
 export default function CatalogPage() {
   const router = useRouter();
-  const { addToCart } = useCart();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
@@ -123,21 +120,12 @@ export default function CatalogPage() {
     });
   };
 
-  const handleAddToCart = (product: Product, e: React.MouseEvent) => {
+  const handleOrderProduct = (product: Product, e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent navigation
 
-    const defaultQuantity = product.unit === 'kg' ? 0.5 : 1;
-
-    addToCart({
-      productId: product._id,
-      productName: product.name,
-      productPrice: product.price,
-      productUnit: product.unit,
-      productImage: product.images?.[0]
-    }, defaultQuantity);
-
-    // Show success message
-    toast.success(`${product.name} додано до кошика!`);
+    // Redirect to order page with product pre-filled
+    const orderUrl = `/order?productId=${product._id}&productName=${encodeURIComponent(product.name)}&productPrice=${product.price}&productUnit=${product.unit}`;
+    router.push(orderUrl);
   };
 
   return (
@@ -313,24 +301,14 @@ export default function CatalogPage() {
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-1 gap-2">
                     <button
-                      onClick={(e) => handleAddToCart(product, e)}
-                      className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg transition-colors duration-200 text-sm font-medium cursor-pointer flex items-center justify-center gap-1"
+                      onClick={(e) => handleOrderProduct(product, e)}
+                      className="bg-pink-600 hover:bg-pink-700 text-white px-3 py-2 rounded-lg transition-colors duration-200 text-sm font-medium cursor-pointer flex items-center justify-center gap-1"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                       </svg>
-                      Кошик
-                    </button>
-
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        router.push(`/order?productId=${product._id}`);
-                      }}
-                      className="bg-pink-500 hover:bg-pink-600 text-white px-3 py-2 rounded-lg transition-colors duration-200 text-sm font-medium cursor-pointer"
-                    >
                       Замовити
                     </button>
                   </div>

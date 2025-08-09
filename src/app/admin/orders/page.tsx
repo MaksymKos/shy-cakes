@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import Image from 'next/image';
 
 interface Order {
   _id: string;
@@ -319,10 +320,10 @@ export default function AdminOrders() {
                         })}
                       </p>
                       <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${order.type === 'product'
-                          ? 'bg-blue-100 text-blue-800'
-                          : order.type === 'custom'
-                            ? 'bg-purple-100 text-purple-800'
-                            : 'bg-purple-100 text-purple-800'
+                        ? 'bg-blue-100 text-blue-800'
+                        : order.type === 'custom'
+                          ? 'bg-purple-100 text-purple-800'
+                          : 'bg-purple-100 text-purple-800'
                         }`}>
                         {order.type === 'product'
                           ? '🛒 Товар з каталогу'
@@ -480,24 +481,24 @@ export default function AdminOrders() {
                         .filter(imageUrl => imageUrl && imageUrl.trim() !== '')
                         .map((imageUrl, index) => (
                           <div key={index} className="relative group">
-                            <div className="relative w-full h-24 rounded border overflow-hidden bg-gray-100 cursor-pointer"
-                              onClick={() => window.open(imageUrl, '_blank')}>
-                              <img
+                            <div className="relative w-full h-24 rounded border overflow-hidden bg-gray-100 cursor-pointer">
+                              <Image
                                 src={imageUrl}
                                 alt={`Референс ${index + 1}`}
+                                fill
                                 className="absolute inset-0 w-full h-full object-cover hover:opacity-90 transition-opacity"
-                                onError={(e) => {
+                                onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
                                   console.error('Image failed to load:', imageUrl);
                                   const target = e.target as HTMLImageElement;
                                   target.style.display = 'none';
                                 }}
                               />
-                            </div>
-                            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 rounded border cursor-pointer flex items-center justify-center"
-                              onClick={() => window.open(imageUrl, '_blank')}>
-                              <svg className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
-                              </svg>
+                              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 rounded border cursor-pointer flex items-center justify-center"
+                                onClick={() => window.open(imageUrl, '_blank')}>
+                                <svg className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                                </svg>
+                              </div>
                             </div>
                           </div>
                         ))}

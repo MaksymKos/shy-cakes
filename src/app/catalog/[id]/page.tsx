@@ -3,9 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { useCart } from '@/contexts/CartContext';
 import { ProductCategoryValue } from '@/constants/categories';
-import { toast } from 'react-toastify';
 
 interface Product {
   _id: string;
@@ -22,7 +20,6 @@ interface Product {
 export default function ProductPage() {
   const params = useParams();
   const router = useRouter();
-  const { addToCart } = useCart();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -108,22 +105,12 @@ export default function ProductPage() {
     }
   };
 
-  const handleAddToCart = () => {
+  const handleOrderProduct = () => {
     if (!product) return;
 
-    addToCart({
-      productId: product._id,
-      productName: product.name,
-      productPrice: product.price,
-      productUnit: product.unit,
-      productImage: product.images?.[0]
-    }, quantity);
-
-    // Show success message
-    toast.success(`${product.name} додано до кошика!`);
-
-    // Reset quantity
-    setQuantity(product.unit === 'kg' ? 0.5 : 1);
+    // Redirect to order page with product and quantity
+    const orderUrl = `/order?productId=${product._id}&productName=${encodeURIComponent(product.name)}&productPrice=${product.price}&productUnit=${product.unit}&quantity=${quantity}`;
+    router.push(orderUrl);
   };
 
   if (loading) {
@@ -325,17 +312,10 @@ export default function ProductPage() {
 
               <div className="grid grid-cols-1 gap-3">
                 <button
-                  onClick={handleAddToCart}
+                  onClick={handleOrderProduct}
                   className="w-full bg-pink-500 hover:bg-pink-600 text-white py-4 px-6 rounded-lg text-lg font-semibold transition-colors cursor-pointer"
                 >
-                  🛒 Додати до кошика
-                </button>
-
-                <button
-                  onClick={() => router.push(`/order?productId=${product._id}`)}
-                  className="w-full border-2 border-pink-500 text-pink-600 hover:bg-pink-50 py-4 px-6 rounded-lg text-lg font-semibold transition-colors cursor-pointer"
-                >
-                  ⚡ Замовити зараз
+                  🛒 Замовити зараз
                 </button>
               </div>
 

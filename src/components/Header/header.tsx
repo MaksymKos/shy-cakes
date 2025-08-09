@@ -6,7 +6,6 @@ import { useState } from 'react';
 import { useSession, signOut } from "next-auth/react";
 import { Dialog, DialogPanel, PopoverGroup, Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon, ChevronDownIcon, UserIcon } from '@heroicons/react/24/outline'
-import CartIcon from '@/components/CartIcon/CartIcon';
 
 export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -46,7 +45,6 @@ export default function Header() {
                     <Link className="text-gray-700 transition font-medium hover:text-pink-600 px-3 py-2 rounded-md hover:bg-pink-50" href="/about/">Про мене</Link>
                 </PopoverGroup>
                 <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:items-center lg:gap-4">
-                    <CartIcon />
                     {status === "loading" ? (
                         <div className="flex gap-3">
                             <div className="h-10 w-20 bg-gray-200 rounded-lg animate-pulse"></div>
@@ -185,7 +183,6 @@ export default function Header() {
                             <div className="space-y-2 py-6">
                                 <Link href="/" className="-mx-3 block rounded-lg px-3 py-2 text-base font-medium text-gray-900 hover:bg-pink-50 hover:text-pink-600 transition-colors" onClick={() => setMobileMenuOpen(false)}>Головна</Link>
                                 <Link href="/catalog/" className="-mx-3 block rounded-lg px-3 py-2 text-base font-medium text-gray-900 hover:bg-pink-50 hover:text-pink-600 transition-colors" onClick={() => setMobileMenuOpen(false)}>Каталог</Link>
-                                <Link href="/cart/" className="-mx-3 block rounded-lg px-3 py-2 text-base font-medium text-gray-900 hover:bg-pink-50 hover:text-pink-600 transition-colors" onClick={() => setMobileMenuOpen(false)}>Кошик</Link>
                                 <Link href="/reviews/" className="-mx-3 block rounded-lg px-3 py-2 text-base font-medium text-gray-900 hover:bg-pink-50 hover:text-pink-600 transition-colors" onClick={() => setMobileMenuOpen(false)}>Відгуки</Link>
                                 <Link href="/portfolio/" className="-mx-3 block rounded-lg px-3 py-2 text-base font-medium text-gray-900 hover:bg-pink-50 hover:text-pink-600 transition-colors" onClick={() => setMobileMenuOpen(false)}>Портфоліо</Link>
                                 <Link href="/contact/" className="-mx-3 block rounded-lg px-3 py-2 text-base font-medium text-gray-900 hover:bg-pink-50 hover:text-pink-600 transition-colors" onClick={() => setMobileMenuOpen(false)}>Контакти</Link>

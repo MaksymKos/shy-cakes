@@ -6,7 +6,6 @@ import {
   CreateReview,
 } from "../types/database";
 
-// Input validation interfaces
 export interface UserInput {
   email?: string;
   name?: string;

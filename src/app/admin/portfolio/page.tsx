@@ -4,13 +4,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import Image from 'next/image';
-
-interface PortfolioItem {
-  _id: string;
-  title: string;
-  image: string;
-  createdAt: string;
-}
+import { usePortfolio, usePortfolioStore } from '@/store';
+import type { PortfolioItem } from '@/types/database';
 
 interface ImageUploadProps {
   onImageUpload: (url: string) => void;
@@ -113,34 +108,36 @@ function ImageUpload({ onImageUpload, currentImage }: ImageUploadProps) {
 
 export default function PortfolioAdmin() {
   const router = useRouter();
-  const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
-  const [loading, setLoading] = useState(true);
+
+  // Use Zustand store for portfolio management
+  const {
+    data: portfolioItems,
+    isLoading: loading,
+    error,
+    clearError
+  } = usePortfolio({
+    autoFetch: true,
+    refreshInterval: 2 * 60 * 1000 // Refresh every 2 minutes
+  });
+
+  const {
+    addPortfolioItem,
+    updatePortfolioItem,
+    deletePortfolioItem
+  } = usePortfolioStore();
+
   const [editingItem, setEditingItem] = useState<PortfolioItem | null>(null);
   const [formData, setFormData] = useState({
     title: '',
     image: '',
   });
 
-  const fetchPortfolioItems = async () => {
-    try {
-      const response = await fetch('/api/portfolio');
-      if (response.ok) {
-        const data = await response.json();
-        setPortfolioItems(data);
-      } else {
-        toast.error('Помилка завантаження портфоліо');
-      }
-    } catch (error) {
-      console.error('Fetch error:', error);
-      toast.error('Помилка завантаження портфоліо');
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // Clear any existing errors when component mounts
   useEffect(() => {
-    fetchPortfolioItems();
-  }, []);
+    if (error) {
+      clearError();
+    }
+  }, [error, clearError]);
 
   const handleAddItem = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -151,21 +148,16 @@ export default function PortfolioAdmin() {
     }
 
     try {
-      const response = await fetch('/api/portfolio', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+      const result = await addPortfolioItem({
+        title: formData.title,
+        image: formData.image,
       });
 
-      if (response.ok) {
+      if (result) {
         setFormData({ title: '', image: '' });
-        fetchPortfolioItems();
         toast.success('Елемент портфоліо успішно створено');
       } else {
-        const error = await response.json();
-        toast.error(error.error || 'Помилка створення елементу портфоліо');
+        toast.error('Помилка створення елементу портфоліо');
       }
     } catch (error) {
       console.error('Create error:', error);
@@ -182,25 +174,13 @@ export default function PortfolioAdmin() {
     }
 
     try {
-      const response = await fetch(`/api/portfolio/${editingItem._id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          title: editingItem.title,
-          image: editingItem.image
-        }),
+      await updatePortfolioItem(editingItem._id?.toString() || '', {
+        title: editingItem.title,
+        image: editingItem.image,
       });
 
-      if (response.ok) {
-        setEditingItem(null);
-        fetchPortfolioItems();
-        toast.success('Елемент портфоліо успішно оновлено');
-      } else {
-        const error = await response.json();
-        toast.error(error.error || 'Помилка оновлення елементу портфоліо');
-      }
+      setEditingItem(null);
+      toast.success('Елемент портфоліо успішно оновлено');
     } catch (error) {
       console.error('Update error:', error);
       toast.error('Помилка оновлення елементу портфоліо');
@@ -208,31 +188,37 @@ export default function PortfolioAdmin() {
   };
 
   const handleDeleteItem = async (id: string) => {
-    // Показуємо попередження через toast
-    toast.warning('Натисніть ще раз для підтвердження видалення', {
-      onClick: () => confirmDeleteItem(id),
-      autoClose: 5000,
-    });
-  };
+    if (!confirm('Ви впевнені, що хочете видалити цей елемент?')) {
+      return;
+    }
 
-  const confirmDeleteItem = async (id: string) => {
     try {
-      const response = await fetch(`/api/portfolio/${id}`, {
-        method: 'DELETE',
-      });
-
-      if (response.ok) {
-        fetchPortfolioItems();
-        toast.success('Елемент портфоліо успішно видалено');
-      } else {
-        const errorData = await response.json();
-        toast.error(errorData.error || 'Помилка видалення елементу портфоліо');
-      }
+      await deletePortfolioItem(id);
+      toast.success('Елемент портфоліо успішно видалено');
     } catch (error) {
       console.error('Delete error:', error);
       toast.error('Помилка видалення елементу портфоліо');
     }
   };
+
+  // Display error if any
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 p-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <p className="text-red-600">Помилка: {error}</p>
+            <button
+              onClick={clearError}
+              className="mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+            >
+              Спробувати ще раз
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
@@ -338,8 +324,8 @@ export default function PortfolioAdmin() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 sm:gap-4">
             {portfolioItems.map((item) => (
-              <div key={item._id} className="bg-white rounded-lg shadow-md overflow-hidden">
-                <div className="relative h-24 sm:h-32">
+              <div key={item._id?.toString()} className="bg-white rounded-lg shadow-md overflow-hidden">
+                <div className="relative h-48">
                   <Image
                     src={item.image}
                     alt={item.title}
@@ -347,21 +333,21 @@ export default function PortfolioAdmin() {
                     className="object-cover"
                   />
                 </div>
-                <div className="p-2 sm:p-3">
-                  <h3 className="font-medium text-gray-900 mb-1 text-xs sm:text-sm line-clamp-1">{item.title}</h3>
-                  <p className="text-xs text-gray-500 mb-2 sm:mb-3">
-                    {new Date(item.createdAt).toLocaleDateString('uk-UA')}
+                <div className="p-4">
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">{item.title}</h3>
+                  <p className="text-sm text-gray-500 mb-4">
+                    {item.createdAt ? new Date(item.createdAt).toLocaleDateString('uk-UA') : 'No date'}
                   </p>
-                  <div className="flex flex-col sm:flex-row gap-1 sm:gap-2">
+                  <div className="flex space-x-2">
                     <button
                       onClick={() => setEditingItem(item)}
-                      className="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-1 px-2 rounded text-xs transition-colors"
+                      className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm"
                     >
                       Редагувати
                     </button>
                     <button
-                      onClick={() => handleDeleteItem(item._id)}
-                      className="flex-1 bg-red-500 hover:bg-red-600 text-white py-1 px-2 rounded text-xs transition-colors"
+                      onClick={() => handleDeleteItem(item._id?.toString() || '')}
+                      className="px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 text-sm"
                     >
                       Видалити
                     </button>

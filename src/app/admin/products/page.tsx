@@ -179,6 +179,12 @@ export default function AdminProductsPage() {
     setPreviewUrls(product.images || []);
     setSelectedFiles([]);
     setShowAddForm(true);
+
+    // Scroll to top when editing
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
   };
 
   const handleUpdateProduct = async (e: React.FormEvent) => {

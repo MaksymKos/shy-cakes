@@ -5,6 +5,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay, EffectCoverflow } from 'swiper/modules';
+import { usePhotoReviews } from '@/store';
+import type { PhotoReview } from '@/types/database';
 
 // Import Swiper styles
 import 'swiper/css';
@@ -12,41 +14,31 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/effect-coverflow';
 
-interface PhotoReview {
-    _id: string;
-    cakeName: string;
-    cakeDescription: string;
-    totalPrice: number;
-    totalWeight: number;
-    images: string[];
-    completedDate: string;
-    isApproved: boolean;
-}
-
 export default function ReviewsSwiperSection() {
-    const [photoReviews, setPhotoReviews] = useState<PhotoReview[]>([]);
-    const [loading, setLoading] = useState(true);
     const [isClient, setIsClient] = useState(false);
+
+    // Use Zustand store for data fetching with automatic caching
+    const {
+        data: photoReviews,
+        isLoading: loading,
+        error,
+        clearError
+    } = usePhotoReviews({
+        approvedOnly: true,
+        autoFetch: true,
+        refreshInterval: 5 * 60 * 1000 // Refresh every 5 minutes
+    });
 
     useEffect(() => {
         setIsClient(true);
-        fetchData();
     }, []);
 
-    const fetchData = async () => {
-        try {
-            // Завантажуємо схвалені фото-відгуки
-            const reviewsResponse = await fetch('/api/photo-reviews?approved=true');
-            if (reviewsResponse.ok) {
-                const reviewsData = await reviewsResponse.json();
-                setPhotoReviews(reviewsData.slice(0, 6)); // Останні 6 відгуків
-            }
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        } finally {
-            setLoading(false);
+    // Clear error on component mount
+    useEffect(() => {
+        if (error) {
+            clearError();
         }
-    };
+    }, [error, clearError]);
 
     const formatPrice = (price: number) => {
         return `${Math.round(price)} ₴`;
@@ -56,10 +48,11 @@ export default function ReviewsSwiperSection() {
         return `${weight.toFixed(1)} кг`;
     };
 
-    const formatDate = (dateString: string) => {
+    const formatDate = (date: Date | string) => {
         if (!isClient) return '';
         try {
-            return new Date(dateString).toLocaleDateString('uk-UA');
+            const dateObj = typeof date === 'string' ? new Date(date) : date;
+            return dateObj.toLocaleDateString('uk-UA');
         } catch {
             return '';
         }
@@ -68,6 +61,9 @@ export default function ReviewsSwiperSection() {
     if (!isClient || loading || photoReviews.length === 0) {
         return null;
     }
+
+    // Display only the latest 6 reviews
+    const displayReviews = photoReviews.slice(0, 6);
 
     return (
         <section className="py-24 bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50">
@@ -136,8 +132,8 @@ export default function ReviewsSwiperSection() {
                         }}
                         className="reviews-swiper"
                     >
-                        {photoReviews.map((review) => (
-                            <SwiperSlide key={review._id}>
+                        {displayReviews.map((review: PhotoReview) => (
+                            <SwiperSlide key={review._id?.toString()}>
                                 <div className="bg-white rounded-3xl overflow-hidden shadow-lg transition-shadow duration-300 hover:shadow-xl">
                                     {/* Image */}
                                     {review.images.length > 0 && (
