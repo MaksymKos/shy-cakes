@@ -7,8 +7,8 @@ export default function PortfolioPage() {
     <section className="">
       <PageBannerSimple
         currentPage='Портфоліо'
-        title='Портфоліо'
-        text='Перегляньте наші найкращі роботи та надихніться для свого замовлення'
+        title='Наші роботи'
+        text='Кожна робота унікальна та створена з особливою увагою до деталей'
         image="/images/cataloge-banner.jpg"
       />
 

@@ -12,49 +12,6 @@ export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const { data: session, status } = useSession();
 
-    if (status === "loading") {
-        return (
-            <header className="bg-white shadow-sm border-b border-gray-200 fixed top-0 left-0 z-50 w-full">
-                <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 lg:px-8">
-                    <div className="flex lg:flex-1">
-                        <Link href="/" className="-m-1.5 p-1.5">
-                            <Image
-                                src="/images/logo.png"
-                                width={100}
-                                height={80}
-                                alt='Shy Cakes Logo'
-                                quality={100}
-                                className="h-auto w-auto"
-                            />
-                        </Link>
-                    </div>
-                    <div className="flex lg:hidden">
-                        <button
-                            type="button"
-                            onClick={() => setMobileMenuOpen(true)}
-                            className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700 hover:text-gray-900 transition-colors"
-                        >
-                            <span className="sr-only">Open main menu</span>
-                            <Bars3Icon aria-hidden="true" className="size-7 cursor-pointer" />
-                        </button>
-                    </div>
-                    <PopoverGroup className="hidden lg:flex lg:gap-x-8">
-                        <Link className="text-gray-700 transition font-medium hover:text-pink-600 px-3 py-2 rounded-md hover:bg-pink-50" href="/">Головна</Link>
-                        <Link className="text-gray-700 transition font-medium hover:text-pink-600 px-3 py-2 rounded-md hover:bg-pink-50" href="/catalog/">Каталог</Link>
-                        <Link className="text-gray-700 transition font-medium hover:text-pink-600 px-3 py-2 rounded-md hover:bg-pink-50" href="/order/">Замовлення</Link>
-                        <Link className="text-gray-700 transition font-medium hover:text-pink-600 px-3 py-2 rounded-md hover:bg-pink-50" href="/reviews/">Відгуки</Link>
-                        <Link className="text-gray-700 transition font-medium hover:text-pink-600 px-3 py-2 rounded-md hover:bg-pink-50" href="/portfolio/">Портфоліо</Link>
-                        <Link className="text-gray-700 transition font-medium hover:text-pink-600 px-3 py-2 rounded-md hover:bg-pink-50" href="/contact/">Контакти</Link>
-                        <Link className="text-gray-700 transition font-medium hover:text-pink-600 px-3 py-2 rounded-md hover:bg-pink-50" href="/about/">Про мене</Link>
-                    </PopoverGroup>
-                    <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:items-center">
-                        <div className="animate-pulse h-10 w-36 bg-gray-200 rounded-lg"></div>
-                    </div>
-                </nav>
-            </header>
-        );
-    }
-
     return (
         <header className="bg-white shadow-sm border-b border-gray-200 fixed top-0 left-0 z-50 w-full">
             <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 lg:px-8">
@@ -65,7 +22,7 @@ export default function Header() {
                             width={100}
                             height={80}
                             alt='Shy Cakes Logo'
-                            quality={100}
+                            priority
                             className="h-auto w-auto"
                         />
                     </Link>
@@ -90,7 +47,12 @@ export default function Header() {
                 </PopoverGroup>
                 <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:items-center lg:gap-4">
                     <CartIcon />
-                    {session ? (
+                    {status === "loading" ? (
+                        <div className="flex gap-3">
+                            <div className="h-10 w-20 bg-gray-200 rounded-lg animate-pulse"></div>
+                            <div className="h-10 w-24 bg-gray-200 rounded-lg animate-pulse"></div>
+                        </div>
+                    ) : session ? (
                         <Popover className="relative">
                             {({ close }) => (
                                 <>
@@ -205,7 +167,7 @@ export default function Header() {
                                 width={80}
                                 height={60}
                                 alt='Shy Cakes Logo'
-                                quality={100}
+                                priority
                                 className="h-auto w-auto"
                             />
                         </Link>

@@ -314,3 +314,187 @@ body {
     font-weight: 900;
     font-style: normal;
 }
+
+/* Additional animations for home page */
+@keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes float {
+    0%,
+    100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    25% {
+        transform: translateY(-20px) rotate(3deg);
+    }
+    50% {
+        transform: translateY(-10px) rotate(-3deg);
+    }
+    75% {
+        transform: translateY(-15px) rotate(1deg);
+    }
+}
+
+@keyframes pulse-glow {
+    0%,
+    100% {
+        box-shadow: 0 0 20px rgba(236, 72, 153, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(236, 72, 153, 0.6);
+    }
+}
+
+.animate-fade-in-up {
+    animation: fade-in-up 0.8s ease-out forwards;
+}
+
+.animate-float {
+    animation: float 6s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.delay-300 {
+    animation-delay: 300ms;
+}
+
+.delay-500 {
+    animation-delay: 500ms;
+}
+
+.delay-700 {
+    animation-delay: 700ms;
+}
+
+.delay-1000 {
+    animation-delay: 1000ms;
+}
+
+.delay-2000 {
+    animation-delay: 2000ms;
+}
+
+/* Swiper custom styles */
+.reviews-swiper {
+    padding: 0 20px 60px 20px !important;
+}
+
+.reviews-swiper .swiper-wrapper {
+    align-items: stretch;
+}
+
+.reviews-swiper .swiper-slide {
+    height: auto;
+    transition: transform 0.3s ease;
+}
+
+.reviews-swiper .swiper-slide-active {
+    transform: scale(1.02);
+}
+
+.reviews-swiper .swiper-slide:not(.swiper-slide-active) {
+    opacity: 0.8;
+}
+
+/* Enhanced pagination */
+.reviews-swiper .swiper-pagination {
+    bottom: 20px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: auto !important;
+    display: flex !important;
+    justify-content: center !important;
+    gap: 8px !important;
+}
+
+.reviews-swiper .swiper-pagination-bullet {
+    width: 12px !important;
+    height: 12px !important;
+    background: rgba(236, 72, 153, 0.3) !important;
+    border: 2px solid rgba(236, 72, 153, 0.5) !important;
+    opacity: 1 !important;
+    transition: all 0.3s ease !important;
+    cursor: pointer;
+}
+
+.reviews-swiper .swiper-pagination-bullet:hover {
+    background: rgba(236, 72, 153, 0.6) !important;
+    border-color: rgba(236, 72, 153, 0.8) !important;
+    transform: scale(1.2);
+}
+
+.reviews-swiper .swiper-pagination-bullet-active {
+    background: linear-gradient(135deg, #ec4899, #8b5cf6) !important;
+    border-color: #ec4899 !important;
+    transform: scale(1.3);
+    box-shadow: 0 0 15px rgba(236, 72, 153, 0.4);
+}
+
+/* Enhanced navigation buttons */
+.swiper-button-prev-custom,
+.swiper-button-next-custom {
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 2px solid rgba(236, 72, 153, 0.1) !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+}
+
+.swiper-button-prev-custom:hover,
+.swiper-button-next-custom:hover {
+    background: linear-gradient(135deg, #ec4899, #8b5cf6) !important;
+    color: white !important;
+    border-color: transparent !important;
+    transform: scale(1.1) !important;
+    box-shadow: 0 8px 25px rgba(236, 72, 153, 0.3) !important;
+}
+
+.swiper-button-prev-custom:active,
+.swiper-button-next-custom:active {
+    transform: scale(0.95) !important;
+}
+
+/* 3D effect enhancement */
+.reviews-swiper.swiper-container-3d .swiper-slide-shadow-left,
+.reviews-swiper.swiper-container-3d .swiper-slide-shadow-right {
+    background-image: linear-gradient(
+        to right,
+        rgba(236, 72, 153, 0.2),
+        transparent
+    ) !important;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+    .reviews-swiper {
+        padding: 0 10px 50px 10px !important;
+    }
+
+    .swiper-button-prev-custom,
+    .swiper-button-next-custom {
+        width: 40px !important;
+        height: 40px !important;
+        left: 10px !important;
+    }
+
+    .swiper-button-next-custom {
+        right: 10px !important;
+        left: auto !important;
+    }
+
+    .reviews-swiper .swiper-pagination-bullet {
+        width: 10px !important;
+        height: 10px !important;
+    }
+}

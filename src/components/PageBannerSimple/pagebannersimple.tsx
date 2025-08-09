@@ -23,7 +23,7 @@ export default function PageBannerSimple({ currentPage, title, text, image }: { 
         <div className="flex flex-col items-center justify-center text-center max-w-4xl mx-auto">
 
           {/* Simple Breadcrumbs */}
-          <div className="mb-6">
+          <div className="mb-16">
             <div className="bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2 border border-white/10">
               <Breadcrumbs path={currentPage} />
             </div>

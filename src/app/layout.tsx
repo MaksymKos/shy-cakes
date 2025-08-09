@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import DynamicHeader from "@/components/Header/DynamicHeader";
+import Header from "@/components/Header/header";
 import Footer from "@/components/Footer/footer";
 import SessionWrapper from '@/components/utils/SessionWrapper';
 import { CartProvider } from '@/contexts/CartContext';
@@ -29,7 +29,7 @@ export default function RootLayout({
       <body className="antialiased" suppressHydrationWarning={true}>
         <SessionWrapper>
           <CartProvider>
-            <DynamicHeader />
+            <Header />
             <main className="min-h-screen pt-24 lg:pt-28">
               {children}
             </main>

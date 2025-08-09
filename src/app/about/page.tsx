@@ -35,14 +35,22 @@ export default function AboutPage() {
               </p>
 
               {/* Statistics */}
-              <div className="grid grid-cols-2 gap-6 mb-12 max-w-md mx-auto">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12 max-w-4xl mx-auto">
                 <div className="text-center p-6 bg-gradient-to-br from-pink-50 to-purple-50 rounded-lg">
-                  <div className="text-3xl font-bold text-pink-600 mb-2">100+</div>
-                  <div className="text-gray-700 font-medium">Клієнтів</div>
+                  <div className="text-3xl font-bold text-pink-600 mb-2">200+</div>
+                  <div className="text-gray-700 font-medium">Виконаних робіт</div>
                 </div>
                 <div className="text-center p-6 bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg">
-                  <div className="text-3xl font-bold text-purple-600 mb-2">2023</div>
-                  <div className="text-gray-700 font-medium">Рік заснування</div>
+                  <div className="text-3xl font-bold text-purple-600 mb-2">150+</div>
+                  <div className="text-gray-700 font-medium">Задоволених клієнтів</div>
+                </div>
+                <div className="text-center p-6 bg-gradient-to-br from-pink-50 to-purple-50 rounded-lg">
+                  <div className="text-3xl font-bold text-pink-500 mb-2">50+</div>
+                  <div className="text-gray-700 font-medium">Унікальних дизайнів</div>
+                </div>
+                <div className="text-center p-6 bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg">
+                  <div className="text-3xl font-bold text-purple-500 mb-2">100%</div>
+                  <div className="text-gray-700 font-medium">Натуральні інгредієнти</div>
                 </div>
               </div>
             </div>
