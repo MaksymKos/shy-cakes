@@ -126,11 +126,21 @@ export default function PortfolioAdmin() {
     deletePortfolioItem
   } = usePortfolioStore();
 
+  const [showAddForm, setShowAddForm] = useState(false);
   const [editingItem, setEditingItem] = useState<PortfolioItem | null>(null);
+  const [uploading, setUploading] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     image: '',
   });
+
+  // Helper function to reset form
+  const resetForm = () => {
+    setFormData({
+      title: '',
+      image: '',
+    });
+  };
 
   // Clear any existing errors when component mounts
   useEffect(() => {
@@ -147,6 +157,8 @@ export default function PortfolioAdmin() {
       return;
     }
 
+    setUploading(true);
+
     try {
       const result = await addPortfolioItem({
         title: formData.title,
@@ -154,7 +166,8 @@ export default function PortfolioAdmin() {
       });
 
       if (result) {
-        setFormData({ title: '', image: '' });
+        resetForm();
+        setShowAddForm(false);
         toast.success('Елемент портфоліо успішно створено');
       } else {
         toast.error('Помилка створення елементу портфоліо');
@@ -162,29 +175,58 @@ export default function PortfolioAdmin() {
     } catch (error) {
       console.error('Create error:', error);
       toast.error('Помилка створення елементу портфоліо');
+    } finally {
+      setUploading(false);
     }
   };
 
-  const handleEditItem = async (e: React.FormEvent) => {
+  const handleEditItem = (item: PortfolioItem) => {
+    setEditingItem(item);
+    setFormData({
+      title: item.title,
+      image: item.image,
+    });
+    setShowAddForm(true);
+
+    // Scroll to top when editing
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
+  const handleUpdateItem = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!editingItem || !editingItem.title.trim() || !editingItem.image) {
+    if (!editingItem || !formData.title.trim() || !formData.image) {
       toast.warning('Заповніть всі поля');
       return;
     }
 
+    setUploading(true);
+
     try {
       await updatePortfolioItem(editingItem._id?.toString() || '', {
-        title: editingItem.title,
-        image: editingItem.image,
+        title: formData.title,
+        image: formData.image,
       });
 
       setEditingItem(null);
+      resetForm();
+      setShowAddForm(false);
       toast.success('Елемент портфоліо успішно оновлено');
     } catch (error) {
       console.error('Update error:', error);
       toast.error('Помилка оновлення елементу портфоліо');
+    } finally {
+      setUploading(false);
     }
+  };
+
+  const cancelEdit = () => {
+    setEditingItem(null);
+    resetForm();
+    setShowAddForm(false);
   };
 
   const handleDeleteItem = async (id: string) => {
@@ -227,7 +269,7 @@ export default function PortfolioAdmin() {
           <div className="flex items-center space-x-4">
             <button
               onClick={() => router.push('/admin')}
-              className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
+              className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors cursor-pointer"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -237,84 +279,65 @@ export default function PortfolioAdmin() {
             <div className="h-6 w-px bg-gray-300"></div>
             <div>
               <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">Управління портфоліо</h1>
+              <p className="mt-2 text-gray-600 text-sm sm:text-base">Знайдено {portfolioItems.length} робіт</p>
             </div>
           </div>
+
+          <button
+            onClick={() => {
+              setEditingItem(null);
+              resetForm();
+              setShowAddForm(true);
+            }}
+            className="w-full sm:w-auto bg-pink-600 text-white px-4 sm:px-6 py-3 rounded-lg hover:bg-pink-700 transition-colors font-semibold cursor-pointer text-sm sm:text-base"
+          >
+            + Додати роботу
+          </button>
         </div>
 
-        {/* Форма додавання */}
-        <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md mb-6 sm:mb-8">
-          <h2 className="text-lg sm:text-xl font-semibold mb-4">Додати нову роботу</h2>
-          <form onSubmit={handleAddItem} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Назва роботи</label>
-              <input
-                type="text"
-                value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                placeholder="Введіть назву роботи"
-                required
-              />
-            </div>
-
-            <div>
-              <ImageUpload
-                onImageUpload={(url) => setFormData({ ...formData, image: url })}
-                currentImage={formData.image}
-              />
-            </div>
-
-            <div>
-              <button
-                type="submit"
-                className="w-full bg-pink-500 hover:bg-pink-600 text-white py-3 px-4 rounded-lg transition-colors font-medium"
-              >
-                Додати роботу
-              </button>
-            </div>
-          </form>
-        </div>
-        {editingItem && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white p-4 sm:p-6 rounded-lg shadow-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
-              <h3 className="text-lg font-semibold mb-4">Редагувати роботу</h3>
-              <form onSubmit={handleEditItem} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Назва роботи
-                  </label>
-                  <input
-                    type="text"
-                    value={editingItem.title}
-                    onChange={(e) => setEditingItem({ ...editingItem, title: e.target.value })}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                    placeholder="Введіть назву роботи"
-                    required
-                  />
-                </div>
-
-                <ImageUpload
-                  onImageUpload={(url) => setEditingItem({ ...editingItem, image: url })}
-                  currentImage={editingItem.image}
+        {/* Add/Edit Portfolio Item Form */}
+        {showAddForm && (
+          <div className="bg-white p-6 rounded-lg shadow-lg mb-8">
+            <h2 className="text-xl font-semibold mb-4">
+              {editingItem ? `Редагування: ${editingItem.title}` : 'Додати нову роботу'}
+            </h2>
+            <form onSubmit={editingItem ? handleUpdateItem : handleAddItem} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Назва роботи</label>
+                <input
+                  type="text"
+                  required
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                  placeholder="Введіть назву роботи"
                 />
+              </div>
 
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setEditingItem(null)}
-                    className="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-lg transition-colors"
-                  >
-                    Скасувати
-                  </button>
-                  <button
-                    type="submit"
-                    className="flex-1 bg-pink-500 hover:bg-pink-600 text-white py-2 px-4 rounded-lg transition-colors"
-                  >
-                    Зберегти
-                  </button>
-                </div>
-              </form>
-            </div>
+              <div>
+                <ImageUpload
+                  onImageUpload={(url) => setFormData({ ...formData, image: url })}
+                  currentImage={formData.image}
+                />
+              </div>
+
+              <div className="flex gap-4 pt-4">
+                <button
+                  type="submit"
+                  disabled={uploading}
+                  className="bg-pink-600 text-white px-6 py-2 rounded-lg hover:bg-pink-700 disabled:bg-gray-400 transition-colors"
+                >
+                  {uploading ? 'Збереження...' : (editingItem ? 'Оновити роботу' : 'Додати роботу')}
+                </button>
+                <button
+                  type="button"
+                  onClick={cancelEdit}
+                  className="border border-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Скасувати
+                </button>
+              </div>
+            </form>
           </div>
         )}      {loading ? (
           <div className="text-center py-12">
@@ -334,20 +357,20 @@ export default function PortfolioAdmin() {
                   />
                 </div>
                 <div className="p-4">
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">{item.title}</h3>
-                  <p className="text-sm text-gray-500 mb-4">
+                  <h3 className="text-lg font-medium text-gray-900 mb-2 truncate">{item.title}</h3>
+                  <p className="text-sm text-gray-500 mb-3">
                     {item.createdAt ? new Date(item.createdAt).toLocaleDateString('uk-UA') : 'No date'}
                   </p>
-                  <div className="flex space-x-2">
+                  <div className="flex flex-col gap-2">
                     <button
-                      onClick={() => setEditingItem(item)}
-                      className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm"
+                      onClick={() => handleEditItem(item)}
+                      className="w-full px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm font-medium transition-colors"
                     >
                       Редагувати
                     </button>
                     <button
                       onClick={() => handleDeleteItem(item._id?.toString() || '')}
-                      className="px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 text-sm"
+                      className="w-full px-3 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 text-sm font-medium transition-colors"
                     >
                       Видалити
                     </button>
@@ -360,6 +383,16 @@ export default function PortfolioAdmin() {
           <div className="text-center py-12">
             <p className="text-gray-500 text-lg">Портфоліо порожнє</p>
             <p className="text-gray-400 mt-2">Додайте першу роботу</p>
+            <button
+              onClick={() => {
+                setEditingItem(null);
+                resetForm();
+                setShowAddForm(true);
+              }}
+              className="mt-4 bg-pink-600 text-white px-6 py-2 rounded-lg hover:bg-pink-700 transition-colors cursor-pointer"
+            >
+              Додати першу роботу
+            </button>
           </div>
         )}
       </div>

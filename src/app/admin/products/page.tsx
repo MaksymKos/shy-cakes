@@ -393,12 +393,12 @@ export default function AdminProductsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 sm:mb-8 space-y-4 sm:space-y-0">
+      <div className="max-w-7xl mx-auto ">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 sm:mb-8 space-y-4 sm:space-y-0 bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-6 sm:mb-8">
           <div className="flex items-center space-x-4">
             <button
               onClick={() => router.push('/admin')}
-              className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
+              className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors cursor-pointer"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -414,9 +414,9 @@ export default function AdminProductsPage() {
 
           <button
             onClick={() => {
-              setShowAddForm(true);
               setEditingProduct(null);
-              cancelEdit();
+              resetForm();
+              setShowAddForm(true);
             }}
             className="w-full sm:w-auto bg-pink-600 text-white px-4 sm:px-6 py-3 rounded-lg hover:bg-pink-700 transition-colors font-semibold cursor-pointer text-sm sm:text-base"
           >
@@ -603,7 +603,7 @@ export default function AdminProductsPage() {
                 <button
                   type="submit"
                   disabled={uploading}
-                  className="bg-pink-600 text-white px-6 py-2 rounded-lg hover:bg-pink-700 disabled:bg-gray-400 transition-colors"
+                  className="bg-pink-600 text-white px-6 py-2 rounded-lg hover:bg-pink-700 disabled:bg-gray-400 transition-colors cursor-pointer"
                 >
                   {uploading ? 'Збереження...' : (editingProduct ? 'Оновити товар' : 'Додати товар')}
                 </button>
@@ -613,7 +613,7 @@ export default function AdminProductsPage() {
                     setShowAddForm(false);
                     cancelEdit();
                   }}
-                  className="border border-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="border border-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
                 >
                   Скасувати
                 </button>
@@ -623,7 +623,7 @@ export default function AdminProductsPage() {
         )}
 
         {/* Products Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-6 sm:mb-8">
           {products.map((product) => (
             <div key={product._id} className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow overflow-hidden">
               {/* Product Image */}
