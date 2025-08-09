@@ -265,7 +265,7 @@ export default function PortfolioAdmin() {
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 sm:mb-8 space-y-4 sm:space-y-0">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 sm:mb-8 space-y-4 sm:space-y-0 bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-6 sm:mb-8">
           <div className="flex items-center space-x-4">
             <button
               onClick={() => router.push('/admin')}
@@ -339,13 +339,15 @@ export default function PortfolioAdmin() {
               </div>
             </form>
           </div>
-        )}      {loading ? (
+        )}
+
+        {loading ? (
           <div className="text-center py-12">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500"></div>
             <p className="mt-2 text-gray-600">Завантаження...</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 sm:gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 sm:gap-4 bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-6 sm:mb-8">
             {portfolioItems.map((item) => (
               <div key={item._id?.toString()} className="bg-white rounded-lg shadow-md overflow-hidden">
                 <div className="relative h-48">

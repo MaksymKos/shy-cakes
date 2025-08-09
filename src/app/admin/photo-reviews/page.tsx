@@ -36,20 +36,26 @@ export default function AdminPhotoReviewsPage() {
   const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
+    // Чекаємо поки сесія завантажиться
+    if (status === 'loading') {
+      return; // Не робимо нічого поки завантажується
+    }
+
     if (status === 'unauthenticated') {
       router.push('/auth/signin');
       return;
     }
 
-    if (status === 'authenticated' && session?.user?.role !== 'admin') {
-      router.push('/');
-      return;
-    }
-
     if (status === 'authenticated') {
+      if (!session?.user?.role || session.user.role !== 'admin') {
+        router.push('/');
+        return;
+      }
+
+      // Завантажуємо дані тільки якщо користувач - адмін
       fetchPhotoReviews();
     }
-  }, [status, session, router, fetchPhotoReviews]);
+  }, [status, session?.user?.role, router, fetchPhotoReviews]);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -301,12 +307,31 @@ export default function AdminPhotoReviewsPage() {
     return `${weight} кг`;
   };
 
-  if (status === 'loading' || loading) {
+  if (status === 'loading') {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500"></div>
-          <p className="mt-2 text-gray-600">Завантаження...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Завантаження...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (status === 'unauthenticated') {
+    return null; // Редирект вже відбувся в useEffect
+  }
+
+  if (session?.user?.role !== 'admin') {
+    return null; // Редирект вже відбувся в useEffect
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Завантаження даних...</p>
         </div>
       </div>
     );
