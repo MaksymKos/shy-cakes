@@ -50,8 +50,22 @@ export default function AdminProductsPage() {
       unit: 'kg' as ProductUnit,
       available: true
     });
+    
+    // Clean up blob URLs to prevent memory leaks
+    previewUrls.forEach(url => {
+      if (url.startsWith('blob:')) {
+        URL.revokeObjectURL(url);
+      }
+    });
+    
     setSelectedFiles([]);
     setPreviewUrls([]);
+
+    // Clear the file input
+    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
   };
 
   useEffect(() => {
@@ -79,6 +93,17 @@ export default function AdminProductsPage() {
     return () => clearTimeout(timer);
   }, [session, status, router]);
 
+  // Cleanup blob URLs when component unmounts
+  useEffect(() => {
+    return () => {
+      previewUrls.forEach(url => {
+        if (url.startsWith('blob:')) {
+          URL.revokeObjectURL(url);
+        }
+      });
+    };
+  }, [previewUrls]);
+
   const fetchProducts = async () => {
     try {
       const response = await fetch('/api/products');
@@ -98,32 +123,78 @@ export default function AdminProductsPage() {
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    setSelectedFiles(files);
+    
+    // Validate file types and sizes
+    const validFiles = files.filter(file => {
+      // Check file type
+      if (!file.type.startsWith('image/')) {
+        toast.error(`Файл ${file.name} не є зображенням`);
+        return false;
+      }
+      
+      // Check file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error(`Файл ${file.name} занадто великий. Максимум 5MB`);
+        return false;
+      }
+      
+      return true;
+    });
 
-    // Create preview URLs
-    const urls = files.map(file => URL.createObjectURL(file));
+    if (validFiles.length === 0) return;
+
+    // Clean up previous preview URLs
+    previewUrls.forEach(url => {
+      if (url.startsWith('blob:')) {
+        URL.revokeObjectURL(url);
+      }
+    });
+
+    setSelectedFiles(validFiles);
+
+    // Create new preview URLs
+    const urls = validFiles.map(file => URL.createObjectURL(file));
     setPreviewUrls(urls);
+
+    if (validFiles.length !== files.length) {
+      toast.warning(`Додано ${validFiles.length} з ${files.length} файлів`);
+    } else {
+      toast.success(`Додано ${validFiles.length} файлів для завантаження`);
+    }
   };
 
   const uploadImages = async (): Promise<string[]> => {
-    const uploadPromises = selectedFiles.map(async (file) => {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('type', 'products'); // Specify content type
+    if (selectedFiles.length === 0) return [];
 
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
+    try {
+      const uploadPromises = selectedFiles.map(async (file) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('type', 'products');
+
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+          throw new Error(`Failed to upload ${file.name}: ${errorData.error}`);
+        }
+
+        const data = await response.json();
+        // Handle both possible response formats
+        return data.secure_url || data.url;
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        return data.url;
-      }
-      throw new Error('Upload failed');
-    });
-
-    return Promise.all(uploadPromises);
+      const uploadedUrls = await Promise.all(uploadPromises);
+      toast.success(`Завантажено ${uploadedUrls.length} зображень на сервер`);
+      return uploadedUrls;
+    } catch (error) {
+      console.error('Error uploading images:', error);
+      toast.error('Помилка завантаження зображень');
+      throw error;
+    }
   };
 
   const handleAddProduct = async (e: React.FormEvent) => {
@@ -176,7 +247,16 @@ export default function AdminProductsPage() {
       unit: product.unit || 'kg',
       available: product.available
     });
-    setPreviewUrls(product.images || []);
+    
+    // Clear any existing preview URLs (from new file selection)
+    previewUrls.forEach(url => {
+      if (url.startsWith('blob:')) {
+        URL.revokeObjectURL(url);
+      }
+    });
+    
+    // Don't set preview URLs to existing images - they'll be shown separately
+    setPreviewUrls([]);
     setSelectedFiles([]);
     setShowAddForm(true);
 
@@ -273,6 +353,7 @@ export default function AdminProductsPage() {
   const cancelEdit = () => {
     setEditingProduct(null);
     resetForm();
+    setShowAddForm(false);
   };
 
   if (status === 'loading') {
@@ -476,19 +557,42 @@ export default function AdminProductsPage() {
                 />
 
                 {/* New Images Preview */}
-                {previewUrls.length > 0 && !editingProduct && (
+                {previewUrls.length > 0 && (
                   <div className="mt-4">
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Попередній перегляд:</h4>
+                    <h4 className="text-sm font-medium text-gray-700 mb-2">
+                      {editingProduct ? 'Нові зображення для додавання:' : 'Попередній перегляд:'}
+                    </h4>
                     <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4">
                       {previewUrls.map((url, index) => (
-                        <Image
-                          key={index}
-                          src={url}
-                          alt={`Preview ${index + 1}`}
-                          width={120}
-                          height={120}
-                          className="object-cover rounded-lg border-2 border-gray-200"
-                        />
+                        <div key={index} className="relative group">
+                          <Image
+                            src={url}
+                            alt={`Preview ${index + 1}`}
+                            width={120}
+                            height={120}
+                            className="object-cover rounded-lg border-2 border-gray-200"
+                          />
+                          {/* Remove button for new images */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              // Clean up the blob URL before removing
+                              const urlToRemove = previewUrls[index];
+                              if (urlToRemove && urlToRemove.startsWith('blob:')) {
+                                URL.revokeObjectURL(urlToRemove);
+                              }
+
+                              // Remove the file and preview URL at this index
+                              setSelectedFiles(prev => prev.filter((_, i) => i !== index));
+                              setPreviewUrls(prev => prev.filter((_, i) => i !== index));
+                            }}
+                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                          </button>
+                        </div>
                       ))}
                     </div>
                   </div>
