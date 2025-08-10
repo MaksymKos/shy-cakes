@@ -1,7 +1,9 @@
 import {
   HeroSection,
   ServicesSection,
+  ProductsSection,
   ReviewsSwiperSection,
+  FAQSection,
   CTASection
 } from '@/components/Home';
 
@@ -10,7 +12,9 @@ export default function Home() {
     <div className="overflow-hidden">
       <HeroSection />
       <ServicesSection />
+      <ProductsSection />
       <ReviewsSwiperSection />
+      <FAQSection />
       <CTASection />
     </div>
   );

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, Autoplay, EffectCoverflow } from 'swiper/modules';
+import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 import { usePhotoReviews } from '@/store';
 import type { PhotoReview } from '@/types/database';
 
@@ -12,7 +12,6 @@ import type { PhotoReview } from '@/types/database';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import 'swiper/css/effect-coverflow';
 
 export default function ReviewsSwiperSection() {
     const [isClient, setIsClient] = useState(false);
@@ -81,24 +80,16 @@ export default function ReviewsSwiperSection() {
 
                 <div className="relative">
                     <Swiper
-                        modules={[Navigation, Pagination, Autoplay, EffectCoverflow]}
-                        spaceBetween={30}
+                        modules={[Navigation, Pagination, Autoplay]}
+                        spaceBetween={20}
                         slidesPerView={1}
-                        centeredSlides={true}
+                        centeredSlides={false}
                         autoplay={{
                             delay: 5000,
                             disableOnInteraction: false,
                             pauseOnMouseEnter: true,
                         }}
-                        speed={800}
-                        effect="coverflow"
-                        coverflowEffect={{
-                            rotate: 20,
-                            stretch: 0,
-                            depth: 150,
-                            modifier: 1.5,
-                            slideShadows: true,
-                        }}
+                        speed={300}
                         pagination={{
                             clickable: true,
                             dynamicBullets: true,
@@ -114,27 +105,27 @@ export default function ReviewsSwiperSection() {
                                 spaceBetween: 20,
                             },
                             640: {
-                                slidesPerView: 1.5,
-                                spaceBetween: 25,
+                                slidesPerView: 2,
+                                spaceBetween: 20,
                             },
                             768: {
                                 slidesPerView: 2,
-                                spaceBetween: 30,
+                                spaceBetween: 24,
                             },
                             1024: {
-                                slidesPerView: 2.5,
-                                spaceBetween: 35,
+                                slidesPerView: 3,
+                                spaceBetween: 24,
                             },
                             1280: {
                                 slidesPerView: 3,
-                                spaceBetween: 40,
+                                spaceBetween: 30,
                             },
                         }}
                         className="reviews-swiper"
                     >
                         {displayReviews.map((review: PhotoReview) => (
                             <SwiperSlide key={review._id?.toString()}>
-                                <div className="bg-white rounded-3xl overflow-hidden shadow-lg transition-shadow duration-300 hover:shadow-xl">
+                                <div className="bg-white rounded-2xl overflow-hidden shadow-lg transition-shadow duration-300 hover:shadow-xl">
                                     {/* Image */}
                                     {review.images.length > 0 && (
                                         <div className="aspect-square relative overflow-hidden">
@@ -182,12 +173,15 @@ export default function ReviewsSwiperSection() {
                                                 {formatDate(review.completedDate)}
                                             </span>
 
-                                            <button className="text-pink-600 hover:text-pink-700 font-medium text-sm flex items-center transition-colors duration-200">
+                                            <Link
+                                                href={`/reviews?open=${review._id?.toString()}`}
+                                                className="text-pink-600 hover:text-pink-700 font-medium text-sm flex items-center transition-colors duration-200"
+                                            >
                                                 Детальніше
                                                 <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                                 </svg>
-                                            </button>
+                                            </Link>
                                         </div>
                                     </div>
                                 </div>
@@ -196,13 +190,13 @@ export default function ReviewsSwiperSection() {
                     </Swiper>
 
                     {/* Custom Navigation Buttons */}
-                    <button className="swiper-button-prev-custom absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm hover:bg-white text-gray-800 w-12 h-12 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center group cursor-pointer">
+                    <button className="swiper-button-prev-custom absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm hover:bg-white text-gray-800 w-12 h-12 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center group">
                         <svg className="w-5 h-5 group-hover:-translate-x-0.5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                         </svg>
                     </button>
 
-                    <button className="swiper-button-next-custom absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm hover:bg-white text-gray-800 w-12 h-12 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center group cursor-pointer">
+                    <button className="swiper-button-next-custom absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm hover:bg-white text-gray-800 w-12 h-12 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center group">
                         <svg className="w-5 h-5 group-hover:translate-x-0.5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>

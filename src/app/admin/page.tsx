@@ -126,6 +126,20 @@ export default function AdminDashboard() {
               Управляти відгуками
             </button>
           </div>
+
+          {/* Управління FAQ */}
+          <div className="bg-white rounded-lg shadow p-6 flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-semibold mb-2">FAQ</h2>
+              <p className="text-gray-600">Редагування питань та відповідей</p>
+            </div>
+            <button
+              onClick={() => router.push('/admin/faq')}
+              className="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition-colors cursor-pointer"
+            >
+              Управляти FAQ
+            </button>
+          </div>
         </div>
       </div>
     </div>

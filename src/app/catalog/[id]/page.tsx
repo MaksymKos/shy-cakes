@@ -25,6 +25,7 @@ export default function ProductPage() {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [likedProducts, setLikedProducts] = useState<Set<string>>(new Set());
   const [quantity, setQuantity] = useState(1);
+  const [shareButtonText, setShareButtonText] = useState('📤 Поділитися');
 
   // Load liked products from localStorage
   useEffect(() => {
@@ -111,6 +112,41 @@ export default function ProductPage() {
     // Redirect to order page with product and quantity
     const orderUrl = `/order?productId=${product._id}&productName=${encodeURIComponent(product.name)}&productPrice=${product.price}&productUnit=${product.unit}&quantity=${quantity}`;
     router.push(orderUrl);
+  };
+
+  const handleShareProduct = async () => {
+    const url = window.location.href;
+
+    try {
+      await navigator.clipboard.writeText(url);
+      setShareButtonText('✅ Скопійовано!');
+
+      // Reset button text after 2 seconds
+      setTimeout(() => {
+        setShareButtonText('📤 Поділитися');
+      }, 2000);
+    } catch (error) {
+      console.error('Failed to copy URL:', error);
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = url;
+      document.body.appendChild(textArea);
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        setShareButtonText('✅ Скопійовано!');
+        setTimeout(() => {
+          setShareButtonText('📤 Поділитися');
+        }, 2000);
+      } catch (fallbackError) {
+        console.error('Fallback copy failed:', fallbackError);
+        setShareButtonText('❌ Помилка');
+        setTimeout(() => {
+          setShareButtonText('📤 Поділитися');
+        }, 2000);
+      }
+      document.body.removeChild(textArea);
+    }
   };
 
   if (loading) {
@@ -291,9 +327,6 @@ export default function ProductPage() {
                       step={product.unit === 'kg' ? 0.5 : 1}
                       className="w-20 text-center border border-gray-300 rounded px-3 py-2 text-lg font-semibold"
                     />
-                    <p className="text-xs text-gray-500 mt-1">
-                      {product.unit === 'kg' ? 'кг' : 'шт'}
-                    </p>
                   </div>
 
                   <button
@@ -343,8 +376,11 @@ export default function ProductPage() {
                     </>
                   )}
                 </button>
-                <button className="border border-gray-300 hover:border-pink-500 text-gray-700 hover:text-pink-600 py-3 px-4 rounded-lg transition-colors cursor-pointer">
-                  📤 Поділитися
+                <button
+                  onClick={handleShareProduct}
+                  className="border border-gray-300 hover:border-pink-500 text-gray-700 hover:text-pink-600 py-3 px-4 rounded-lg transition-colors cursor-pointer"
+                >
+                  {shareButtonText}
                 </button>
               </div>
             </div>
@@ -359,7 +395,7 @@ export default function ProductPage() {
                 </div>
                 <div className="flex justify-between">
                   <span>Наявність:</span>
-                  <span className="font-medium text-green-600">В наявності</span>
+                  <span className="font-medium text-blue-600">Виготовляємо під замовлення</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Одиниця виміру:</span>

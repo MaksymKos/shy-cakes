@@ -66,6 +66,9 @@ body {
 }
 
 /* Button styles */
+button {
+    cursor: pointer;
+}
 .btn {
     display: inline-flex;
     align-items: center;

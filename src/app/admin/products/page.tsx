@@ -16,6 +16,7 @@ interface Product {
   category: ProductCategoryValue;
   available: boolean;
   unit: ProductUnit;
+  showOnHomepage?: boolean;
   images?: string[];
   createdAt?: string;
   updatedAt?: string;
@@ -25,17 +26,21 @@ export default function AdminProductsPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [products, setProducts] = useState<Product[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [categoryFilter, setCategoryFilter] = useState<string>('');
+  const [homepageFilter, setHomepageFilter] = useState<string>('');
   const [newProduct, setNewProduct] = useState({
     name: '',
     description: '',
     price: '',
     category: '',
     unit: 'kg' as ProductUnit,
-    available: true
+    available: true,
+    showOnHomepage: false
   });
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
@@ -48,7 +53,8 @@ export default function AdminProductsPage() {
       price: '',
       category: '',
       unit: 'kg' as ProductUnit,
-      available: true
+      available: true,
+      showOnHomepage: false
     });
 
     // Clean up blob URLs to prevent memory leaks
@@ -110,6 +116,7 @@ export default function AdminProductsPage() {
       if (response.ok) {
         const data = await response.json();
         setProducts(data);
+        setFilteredProducts(data);
       } else {
         toast.error('Помилка завантаження товарів');
       }
@@ -120,6 +127,27 @@ export default function AdminProductsPage() {
       setLoading(false);
     }
   };
+
+  // Update filtered products when filters or products change
+  useEffect(() => {
+    let filtered = [...products];
+
+    // Filter by category
+    if (categoryFilter && categoryFilter !== '') {
+      filtered = filtered.filter(product => product.category === categoryFilter);
+    }
+
+    // Filter by homepage display
+    if (homepageFilter && homepageFilter !== '') {
+      if (homepageFilter === 'homepage') {
+        filtered = filtered.filter(product => product.showOnHomepage === true);
+      } else if (homepageFilter === 'not-homepage') {
+        filtered = filtered.filter(product => product.showOnHomepage !== true);
+      }
+    }
+
+    setFilteredProducts(filtered);
+  }, [products, categoryFilter, homepageFilter]);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -245,7 +273,8 @@ export default function AdminProductsPage() {
       price: product.price.toString(),
       category: product.category,
       unit: product.unit || 'kg',
-      available: product.available
+      available: product.available,
+      showOnHomepage: product.showOnHomepage ?? false
     });
 
     // Clear any existing preview URLs (from new file selection)
@@ -408,7 +437,12 @@ export default function AdminProductsPage() {
             <div className="h-6 w-px bg-gray-300"></div>
             <div>
               <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold">📦 Управління товарами</h1>
-              <p className="mt-2 text-gray-600 text-sm sm:text-base">Знайдено {products.length} товарів</p>
+              <p className="mt-2 text-gray-600 text-sm sm:text-base">
+                Показано {filteredProducts.length} з {products.length} товарів
+                {products.filter(p => p.showOnHomepage).length > 0 && (
+                  <span className="ml-2 text-blue-600">• {products.filter(p => p.showOnHomepage).length} на головній</span>
+                )}
+              </p>
             </div>
           </div>
 
@@ -422,6 +456,58 @@ export default function AdminProductsPage() {
           >
             + Додати товар
           </button>
+        </div>
+
+        {/* Filters */}
+        <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+            <h3 className="text-lg font-semibold text-gray-700">🔍 Фільтри:</h3>
+
+            <div className="flex flex-col sm:flex-row gap-4 flex-1">
+              <div className="flex-1 min-w-0">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Категорія</label>
+                <select
+                  value={categoryFilter}
+                  onChange={(e) => setCategoryFilter(e.target.value)}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-500 text-sm"
+                >
+                  <option value="">Всі категорії</option>
+                  {PRODUCT_CATEGORIES.map((category) => (
+                    <option key={category.value} value={category.value}>
+                      {category.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex-1 min-w-0">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Показ на головній</label>
+                <select
+                  value={homepageFilter}
+                  onChange={(e) => setHomepageFilter(e.target.value)}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-500 text-sm"
+                >
+                  <option value="">Всі товари</option>
+                  <option value="homepage">🏠 Тільки на головній</option>
+                  <option value="not-homepage">📋 Не на головній</option>
+                </select>
+              </div>
+
+              {(categoryFilter || homepageFilter) && (
+                <div className="flex items-end">
+                  <button
+                    onClick={() => {
+                      setCategoryFilter('');
+                      setHomepageFilter('');
+                    }}
+                    className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+                  >
+                    ✕ Очистити
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Add/Edit Product Form */}
@@ -502,6 +588,10 @@ export default function AdminProductsPage() {
                 </div>
 
                 <div className="flex items-center">
+
+                </div>
+
+                <div className="flex items-center direction-column gap-4">
                   <label className="flex items-center">
                     <input
                       type="checkbox"
@@ -509,7 +599,16 @@ export default function AdminProductsPage() {
                       onChange={(e) => setNewProduct({ ...newProduct, available: e.target.checked })}
                       className="w-4 h-4 text-pink-600 rounded focus:ring-pink-500"
                     />
-                    <span className="ml-2 text-sm text-gray-700">Доступний для замовлення</span>
+                    <span className="ml-2 text-sm text-gray-700">Активний товар (показувати в каталозі)</span>
+                  </label>
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={newProduct.showOnHomepage}
+                      onChange={(e) => setNewProduct({ ...newProduct, showOnHomepage: e.target.checked })}
+                      className="w-4 h-4 text-pink-600 rounded focus:ring-pink-500"
+                    />
+                    <span className="ml-2 text-sm text-gray-700">Показувати на головній сторінці</span>
                   </label>
                 </div>
               </div>
@@ -624,7 +723,7 @@ export default function AdminProductsPage() {
 
         {/* Products Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-6 sm:mb-8">
-          {products.map((product) => (
+          {filteredProducts.map((product) => (
             <div key={product._id} className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow overflow-hidden">
               {/* Product Image */}
               <div className="aspect-w-16 aspect-h-9 bg-gray-200">
@@ -649,9 +748,16 @@ export default function AdminProductsPage() {
               <div className="p-6">
                 <div className="flex justify-between items-start mb-3">
                   <h3 className="text-lg font-semibold">{product.name}</h3>
-                  <span className={`px-2 py-1 text-xs rounded ${product.available ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                    {product.available ? 'Доступний' : 'Недоступний'}
-                  </span>
+                  <div className="flex flex-col gap-1">
+                    <span className={`px-2 py-1 text-xs rounded ${product.available ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                      {product.available ? 'Активний' : 'Неактивний'}
+                    </span>
+                    {product.showOnHomepage && (
+                      <span className="px-2 py-1 text-xs rounded bg-blue-100 text-blue-800">
+                        🏠 На головній
+                      </span>
+                    )}
+                  </div>
                 </div>
 
                 <p className="text-gray-600 text-sm mb-3 line-clamp-2">{product.description}</p>
@@ -692,6 +798,21 @@ export default function AdminProductsPage() {
               className="mt-4 bg-pink-600 text-white px-6 py-2 rounded-lg hover:bg-pink-700 transition-colors cursor-pointer"
             >
               Додати перший товар
+            </button>
+          </div>
+        )}
+
+        {products.length > 0 && filteredProducts.length === 0 && !loading && (
+          <div className="text-center mt-12">
+            <p className="text-gray-500">За обраними фільтрами товари не знайдено</p>
+            <button
+              onClick={() => {
+                setCategoryFilter('');
+                setHomepageFilter('');
+              }}
+              className="mt-4 bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition-colors cursor-pointer"
+            >
+              Очистити фільтри
             </button>
           </div>
         )}

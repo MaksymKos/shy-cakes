@@ -61,7 +61,7 @@ export default function CatalogPage() {
         const response = await fetch(`/api/products?${params}`);
         if (response.ok) {
           const data = await response.json();
-          // Фільтруємо тільки доступні товари та сортуємо по категоріях
+          // Фільтруємо тільки активні товари та сортуємо по категоріях
           const availableProducts = data.filter((product: Product) => product.available);
 
           // Фільтруємо за улюбленими товарами якщо активний фільтр

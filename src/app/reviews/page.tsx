@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, useCallback } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import PageBannerSimple from '@/components/PageBannerSimple/pagebannersimple';
 
@@ -19,6 +19,7 @@ interface PhotoReview {
 
 export default function ReviewsPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [reviews, setReviews] = useState<PhotoReview[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedReview, setSelectedReview] = useState<PhotoReview | null>(null);
@@ -27,6 +28,39 @@ export default function ReviewsPage() {
   useEffect(() => {
     fetchReviews();
   }, []);
+
+  const closeModal = useCallback(() => {
+    setSelectedReview(null);
+    setSelectedImageIndex(0);
+    // Remove the 'open' parameter from URL
+    const newParams = new URLSearchParams(searchParams.toString());
+    newParams.delete('open');
+    router.replace(`/reviews${newParams.toString() ? `?${newParams.toString()}` : ''}`);
+  }, [searchParams, router]);
+
+  // Auto-open modal based on URL parameter
+  useEffect(() => {
+    const openReviewId = searchParams.get('open');
+    if (openReviewId && reviews.length > 0) {
+      const reviewToOpen = reviews.find(review => review._id === openReviewId);
+      if (reviewToOpen) {
+        setSelectedReview(reviewToOpen);
+        setSelectedImageIndex(0);
+      }
+    }
+  }, [searchParams, reviews]);
+
+  // Handle Escape key
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && selectedReview) {
+        closeModal();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [selectedReview, closeModal]);
 
   const fetchReviews = async () => {
     try {
@@ -199,11 +233,18 @@ export default function ReviewsPage() {
 
       {/* Модальне вікно перегляду */}
       {selectedReview && (
-        <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-2 sm:p-4 backdrop-blur-sm">
+        <div
+          className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-2 sm:p-4 backdrop-blur-sm"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              closeModal();
+            }
+          }}
+        >
           <div className="bg-white rounded-xl sm:rounded-2xl max-w-7xl w-full h-[95vh] sm:h-[90vh] overflow-hidden shadow-2xl">
             {/* Кнопка закриття */}
             <button
-              onClick={() => setSelectedReview(null)}
+              onClick={closeModal}
               className="absolute top-3 right-3 sm:top-6 sm:right-6 z-20 bg-white hover:bg-gray-100 text-gray-600 hover:text-gray-900 rounded-full p-2 sm:p-3 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-110 cursor-pointer"
             >
               <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
