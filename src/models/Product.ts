@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { ProductCategoryValue } from "@/constants/categories";
+import { ProductCategoryValue } from "../constants/categories";
 import { ProductUnit, PRODUCT_UNITS, DEFAULT_UNIT } from "@/constants/units";
 
 export interface IProduct {
@@ -12,6 +12,10 @@ export interface IProduct {
   available: boolean;
   unit: ProductUnit;
   showOnHomepage?: boolean;
+  packaging?: string;
+  importantInfo?: string;
+  storageConditions?: string;
+  recommendations?: string;
   createdAt: Date;
   updatedAt?: Date;
 }
@@ -25,6 +29,11 @@ export interface CreateProductInput {
   available?: boolean;
   unit?: ProductUnit;
   showOnHomepage?: boolean;
+  // Packaging and storage information
+  packaging?: string;
+  importantInfo?: string;
+  storageConditions?: string;
+  recommendations?: string;
 }
 
 export interface UpdateProductInput {
@@ -36,6 +45,11 @@ export interface UpdateProductInput {
   available?: boolean;
   unit?: ProductUnit;
   showOnHomepage?: boolean;
+  // Packaging and storage information
+  packaging?: string;
+  importantInfo?: string;
+  storageConditions?: string;
+  recommendations?: string;
 }
 
 // Validation schemas
@@ -72,6 +86,23 @@ export const validateProduct = (
     errors.push("Invalid unit type");
   }
 
+  // Validate packaging fields
+  if (product.packaging && product.packaging.length > 500) {
+    errors.push("Packaging description cannot exceed 500 characters");
+  }
+
+  if (product.importantInfo && product.importantInfo.length > 1000) {
+    errors.push("Important information cannot exceed 1000 characters");
+  }
+
+  if (product.storageConditions && product.storageConditions.length > 500) {
+    errors.push("Storage conditions cannot exceed 500 characters");
+  }
+
+  if (product.recommendations && product.recommendations.length > 500) {
+    errors.push("Recommendations cannot exceed 500 characters");
+  }
+
   return {
     isValid: errors.length === 0,
     errors,
@@ -91,6 +122,10 @@ export const createProductData = (
     available: input.available ?? true,
     unit: input.unit || DEFAULT_UNIT,
     showOnHomepage: input.showOnHomepage ?? false,
+    packaging: input.packaging?.trim() || undefined,
+    importantInfo: input.importantInfo?.trim() || undefined,
+    storageConditions: input.storageConditions?.trim() || undefined,
+    recommendations: input.recommendations?.trim() || undefined,
     createdAt: new Date(),
   };
 };
@@ -113,6 +148,14 @@ export const updateProductData = (
   if (input.unit !== undefined) updateData.unit = input.unit;
   if (input.showOnHomepage !== undefined)
     updateData.showOnHomepage = input.showOnHomepage;
+  if (input.packaging !== undefined)
+    updateData.packaging = input.packaging?.trim() || undefined;
+  if (input.importantInfo !== undefined)
+    updateData.importantInfo = input.importantInfo?.trim() || undefined;
+  if (input.storageConditions !== undefined)
+    updateData.storageConditions = input.storageConditions?.trim() || undefined;
+  if (input.recommendations !== undefined)
+    updateData.recommendations = input.recommendations?.trim() || undefined;
 
   return updateData;
 };

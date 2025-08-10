@@ -34,8 +34,8 @@ export default function ProductsSection() {
             .slice(0, 6);
           setProducts(homepageProducts);
         }
-      } catch (error) {
-        console.error('Error fetching products:', error);
+      } catch {
+        // Ignore error - will show no products
       } finally {
         setLoading(false);
       }
@@ -102,7 +102,7 @@ export default function ProductsSection() {
               href={`/catalog/${product._id}`}
               className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2"
             >
-              {/* Зображення товару */}
+              { }
               <div className="relative h-64 bg-gray-200 overflow-hidden">
                 {product.images && product.images.length > 0 ? (
                   <Image
@@ -120,14 +120,14 @@ export default function ProductsSection() {
                   </div>
                 )}
 
-                {/* Категорія */}
+                { }
                 <div className="absolute top-4 left-4">
                   <span className="bg-pink-500 text-white px-3 py-1 rounded-full text-sm font-medium">
                     {product.category}
                   </span>
                 </div>
 
-                {/* Ціна */}
+                { }
                 <div className="absolute top-4 right-4">
                   <span className="bg-white/90 backdrop-blur-sm text-gray-900 px-3 py-1 rounded-full text-sm font-bold shadow-lg">
                     {formatPrice(product.price, product.unit)}
@@ -135,7 +135,7 @@ export default function ProductsSection() {
                 </div>
               </div>
 
-              {/* Контент */}
+              { }
               <div className="p-6">
                 <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-pink-600 transition-colors duration-200">
                   {product.name}
@@ -162,7 +162,7 @@ export default function ProductsSection() {
           ))}
         </div>
 
-        {/* Кнопка "Переглянути всі" */}
+        { }
         <div className="text-center mt-12">
           <Link
             href="/catalog"

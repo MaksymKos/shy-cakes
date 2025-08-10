@@ -34,8 +34,8 @@ export default function PortfolioComponent() {
           const data = await response.json();
           setPortfolioItems(data);
         }
-      } catch (error) {
-        console.error('Fetch portfolio error:', error);
+      } catch {
+        // Ignore error - will show no portfolio items
       } finally {
         setLoading(false);
       }

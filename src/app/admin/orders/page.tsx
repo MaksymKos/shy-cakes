@@ -205,7 +205,7 @@ export default function AdminOrders() {
           </div>
         </div>
 
-        {/* Edit Modal */}
+        {}
         {showEditModal && editingOrder && (
           <EditOrderModal
             order={editingOrder}
@@ -273,7 +273,7 @@ export default function AdminOrders() {
             </button>
           </div>
 
-          {/* User Type Filters */}
+          {}
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setFilter('users')}
@@ -340,7 +340,7 @@ export default function AdminOrders() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                  {/* Customer Information */}
+                  {}
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <h4 className="font-medium text-gray-900 mb-2 flex items-center">
                       <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -367,7 +367,7 @@ export default function AdminOrders() {
                     )}
                   </div>
 
-                  {/* Product/Cake Information */}
+                  {}
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <h4 className="font-medium text-gray-900 mb-2 flex items-center">
                       {order.type === 'product' ? (
@@ -412,7 +412,7 @@ export default function AdminOrders() {
                     )}
                   </div>
 
-                  {/* Delivery Information */}
+                  {}
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <h4 className="font-medium text-gray-900 mb-2 flex items-center">
                       <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -435,7 +435,7 @@ export default function AdminOrders() {
                     )}
                   </div>
 
-                  {/* Price Information */}
+                  {}
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <h4 className="font-medium text-gray-900 mb-2 flex items-center">
                       <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -452,7 +452,7 @@ export default function AdminOrders() {
                   </div>
                 </div>
 
-                {/* Special Requests / Description */}
+                {}
                 {(order.specialRequests || order.description) && (
                   <div className="mb-4">
                     <h4 className="font-medium text-gray-900 mb-2 flex items-center">
@@ -467,7 +467,7 @@ export default function AdminOrders() {
                   </div>
                 )}
 
-                {/* Reference Images */}
+                {}
                 {order.referenceImages && order.referenceImages.length > 0 && (
                   <div className="mb-4">
                     <h4 className="font-medium text-gray-900 mb-2 flex items-center">
@@ -529,7 +529,7 @@ export default function AdminOrders() {
                     ✏️ Редагувати
                   </button>
 
-                  {/* Quick action buttons for common workflows */}
+                  {}
                   <div className="flex space-x-2">
                     {order.status === 'pending' && (
                       <>
@@ -668,7 +668,7 @@ function EditOrderModal({ order, onSave, onClose, isUpdating }: EditOrderModalPr
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
-          {/* Customer Information */}
+          {}
           <div>
             <h3 className="text-lg font-medium text-gray-900 mb-4">Інформація про клієнта</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -720,7 +720,7 @@ function EditOrderModal({ order, onSave, onClose, isUpdating }: EditOrderModalPr
             </div>
           </div>
 
-          {/* Delivery Information */}
+          {}
           <div>
             <h3 className="text-lg font-medium text-gray-900 mb-4">Доставка</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -758,7 +758,7 @@ function EditOrderModal({ order, onSave, onClose, isUpdating }: EditOrderModalPr
             </div>
           </div>
 
-          {/* Product/Cake Specific Information */}
+          {}
           <div>
             <h3 className="text-lg font-medium text-gray-900 mb-4">
               {order.type === 'product' ? 'Інформація про товар' : 'Інформація про торт'}
@@ -854,7 +854,7 @@ function EditOrderModal({ order, onSave, onClose, isUpdating }: EditOrderModalPr
             )}
           </div>
 
-          {/* Special Requests / Description */}
+          {}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               {order.type === 'product' ? 'Особливі побажання' : 'Опис замовлення'}
@@ -868,7 +868,7 @@ function EditOrderModal({ order, onSave, onClose, isUpdating }: EditOrderModalPr
             />
           </div>
 
-          {/* Action Buttons */}
+          {}
           <div className="flex justify-end gap-4 pt-4 border-t border-gray-200">
             <button
               type="button"

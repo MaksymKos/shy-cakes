@@ -75,8 +75,7 @@ export default function Profile() {
             } else {
                 setMessage({ type: 'error', text: 'Помилка завантаження профілю' });
             }
-        } catch (error) {
-            console.error('Error fetching profile:', error);
+        } catch {
             setMessage({ type: 'error', text: 'Помилка завантаження профілю' });
         } finally {
             setLoading(false);
@@ -134,8 +133,7 @@ export default function Profile() {
             } else {
                 setMessage({ type: 'error', text: data.error || 'Помилка оновлення профілю' });
             }
-        } catch (error) {
-            console.error('Error updating profile:', error);
+        } catch {
             setMessage({ type: 'error', text: 'Помилка оновлення профілю' });
         } finally {
             setSaving(false);
@@ -211,7 +209,7 @@ export default function Profile() {
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-8">
-                    {/* Personal Information */}
+                    { }
                     <div className="bg-white rounded-lg shadow-sm border border-gray-200">
                         <div className="px-6 py-4 border-b border-gray-200">
                             <h2 className="text-lg font-semibold text-gray-900 flex items-center">
@@ -276,7 +274,7 @@ export default function Profile() {
                         </div>
                     </div>
 
-                    {/* Shipping Information */}
+                    { }
                     <div className="bg-white rounded-lg shadow-sm border border-gray-200">
                         <div className="px-6 py-4 border-b border-gray-200">
                             <h2 className="text-lg font-semibold text-gray-900 flex items-center">
@@ -365,7 +363,7 @@ export default function Profile() {
                         </div>
                     </div>
 
-                    {/* Action Buttons */}
+                    { }
                     <div className="flex flex-col sm:flex-row gap-4 justify-end">
                         <button
                             type="submit"
@@ -389,7 +387,7 @@ export default function Profile() {
                     </div>
                 </form>
 
-                {/* Quick Links */}
+                { }
                 <div className="mt-12">
                     <div className="bg-pink-50 rounded-lg p-6">
                         <h3 className="text-lg font-medium text-gray-900 mb-4">Швидкі посилання</h3>

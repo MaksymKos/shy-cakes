@@ -14,7 +14,7 @@ export default function PortfolioPage() {
 
       <PortfolioComponent />
 
-      {/* Enhanced Introduction Section */}
+      {}
       <div className="bg-gradient-to-b from-white to-gray-50 py-16">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold text-gray-900 mb-6">
@@ -25,7 +25,7 @@ export default function PortfolioPage() {
             Від елегантних весільних тортів до яскравих дитячих свят - ми втілюємо ваші мрії в реальність.
           </p>
 
-          {/* Statistics */}
+          {}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
             <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
               <div className="text-3xl font-bold text-pink-600 mb-2">200+</div>
@@ -45,7 +45,7 @@ export default function PortfolioPage() {
             </div>
           </div>
 
-          {/* Call to Action */}
+          {}
           <div className="bg-gradient-to-r from-pink-500 to-purple-600 rounded-2xl p-8 text-white">
             <h3 className="text-2xl font-bold mb-4">Готові замовити свій унікальний торт?</h3>
             <p className="text-pink-100 mb-6">

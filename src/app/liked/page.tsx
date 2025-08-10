@@ -31,8 +31,8 @@ export default function LikedProductsPage() {
             try {
                 const likesArray = JSON.parse(savedLikes);
                 setLikedProducts(new Set(likesArray));
-            } catch (error) {
-                console.error('Error loading liked products:', error);
+            } catch {
+                // Ignore error - just continue without saved likes
             }
         }
         setLoading(false);
@@ -56,8 +56,8 @@ export default function LikedProductsPage() {
                     );
                     setProducts(likedProductsData);
                 }
-            } catch (error) {
-                console.error('Error fetching liked products:', error);
+            } catch {
+                // Ignore error - will show no products
             } finally {
                 setLoading(false);
             }
@@ -124,7 +124,7 @@ export default function LikedProductsPage() {
                     </div>
                 ) : (
                     <>
-                        {/* Header with clear all button */}
+                        { }
                         <div className="flex justify-between items-center mb-8">
                             <div>
                                 <h2 className="text-2xl font-bold text-gray-900">
@@ -145,7 +145,7 @@ export default function LikedProductsPage() {
                             )}
                         </div>
 
-                        {/* Products grid */}
+                        { }
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                             {products.map((product) => (
                                 <div
@@ -153,7 +153,7 @@ export default function LikedProductsPage() {
                                     onClick={() => handleProductClick(product._id)}
                                     className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1"
                                 >
-                                    {/* Product image */}
+                                    { }
                                     <div className="relative h-64 bg-gray-200">
                                         {product.images && product.images.length > 0 ? (
                                             <Image
@@ -171,14 +171,14 @@ export default function LikedProductsPage() {
                                             </div>
                                         )}
 
-                                        {/* Category */}
+                                        { }
                                         <div className="absolute top-2 left-2">
                                             <span className="bg-pink-500 text-white px-2 py-1 rounded-full text-xs font-medium">
                                                 {product.category}
                                             </span>
                                         </div>
 
-                                        {/* Remove from liked button */}
+                                        { }
                                         <button
                                             onClick={(e) => toggleLike(product._id, e)}
                                             className="absolute top-2 right-2 p-2 rounded-full bg-white/80 hover:bg-white transition-all duration-200 shadow-md hover:shadow-lg"
@@ -190,7 +190,7 @@ export default function LikedProductsPage() {
                                         </button>
                                     </div>
 
-                                    {/* Product info */}
+                                    { }
                                     <div className="p-4">
                                         <h3 className="font-semibold text-lg mb-2 text-gray-900 line-clamp-1">
                                             {product.name}
@@ -208,7 +208,7 @@ export default function LikedProductsPage() {
                                             <button
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    console.log('Quick order for:', product.name);
+                                                    // TODO: Implement quick order
                                                 }}
                                                 className="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg transition-colors duration-200 text-sm font-medium cursor-pointer"
                                             >

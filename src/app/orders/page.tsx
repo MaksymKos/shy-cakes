@@ -62,8 +62,8 @@ export default function MyOrders() {
                 const data = await response.json();
                 setOrders(data);
             }
-        } catch (error) {
-            console.error('Error fetching orders:', error);
+        } catch {
+            // Ignore error - will show no orders
         } finally {
             setLoading(false);
         }
@@ -178,7 +178,7 @@ export default function MyOrders() {
                         {orders.map((order) => (
                             <div key={order._id} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                                 <div className="p-6">
-                                    {/* Order Header */}
+                                    { }
                                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
                                         <div className="mb-2 sm:mb-0">
                                             <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
@@ -195,7 +195,7 @@ export default function MyOrders() {
                                     </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                        {/* Product/Cake Information */}
+                                        { }
                                         <div className="space-y-2">
                                             <h4 className="font-medium text-gray-900 flex items-center">
                                                 {order.type === 'product' ? (
@@ -228,7 +228,7 @@ export default function MyOrders() {
                                             )}
                                         </div>
 
-                                        {/* Delivery Information */}
+                                        { }
                                         <div className="space-y-2">
                                             <h4 className="font-medium text-gray-900 flex items-center">
                                                 <svg className="w-4 h-4 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -248,7 +248,7 @@ export default function MyOrders() {
                                             )}
                                         </div>
 
-                                        {/* Price Information */}
+                                        { }
                                         <div className="space-y-2">
                                             <h4 className="font-medium text-gray-900 flex items-center">
                                                 <svg className="w-4 h-4 mr-2 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -267,7 +267,7 @@ export default function MyOrders() {
                                         </div>
                                     </div>
 
-                                    {/* Special Requests / Description */}
+                                    { }
                                     {(order.specialRequests || order.description) && (
                                         <div className="mt-4 pt-4 border-t border-gray-200">
                                             <h4 className="font-medium text-gray-900 mb-2 flex items-center">
@@ -282,7 +282,7 @@ export default function MyOrders() {
                                         </div>
                                     )}
 
-                                    {/* Status-specific actions or info */}
+                                    { }
                                     {order.status === 'pending' && (
                                         <div className="mt-4 pt-4 border-t border-gray-200">
                                             <div className="flex items-center text-yellow-600 text-sm">
@@ -332,7 +332,7 @@ export default function MyOrders() {
                     </div>
                 )}
 
-                {/* Call to Action */}
+                { }
                 {orders.length > 0 && (
                     <div className="mt-12 text-center">
                         <div className="bg-pink-50 rounded-lg p-6">

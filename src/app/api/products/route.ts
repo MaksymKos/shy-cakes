@@ -42,8 +42,7 @@ export async function GET(request: NextRequest) {
       .toArray();
 
     return NextResponse.json(products);
-  } catch (error) {
-    console.error("Get products error:", error);
+  } catch {
     return NextResponse.json(
       { error: "Помилка отримання продуктів" },
       { status: 500 }
@@ -65,6 +64,10 @@ export async function POST(request: NextRequest) {
       available: body.available,
       unit: body.unit,
       showOnHomepage: body.showOnHomepage,
+      packaging: body.packaging,
+      importantInfo: body.importantInfo,
+      storageConditions: body.storageConditions,
+      recommendations: body.recommendations,
     };
 
     // Validate product data
@@ -94,8 +97,7 @@ export async function POST(request: NextRequest) {
       success: true,
       productId: result.insertedId,
     });
-  } catch (error) {
-    console.error("Create product error:", error);
+  } catch {
     return NextResponse.json(
       { error: "Помилка створення продукту" },
       { status: 500 }

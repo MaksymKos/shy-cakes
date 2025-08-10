@@ -3,12 +3,12 @@ import Link from 'next/link';
 export default function CTASection() {
     return (
         <section className="py-24 relative overflow-hidden">
-            {/* Background */}
+            {}
             <div className="absolute inset-0 bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600">
                 <div className="absolute inset-0 bg-black/20"></div>
             </div>
 
-            {/* Animated shapes */}
+            {}
             <div className="absolute inset-0">
                 <div className="absolute top-10 left-10 w-32 h-32 bg-white/10 rounded-full blur-xl animate-pulse"></div>
                 <div className="absolute bottom-10 right-10 w-48 h-48 bg-white/5 rounded-full blur-2xl animate-pulse delay-1000"></div>
@@ -51,7 +51,7 @@ export default function CTASection() {
                     </Link>
                 </div>
 
-                {/* Contact info */}
+                {}
                 <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
                     <div className="text-center">
                         <a

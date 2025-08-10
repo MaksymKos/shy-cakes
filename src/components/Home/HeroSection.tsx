@@ -21,10 +21,10 @@ export default function HeroSection() {
 
     return (
         <section className="relative min-h-screen flex items-center justify-center">
-            {/* Animated Background */}
+            {}
             <div className="absolute inset-0 bg-gradient-to-br from-pink-400 via-purple-500 to-indigo-600">
                 <div className="absolute inset-0 bg-black/20"></div>
-                {/* Floating particles */}
+                {}
                 <div className="absolute inset-0">
                     {isClient && particles.map((particle, i) => (
                         <div
@@ -41,7 +41,7 @@ export default function HeroSection() {
                 </div>
             </div>
 
-            {/* Hero Content */}
+            {}
             <div className="relative z-10 text-center text-white px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
                 <div className="animate-fade-in-up">
                     <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-8 leading-tight">
@@ -82,7 +82,7 @@ export default function HeroSection() {
                     </div>
                 </div>
 
-                {/* Stats */}
+                {}
                 <div className="animate-fade-in-up delay-700 mt-16">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 max-w-4xl mx-auto">
                         <div className="text-center">
@@ -105,7 +105,7 @@ export default function HeroSection() {
                 </div>
             </div>
 
-            {/* Scroll indicator */}
+            {}
             <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10">
                 <div className="animate-bounce">
                     <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -44,8 +44,7 @@ export default function FAQSection() {
             setFaqData(data);
           }
         }
-      } catch (error) {
-        console.error('Error fetching FAQ data:', error);
+      } catch {
         // Keep default data if API fails
       }
     };
@@ -114,7 +113,7 @@ export default function FAQSection() {
           ))}
         </div>
 
-        {/* Contact CTA */}
+        { }
         <div className="mt-12 text-center">
           <div className="bg-gradient-to-r from-pink-500 to-purple-600 rounded-2xl p-8 shadow-2xl">
             <h3 className="text-2xl font-bold text-white mb-3">

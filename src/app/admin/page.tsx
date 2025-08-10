@@ -57,7 +57,7 @@ export default function AdminDashboard() {
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Адмін панель</h1>
 
         <div className="space-y-4">
-          {/* Управління товарами */}
+          {}
           <div className="bg-white rounded-lg shadow p-6 flex items-center justify-between">
             <div>
               <h2 className="text-xl font-semibold mb-2">Товари</h2>
@@ -71,7 +71,7 @@ export default function AdminDashboard() {
             </button>
           </div>
 
-          {/* Управління замовленнями */}
+          {}
           <div className="bg-white rounded-lg shadow p-6 flex items-center justify-between">
             <div>
               <h2 className="text-xl font-semibold mb-2">Замовлення</h2>
@@ -85,7 +85,7 @@ export default function AdminDashboard() {
             </button>
           </div>
 
-          {/* Управління користувачами */}
+          {}
           <div className="bg-white rounded-lg shadow p-6 flex items-center justify-between">
             <div>
               <h2 className="text-xl font-semibold mb-2">Користувачі</h2>
@@ -99,7 +99,7 @@ export default function AdminDashboard() {
             </button>
           </div>
 
-          {/* Управління портфоліо */}
+          {}
           <div className="bg-white rounded-lg shadow p-6 flex items-center justify-between">
             <div>
               <h2 className="text-xl font-semibold mb-2">Портфоліо</h2>
@@ -113,7 +113,7 @@ export default function AdminDashboard() {
             </button>
           </div>
 
-          {/* Управління відгуками */}
+          {}
           <div className="bg-white rounded-lg shadow p-6 flex items-center justify-between">
             <div>
               <h2 className="text-xl font-semibold mb-2">Відгуки</h2>
@@ -127,7 +127,7 @@ export default function AdminDashboard() {
             </button>
           </div>
 
-          {/* Управління FAQ */}
+          {}
           <div className="bg-white rounded-lg shadow p-6 flex items-center justify-between">
             <div>
               <h2 className="text-xl font-semibold mb-2">FAQ</h2>
@@ -138,6 +138,20 @@ export default function AdminDashboard() {
               className="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition-colors cursor-pointer"
             >
               Управляти FAQ
+            </button>
+          </div>
+
+          {}
+          <div className="bg-white rounded-lg shadow p-6 flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-semibold mb-2">Категорії</h2>
+              <p className="text-gray-600">Управління категоріями товарів</p>
+            </div>
+            <button
+              onClick={() => router.push('/admin/categories')}
+              className="bg-amber-600 text-white px-6 py-3 rounded-lg hover:bg-amber-700 transition-colors cursor-pointer"
+            >
+              Управляти категоріями
             </button>
           </div>
         </div>

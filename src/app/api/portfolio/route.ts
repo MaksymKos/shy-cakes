@@ -11,8 +11,7 @@ export async function GET() {
       .toArray();
 
     return NextResponse.json(portfolioItems);
-  } catch (error) {
-    console.error("Get portfolio error:", error);
+  } catch {
     return NextResponse.json(
       { error: "Помилка отримання портфоліо" },
       { status: 500 }
@@ -54,8 +53,7 @@ export async function POST(request: NextRequest) {
       success: true,
       portfolioId: result.insertedId,
     });
-  } catch (error) {
-    console.error("Create portfolio item error:", error);
+  } catch {
     return NextResponse.json(
       { error: "Помилка створення елементу портфоліо" },
       { status: 500 }

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import PageBannerSimple from '@/components/PageBannerSimple/pagebannersimple';
-import { FILTER_CATEGORIES, ProductCategoryValue } from '@/constants/categories';
+import { useCategories } from '@/hooks/useCategories';
 import { UNIT_LABELS, type ProductUnit } from '@/constants/units';
 
 interface Product {
@@ -13,7 +13,7 @@ interface Product {
   name: string;
   description: string;
   price: number;
-  category: ProductCategoryValue;
+  category: string;
   images: string[];
   available: boolean;
   unit: ProductUnit; // Updated to use ProductUnit type
@@ -22,7 +22,9 @@ interface Product {
 
 export default function CatalogPage() {
   const router = useRouter();
+  const { filterCategories } = useCategories();
   const [products, setProducts] = useState<Product[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -36,8 +38,8 @@ export default function CatalogPage() {
       try {
         const likesArray = JSON.parse(savedLikes);
         setLikedProducts(new Set(likesArray));
-      } catch (error) {
-        console.error('Error loading liked products:', error);
+      } catch {
+        // Ignore error - continue without saved likes
       }
     }
   }, []);
@@ -61,41 +63,48 @@ export default function CatalogPage() {
         const response = await fetch(`/api/products?${params}`);
         if (response.ok) {
           const data = await response.json();
-          // Фільтруємо тільки активні товари та сортуємо по категоріях
-          const availableProducts = data.filter((product: Product) => product.available);
-
-          // Фільтруємо за улюбленими товарами якщо активний фільтр
-          const filteredProducts = showOnlyLiked
-            ? availableProducts.filter((product: Product) => likedProducts.has(product._id))
-            : availableProducts;
-
-          // Сортуємо продукти за порядком категорій у FILTER_CATEGORIES
-          const sortedProducts = filteredProducts.sort((a: Product, b: Product) => {
-            const aIndex = FILTER_CATEGORIES.findIndex(cat => cat.value === a.category);
-            const bIndex = FILTER_CATEGORIES.findIndex(cat => cat.value === b.category);
-
-            // Якщо категорія не знайдена, ставимо в кінець
-            const aOrder = aIndex === -1 ? 999 : aIndex;
-            const bOrder = bIndex === -1 ? 999 : bIndex;
-
-            // Спочатку сортуємо за категоріями, потім за назвою
-            if (aOrder !== bOrder) {
-              return aOrder - bOrder;
-            }
-            return a.name.localeCompare(b.name);
-          });
-
-          setProducts(sortedProducts);
+          setProducts(data.filter((product: Product) => product.available));
         }
-      } catch (error) {
-        console.error('Error fetching products:', error);
+      } catch {
+        // Ignore error - will show no products
       } finally {
         setLoading(false);
       }
     };
 
     fetchProducts();
-  }, [selectedCategory, searchTerm, showOnlyLiked, likedProducts]);
+  }, [selectedCategory, searchTerm]);
+
+  // Separate effect for filtering and sorting products
+  useEffect(() => {
+    if (products.length === 0) {
+      setFilteredProducts([]);
+      return;
+    }
+
+    // Фільтруємо за улюбленими товарами якщо активний фільтр
+    const likedFiltered = showOnlyLiked
+      ? products.filter((product: Product) => likedProducts.has(product._id))
+      : products;
+
+    // Сортуємо продукти за порядком категорій
+    const sortedProducts = likedFiltered.sort((a: Product, b: Product) => {
+      const aIndex = filterCategories.findIndex(cat => cat.value === a.category);
+      const bIndex = filterCategories.findIndex(cat => cat.value === b.category);
+
+      // Якщо категорія не знайдена, ставимо в кінець
+      const aOrder = aIndex === -1 ? 999 : aIndex;
+      const bOrder = bIndex === -1 ? 999 : bIndex;
+
+      // Спочатку сортуємо за категоріями, потім за назвою
+      if (aOrder !== bOrder) {
+        return aOrder - bOrder;
+      }
+      return a.name.localeCompare(b.name);
+    });
+
+    setFilteredProducts(sortedProducts);
+  }, [products, showOnlyLiked, likedProducts, filterCategories]);
 
   const formatPrice = (price: number, unit: ProductUnit = 'kg') => {
     const unitText = UNIT_LABELS[unit].perUnit;
@@ -138,11 +147,11 @@ export default function CatalogPage() {
       />
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
-        {/* Фільтри */}
+        { }
         <div className="mb-8">
           <div className="flex flex-col gap-4">
             <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-              {/* Пошук */}
+              { }
               <div className="w-full md:w-1/2">
                 <input
                   type="text"
@@ -153,14 +162,14 @@ export default function CatalogPage() {
                 />
               </div>
 
-              {/* Категорії */}
+              { }
               <div className="w-full md:w-1/2">
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                 >
-                  {FILTER_CATEGORIES.map((category) => (
+                  {filterCategories.map((category) => (
                     <option key={category.value} value={category.value}>
                       {category.label}
                     </option>
@@ -169,9 +178,9 @@ export default function CatalogPage() {
               </div>
             </div>
 
-            {/* Додаткові фільтри */}
+            { }
             <div className="flex flex-wrap gap-3 items-center">
-              {/* Показати тільки улюблені */}
+              { }
               <button
                 onClick={() => setShowOnlyLiked(!showOnlyLiked)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 border ${showOnlyLiked
@@ -190,21 +199,21 @@ export default function CatalogPage() {
                 )}
               </button>
 
-              {/* Показати кількість товарів */}
+              { }
               <div className="text-sm text-gray-600">
-                Знайдено товарів: <span className="font-semibold">{products.length}</span>
+                Знайдено товарів: <span className="font-semibold">{filteredProducts.length}</span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Товари */}
+        { }
         {loading ? (
           <div className="text-center py-12">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500"></div>
             <p className="mt-2 text-gray-600">Завантаження товарів...</p>
           </div>
-        ) : products.length === 0 ? (
+        ) : filteredProducts.length === 0 ? (
           <div className="text-center py-12">
             {showOnlyLiked ? (
               <>
@@ -237,13 +246,13 @@ export default function CatalogPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {products.map((product) => (
+            {filteredProducts.map((product) => (
               <div
                 key={product._id}
                 onClick={() => handleProductClick(product._id)}
                 className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1"
               >
-                {/* Зображення товару */}
+                { }
                 <div className="relative h-64 bg-gray-200">
                   {product.images && product.images.length > 0 ? (
                     <Image
@@ -261,14 +270,14 @@ export default function CatalogPage() {
                     </div>
                   )}
 
-                  {/* Категорія */}
+                  { }
                   <div className="absolute top-2 left-2">
                     <span className="bg-pink-500 text-white px-2 py-1 rounded-full text-xs font-medium">
                       {product.category}
                     </span>
                   </div>
 
-                  {/* Like button */}
+                  { }
                   <button
                     onClick={(e) => toggleLike(product._id, e)}
                     className="absolute top-2 right-2 p-2 rounded-full bg-white/80 hover:bg-white transition-all duration-200 shadow-md hover:shadow-lg"
@@ -285,7 +294,7 @@ export default function CatalogPage() {
                   </button>
                 </div>
 
-                {/* Інформація про товар */}
+                { }
                 <div className="p-4">
                   <h3 className="font-semibold text-lg mb-2 text-gray-900 line-clamp-1">
                     {product.name}
@@ -319,7 +328,7 @@ export default function CatalogPage() {
         )}
       </div>
 
-      {/* Floating liked products counter */}
+      { }
       {likedProducts.size > 0 && (
         <Link
           href="/liked"

@@ -46,7 +46,7 @@ export default function ServicesSection() {
                             key={index}
                             className="group relative bg-gradient-to-br from-gray-50 to-gray-100 rounded-3xl p-8 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-4 overflow-hidden"
                         >
-                            {/* Background animation */}
+                            {}
                             <div className="absolute inset-0 bg-gradient-to-br from-pink-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
                             <div className="relative z-10">

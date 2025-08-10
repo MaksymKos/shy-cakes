@@ -145,7 +145,7 @@ export default function FAQAdminPage() {
                         </button>
                     </div>
 
-                {/* New FAQ form */}
+                {}
                 {showNewForm && (
                     <form onSubmit={handleCreate} className="bg-gray-50 p-4 rounded-md mb-6">
                         <h3 className="text-lg font-medium mb-3">Нове питання</h3>
@@ -206,7 +206,7 @@ export default function FAQAdminPage() {
                 )}
             </div>
 
-            {/* FAQ list */}
+            {}
             <div className="space-y-6 mt-6">
               {faqs.map((faq) => (
                 <div

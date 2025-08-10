@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import PageBannerSimple from '@/components/PageBannerSimple/pagebannersimple';
-import { ProductCategoryValue } from '@/constants/categories';
+import { ProductCategoryValue } from '../../constants/categories';
 import { toast } from 'react-toastify';
 
 interface Product {
@@ -111,8 +111,8 @@ function OrderContent() {
                         setProduct(data);
                     }
                 }
-            } catch (error) {
-                console.error('Error fetching product:', error);
+            } catch {
+                // Ignore error - will redirect or show error
             } finally {
                 setLoading(false);
             }
@@ -164,14 +164,11 @@ function OrderContent() {
 
                 if (response.ok) {
                     const data = await response.json();
-                    console.log('Upload response:', data); // Debug log
                     if (data.secure_url && data.secure_url.trim() !== '') {
                         uploadedUrls.push(data.secure_url);
-                        console.log('Added URL to uploadedUrls:', data.secure_url); // Debug log
                     }
                 } else {
                     const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
-                    console.error('Upload error:', errorData);
                     toast.error(`Помилка завантаження файлу ${file.name}: ${errorData.error || 'Невідома помилка'}`);
                 }
             }
@@ -180,7 +177,6 @@ function OrderContent() {
             const validUrls = uploadedUrls.filter(url => url && url.trim() !== '');
 
             if (validUrls.length > 0) {
-                console.log('Setting formData with validUrls:', validUrls); // Debug log
                 setFormData(prev => ({
                     ...prev,
                     referenceImages: [...(prev.referenceImages || []), ...validUrls]
@@ -188,8 +184,7 @@ function OrderContent() {
                 toast.success(`${validUrls.length} зображень завантажено успішно!`);
             }
 
-        } catch (error) {
-            console.error('Error uploading images:', error);
+        } catch {
             toast.error('Помилка завантаження зображень');
         } finally {
             setUploadingImages(false);
@@ -253,8 +248,7 @@ function OrderContent() {
                 toast.error(error.message || 'Помилка при створенні замовлення');
             }
 
-        } catch (error) {
-            console.error('Error submitting order:', error);
+        } catch {
             toast.error('Помилка при відправці замовлення. Спробуйте ще раз.');
         } finally {
             setSubmitting(false);
@@ -290,7 +284,7 @@ function OrderContent() {
 
             <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-12">
                 <form onSubmit={handleSubmit} className="space-y-8">
-                    {/* Product Information */}
+                    { }
                     {product ? (
                         <div className="bg-white p-6 rounded-lg shadow-lg">
                             <h2 className="text-xl font-semibold text-gray-900 mb-4">Обраний товар</h2>
@@ -327,7 +321,7 @@ function OrderContent() {
                         </div>
                     )}
 
-                    {/* Customer Information */}
+                    { }
                     <div className="bg-white p-6 rounded-lg shadow-lg">
                         <div className="flex items-center justify-between mb-4">
                             <h2 className="text-xl font-semibold text-gray-900">Контактна інформація</h2>
@@ -401,7 +395,7 @@ function OrderContent() {
                         </div>
                     </div>
 
-                    {/* Order Details */}
+                    { }
                     <div className="bg-white p-6 rounded-lg shadow-lg">
                         <h2 className="text-xl font-semibold text-gray-900 mb-4">Деталі замовлення</h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -506,7 +500,7 @@ function OrderContent() {
                                 />
                             </div>
 
-                            {/* Photo Upload Section for Custom Orders */}
+                            { }
                             {!product && (
                                 <div className="md:col-span-2">
                                     <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -516,7 +510,7 @@ function OrderContent() {
                                         Додайте до 5 зображень, щоб показати як має виглядати ваш торт або десерт
                                     </p>
 
-                                    {/* Upload Area */}
+                                    { }
                                     <div className="space-y-4">
                                         <div className="flex items-center justify-center w-full">
                                             <label
@@ -555,7 +549,6 @@ function OrderContent() {
                                             </label>
                                         </div>
 
-                                        {/* Uploaded Images Preview */}
                                         {formData.referenceImages && formData.referenceImages.filter(url => url && url.trim() !== '').length > 0 && (
                                             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                                                 {formData.referenceImages
@@ -573,7 +566,6 @@ function OrderContent() {
                                                                         className="object-cover"
                                                                         unoptimized={true}
                                                                         onError={(e) => {
-                                                                            console.error('Image failed to load:', imageUrl);
                                                                             const target = e.target as HTMLImageElement;
                                                                             target.style.display = 'none';
                                                                         }}
@@ -605,7 +597,7 @@ function OrderContent() {
                         </div>
                     </div>
 
-                    {/* Order Summary */}
+                    { }
                     <div className="bg-gray-50 p-6 rounded-lg">
                         <h2 className="text-xl font-semibold text-gray-900 mb-4">Підсумок замовлення</h2>
                         {product ? (
@@ -627,7 +619,7 @@ function OrderContent() {
                         )}
                     </div>
 
-                    {/* Submit Buttons */}
+                    { }
                     <div className="flex flex-col sm:flex-row gap-4">
                         <button
                             type="button"

@@ -21,8 +21,7 @@ export async function GET(request: NextRequest) {
       .toArray();
 
     return NextResponse.json(reviews);
-  } catch (error) {
-    console.error("Error fetching photo reviews:", error);
+  } catch {
     return NextResponse.json(
       { error: "Помилка завантаження відгуків" },
       { status: 500 }
@@ -87,8 +86,7 @@ export async function POST(request: NextRequest) {
       },
       { status: 201 }
     );
-  } catch (error) {
-    console.error("Error creating photo review:", error);
+  } catch {
     return NextResponse.json(
       { error: "Помилка створення відгуку" },
       { status: 500 }

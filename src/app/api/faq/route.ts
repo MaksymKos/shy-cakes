@@ -73,8 +73,7 @@ export async function GET() {
     }));
 
     return NextResponse.json(serializedFaqs);
-  } catch (error) {
-    console.error("Get FAQ error:", error);
+  } catch {
     return NextResponse.json(
       { error: "Помилка отримання FAQ" },
       { status: 500 }
@@ -120,8 +119,7 @@ export async function POST(request: NextRequest) {
       success: true,
       faqId: result.insertedId,
     });
-  } catch (error) {
-    console.error("Create FAQ error:", error);
+  } catch {
     return NextResponse.json(
       { error: "Помилка створення FAQ" },
       { status: 500 }
@@ -139,8 +137,7 @@ async function initializeDefaultFAQ(db: Db) {
     }));
 
     await db.collection("faq").insertMany(faqsToInsert);
-    console.log("Default FAQ items initialized");
-  } catch (error) {
-    console.error("Error initializing default FAQ:", error);
+  } catch {
+    // Ignore initialization errors
   }
 }

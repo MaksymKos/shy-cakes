@@ -10,7 +10,7 @@ export default function Footer() {
         <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
 
-            {/* Brand Section */}
+            {}
             <div className="lg:col-span-1">
               <div className="mb-6">
                 <div className="bg-white rounded-lg p-3 inline-block">
@@ -32,7 +32,7 @@ export default function Footer() {
                 Створюємо унікальні торти з любов&apos;ю та майстерністю для ваших особливих моментів.
               </p>
 
-              {/* Social Links */}
+              {}
               <div className="flex gap-3">
                 <Link
                   href="https://www.instagram.com/shy__cakes/"
@@ -70,11 +70,11 @@ export default function Footer() {
               </div>
             </div>
 
-            {/* Navigation Menu */}
+            {}
             <div className="lg:col-span-3">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
 
-                {/* Product Categories */}
+                {}
                 <div>
                   <h3 className="text-sm font-semibold text-white mb-4 uppercase tracking-wider">
                     Каталог продукції
@@ -108,7 +108,7 @@ export default function Footer() {
                   </ul>
                 </div>
 
-                {/* Information Links */}
+                {}
                 <div>
                   <h3 className="text-sm font-semibold text-white mb-4 uppercase tracking-wider">
                     Інформація
@@ -137,7 +137,7 @@ export default function Footer() {
                   </ul>
                 </div>
 
-                {/* User Account */}
+                {}
                 <div>
                   <h3 className="text-sm font-semibold text-white mb-4 uppercase tracking-wider">
                     Особистий кабінет
@@ -164,7 +164,7 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Bottom Section */}
+          {}
           <div className="border-t border-gray-800 pt-6 mt-8">
             <div className="flex flex-col md:flex-row justify-between items-center">
               <p className="text-gray-400 text-sm mb-4 md:mb-0">

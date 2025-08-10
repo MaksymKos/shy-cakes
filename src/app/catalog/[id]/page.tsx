@@ -3,17 +3,20 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { ProductCategoryValue } from '@/constants/categories';
 
 interface Product {
   _id: string;
   name: string;
   description: string;
   price: number;
-  category: ProductCategoryValue;
+  category: string;
   images: string[];
   available: boolean;
   unit: 'kg' | 'piece'; // New field for unit type
+  packaging?: string;
+  importantInfo?: string;
+  storageConditions?: string;
+  recommendations?: string;
   createdAt: string;
 }
 
@@ -34,8 +37,8 @@ export default function ProductPage() {
       try {
         const likesArray = JSON.parse(savedLikes);
         setLikedProducts(new Set(likesArray));
-      } catch (error) {
-        console.error('Error loading liked products:', error);
+      } catch {
+        // Ignore error - just continue without saved likes
       }
     }
   }, []);
@@ -65,8 +68,7 @@ export default function ProductPage() {
         } else {
           router.push('/catalog');
         }
-      } catch (error) {
-        console.error('Error fetching product:', error);
+      } catch {
         router.push('/catalog');
       } finally {
         setLoading(false);
@@ -125,8 +127,7 @@ export default function ProductPage() {
       setTimeout(() => {
         setShareButtonText('📤 Поділитися');
       }, 2000);
-    } catch (error) {
-      console.error('Failed to copy URL:', error);
+    } catch {
       // Fallback for older browsers
       const textArea = document.createElement('textarea');
       textArea.value = url;
@@ -138,8 +139,7 @@ export default function ProductPage() {
         setTimeout(() => {
           setShareButtonText('📤 Поділитися');
         }, 2000);
-      } catch (fallbackError) {
-        console.error('Fallback copy failed:', fallbackError);
+      } catch {
         setShareButtonText('❌ Помилка');
         setTimeout(() => {
           setShareButtonText('📤 Поділитися');
@@ -403,6 +403,62 @@ export default function ProductPage() {
                 </div>
               </div>
             </div>
+
+            {/* Інформація про упаковку та зберігання - показуємо тільки якщо є хоча б одне поле */}
+            {(product.packaging || product.importantInfo || product.storageConditions || product.recommendations) && (
+              <div className="border-t pt-6">
+                <div className="space-y-6">
+                  {/* Упаковка - показуємо тільки якщо є інформація */}
+                  {product.packaging && (
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-3">Упаковка</h3>
+                      <p className="text-gray-600">
+                        {product.packaging}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Важливо знати - показуємо тільки якщо є інформація */}
+                  {product.importantInfo && (
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-3">Важливо знати</h3>
+                      <p className="text-gray-600 leading-relaxed">
+                        {product.importantInfo}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Умови зберігання - показуємо тільки якщо є інформація */}
+                  {product.storageConditions && (
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-3">Умови зберігання</h3>
+                      <p className="text-gray-600 mb-3">
+                        {product.storageConditions}
+                      </p>
+                      {product.recommendations && (
+                        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                          <p className="text-sm text-yellow-800">
+                            <span className="font-semibold">Порада:</span> {product.recommendations}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Показуємо рекомендації окремо, якщо немає умов зберігання */}
+                  {!product.storageConditions && product.recommendations && (
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-3">Рекомендації</h3>
+                      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                        <p className="text-sm text-yellow-800">
+                          <span className="font-semibold">Порада:</span> {product.recommendations}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -430,8 +486,8 @@ function SimilarProducts({ currentProduct }: { currentProduct: Product }) {
       try {
         const likesArray = JSON.parse(savedLikes);
         setLikedProducts(new Set(likesArray));
-      } catch (error) {
-        console.error('Error loading liked products:', error);
+      } catch {
+        // Ignore error - just continue without saved likes
       }
     }
   }, []);
@@ -458,8 +514,8 @@ function SimilarProducts({ currentProduct }: { currentProduct: Product }) {
             .slice(0, 4);
           setSimilarProducts(filtered);
         }
-      } catch (error) {
-        console.error('Error fetching similar products:', error);
+      } catch {
+        // Ignore error - will show "no similar products" message
       } finally {
         setLoading(false);
       }

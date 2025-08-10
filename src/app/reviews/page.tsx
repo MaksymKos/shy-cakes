@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import PageBannerSimple from '@/components/PageBannerSimple/pagebannersimple';
@@ -17,7 +17,7 @@ interface PhotoReview {
   completedDate: string; // Added property
 }
 
-export default function ReviewsPage() {
+function ReviewsContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [reviews, setReviews] = useState<PhotoReview[]>([]);
@@ -112,7 +112,7 @@ export default function ReviewsPage() {
       <div className="bg-gray-50 py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
-          {/* Відгуки */}
+          { }
           {loading ? (
             <div className="text-center py-12">
               <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500"></div>
@@ -131,7 +131,7 @@ export default function ReviewsPage() {
               {reviews.map((review) => (
                 <div key={review._id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
                   <div className="flex flex-col lg:flex-row lg:items-stretch">
-                    {/* Photo Section */}
+                    { }
                     <div className="flex flex-row items-center space-x-2 w-full lg:w-60 lg:min-w-[240px] p-4">
                       {review.images.length > 0 && (
                         <div className="relative w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0">
@@ -152,7 +152,7 @@ export default function ReviewsPage() {
                           )}
                         </div>
                       )}
-                      {/* Thumbnails if more than 1 image */}
+                      { }
                       {review.images.length > 1 && (
                         <div className="flex flex-col space-y-1 sm:space-y-2 ml-2">
                           {review.images.slice(1, 4).map((img, idx) => (
@@ -181,7 +181,7 @@ export default function ReviewsPage() {
                       )}
                     </div>
 
-                    {/* Content Section */}
+                    { }
                     <div className="flex-1 p-4 lg:p-6 flex flex-col lg:flex-row lg:items-center lg:justify-between">
                       <div className="flex-1 lg:pr-6 mb-4 lg:mb-0">
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3">
@@ -204,7 +204,7 @@ export default function ReviewsPage() {
 
                       </div>
 
-                      {/* Action Buttons */}
+                      { }
                       <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3 flex-shrink-0">
                         <button
                           onClick={() => {
@@ -231,7 +231,7 @@ export default function ReviewsPage() {
         </div>
       </div>
 
-      {/* Модальне вікно перегляду */}
+      { }
       {selectedReview && (
         <div
           className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-2 sm:p-4 backdrop-blur-sm"
@@ -242,7 +242,7 @@ export default function ReviewsPage() {
           }}
         >
           <div className="bg-white rounded-xl sm:rounded-2xl max-w-7xl w-full h-[95vh] sm:h-[90vh] overflow-hidden shadow-2xl">
-            {/* Кнопка закриття */}
+            { }
             <button
               onClick={closeModal}
               className="absolute top-3 right-3 sm:top-6 sm:right-6 z-20 bg-white hover:bg-gray-100 text-gray-600 hover:text-gray-900 rounded-full p-2 sm:p-3 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-110 cursor-pointer"
@@ -252,9 +252,9 @@ export default function ReviewsPage() {
               </svg>
             </button>
 
-            {/* Основний контент */}
+            { }
             <div className="flex flex-col lg:flex-row h-full">
-              {/* Блок зображення */}
+              { }
               <div className="w-full lg:w-1/2 relative bg-gradient-to-br from-gray-100 to-gray-200 h-1/2 lg:h-full">
                 <Image
                   src={selectedReview.images[selectedImageIndex]}
@@ -263,10 +263,10 @@ export default function ReviewsPage() {
                   className="object-contain"
                 />
 
-                {/* Градієнтні накладки для кращого контрасту */}
+                { }
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-black/10"></div>
 
-                {/* Стрілки навігації */}
+                { }
                 {selectedReview.images.length > 1 && (
                   <>
                     {selectedImageIndex > 0 && (
@@ -293,14 +293,14 @@ export default function ReviewsPage() {
                   </>
                 )}
 
-                {/* Індикатор поточного зображення */}
+                { }
                 {selectedReview.images.length > 1 && (
                   <div className="absolute bottom-3 sm:bottom-6 left-1/2 transform -translate-x-1/2 bg-black/60 backdrop-blur-sm text-white px-3 py-1 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-semibold">
                     {selectedImageIndex + 1} / {selectedReview.images.length}
                   </div>
                 )}
 
-                {/* Мініатюри внизу зображення - тільки для десктопу */}
+                { }
                 {selectedReview.images.length > 1 && (
                   <div className="hidden lg:block absolute bottom-4 left-4 right-4">
                     <div className="flex space-x-2 scrollbar-hide overflow-x-auto">
@@ -329,7 +329,7 @@ export default function ReviewsPage() {
                 )}
               </div>
 
-              {/* Блок інформації */}
+              { }
               <div className="w-full lg:w-1/2 p-4 sm:p-6 lg:p-8 flex flex-col justify-between h-1/2 lg:h-full overflow-y-auto">
                 <div className="space-y-4 sm:space-y-6">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
@@ -382,5 +382,22 @@ export default function ReviewsPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function ReviewsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 pt-20">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500"></div>
+            <p className="mt-2 text-gray-600">Завантаження відгуків...</p>
+          </div>
+        </div>
+      </div>
+    }>
+      <ReviewsContent />
+    </Suspense>
   );
 }

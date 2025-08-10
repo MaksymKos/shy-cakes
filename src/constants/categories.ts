@@ -1,19 +1,42 @@
-// Константи для категорій товарів
+// Product categories
 export const PRODUCT_CATEGORIES = [
-  { value: "Мусові торти", label: "Мусові торти" },
-  { value: "Бісквітні торти", label: "Бісквітні торти" },
-  { value: "Macarons", label: "Macarons" },
-  { value: "Ескімо", label: "Ескімо" },
-  { value: "Cake-pops", label: "Cake-pops" },
-  { value: "Подарункові набори", label: "Подарункові набори" },
+  "Мусові торти",
+  "Бісквітні торти",
+  "Macarons",
+  "Ескімо",
+  "Cake-pops",
+  "Подарункові набори",
+  "Кексики",
+  "Трайфли",
+  "Десерти",
 ] as const;
 
-// Категорії з опцією "Всі товари" для фільтрів
-export const FILTER_CATEGORIES = [
-  { value: "", label: "Всі товари" },
-  ...PRODUCT_CATEGORIES,
-] as const;
+export type ProductCategoryValue = (typeof PRODUCT_CATEGORIES)[number];
 
-// Типи для TypeScript
-export type ProductCategoryValue = (typeof PRODUCT_CATEGORIES)[number]["value"];
-export type FilterCategoryValue = (typeof FILTER_CATEGORIES)[number]["value"];
+export const DEFAULT_CATEGORY: ProductCategoryValue = "Мусові торти";
+
+// Category display names (if needed for UI)
+export const CATEGORY_LABELS: Record<ProductCategoryValue, string> = {
+  "Мусові торти": "Мусові торти",
+  "Бісквітні торти": "Бісквітні торти",
+  Macarons: "Macarons",
+  Ескімо: "Ескімо",
+  "Cake-pops": "Cake-pops",
+  "Подарункові набори": "Подарункові набори",
+  Кексики: "Кексики",
+  Трайфли: "Трайфли",
+  Десерти: "Десерти",
+};
+
+// Category descriptions (if needed)
+export const CATEGORY_DESCRIPTIONS: Record<ProductCategoryValue, string> = {
+  "Мусові торти": "Ніжні торти з муcовою начинкою",
+  "Бісквітні торти": "Класичні торти на бісквітній основі",
+  Macarons: "Французькі мигдальні тістечка",
+  Ескімо: "Морозиво на паличці в шоколадній глазурі",
+  "Cake-pops": "Тістечка на паличці",
+  "Подарункові набори": "Готові набори солодощів",
+  Кексики: "Маленькі кексики різних смаків",
+  Трайфли: "Шаровані десерти в склянках",
+  Десерти: "Різноманітні десерти та солодощі",
+};

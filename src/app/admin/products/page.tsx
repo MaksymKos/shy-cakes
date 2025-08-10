@@ -120,8 +120,7 @@ export default function AdminProductsPage() {
       } else {
         toast.error('Помилка завантаження товарів');
       }
-    } catch (error) {
-      console.error('Error fetching products:', error);
+    } catch {
       toast.error('Помилка завантаження товарів');
     } finally {
       setLoading(false);
@@ -218,10 +217,9 @@ export default function AdminProductsPage() {
       const uploadedUrls = await Promise.all(uploadPromises);
       toast.success(`Завантажено ${uploadedUrls.length} зображень на сервер`);
       return uploadedUrls;
-    } catch (error) {
-      console.error('Error uploading images:', error);
+    } catch {
       toast.error('Помилка завантаження зображень');
-      throw error;
+      throw new Error('Upload failed');
     }
   };
 
@@ -257,8 +255,7 @@ export default function AdminProductsPage() {
         const errorData = await response.json();
         toast.error(errorData.error || 'Помилка збереження товару');
       }
-    } catch (error) {
-      console.error('Error adding product:', error);
+    } catch {
       toast.error('Помилка збереження товару');
     } finally {
       setUploading(false);
@@ -331,8 +328,7 @@ export default function AdminProductsPage() {
         const errorData = await response.json();
         toast.error(errorData.error || 'Помилка оновлення товару');
       }
-    } catch (error) {
-      console.error('Error updating product:', error);
+    } catch {
       toast.error('Помилка оновлення товару');
     } finally {
       setUploading(false);
@@ -360,8 +356,7 @@ export default function AdminProductsPage() {
         const errorData = await response.json();
         toast.error(errorData.error || 'Помилка видалення товару');
       }
-    } catch (error) {
-      console.error('Error deleting product:', error);
+    } catch {
       toast.error('Помилка видалення товару');
     }
   };
@@ -473,8 +468,8 @@ export default function AdminProductsPage() {
                 >
                   <option value="">Всі категорії</option>
                   {PRODUCT_CATEGORIES.map((category) => (
-                    <option key={category.value} value={category.value}>
-                      {category.label}
+                    <option key={category} value={category}>
+                      {category}
                     </option>
                   ))}
                 </select>
@@ -540,8 +535,8 @@ export default function AdminProductsPage() {
                   >
                     <option value="">Оберіть категорію</option>
                     {PRODUCT_CATEGORIES.map((category) => (
-                      <option key={category.value} value={category.value}>
-                        {category.label}
+                      <option key={category} value={category}>
+                        {category}
                       </option>
                     ))}
                   </select>

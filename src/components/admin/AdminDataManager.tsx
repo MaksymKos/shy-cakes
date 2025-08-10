@@ -1,8 +1,4 @@
-/**
- * Example Admin Component demonstrating Zustand store usage
- * This component shows how to manage photo reviews, portfolio items, and orders
- * with automatic caching and optimistic updates
- */
+
 
 'use client';
 
@@ -52,8 +48,8 @@ export default function AdminDataManager() {
         try {
             await updatePhotoReview(reviewId, { isApproved: true });
             // The store will automatically update the UI
-        } catch (error) {
-            console.error('Failed to approve review:', error);
+        } catch {
+            // Error handling - could show toast notification
         }
     };
 
@@ -61,8 +57,8 @@ export default function AdminDataManager() {
         try {
             await deletePhotoReview(reviewId);
             // The store will automatically update the UI
-        } catch (error) {
-            console.error('Failed to delete review:', error);
+        } catch {
+            // Error handling - could show toast notification
         }
     };
 
@@ -72,19 +68,17 @@ export default function AdminDataManager() {
                 status: newStatus as 'pending' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled'
             });
             // The store will automatically update the UI
-        } catch (error) {
-            console.error('Failed to update order status:', error);
+        } catch {
+            // Error handling - could show toast notification
         }
     };
 
     const handleClearAllCaches = () => {
         clearAllCaches();
-        console.log('All caches cleared');
     };
 
     const handleRefreshAllData = async () => {
         await refetchAllData();
-        console.log('All data refreshed');
     };
 
     return (
@@ -97,8 +91,8 @@ export default function AdminDataManager() {
                                 key={tab}
                                 onClick={() => setActiveTab(tab)}
                                 className={`${activeTab === tab
-                                        ? 'border-pink-500 text-pink-600'
-                                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                                    ? 'border-pink-500 text-pink-600'
+                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                                     } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm capitalize`}
                             >
                                 {tab}
@@ -108,7 +102,7 @@ export default function AdminDataManager() {
                 </div>
 
                 <div className="p-6">
-                    {/* Cache Management */}
+                    { }
                     <div className="mb-6 flex space-x-4">
                         <button
                             onClick={handleClearAllCaches}
@@ -124,7 +118,7 @@ export default function AdminDataManager() {
                         </button>
                     </div>
 
-                    {/* Photo Reviews Tab */}
+                    { }
                     {activeTab === 'reviews' && (
                         <div>
                             <div className="flex items-center justify-between mb-4">
@@ -179,7 +173,7 @@ export default function AdminDataManager() {
                         </div>
                     )}
 
-                    {/* Portfolio Tab */}
+                    { }
                     {activeTab === 'portfolio' && (
                         <div>
                             <div className="flex items-center justify-between mb-4">
@@ -224,7 +218,7 @@ export default function AdminDataManager() {
                         </div>
                     )}
 
-                    {/* Orders Tab */}
+                    { }
                     {activeTab === 'orders' && (
                         <div>
                             <div className="flex items-center justify-between mb-4">
