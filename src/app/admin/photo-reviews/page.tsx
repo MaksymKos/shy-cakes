@@ -722,21 +722,13 @@ export default function AdminPhotoReviewsPage() {
                             className="relative group bg-gray-200 rounded-lg overflow-hidden border-2 border-gray-200 hover:border-pink-300 transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md"
                             onClick={() => window.open(image, '_blank')}
                           >
-                            <div className="aspect-square">
+                            <div className="aspect-square relative">
                               <Image
                                 src={image}
                                 alt={`Торт ${index + 1}`}
-                                width={120}
-                                height={120}
+                                fill
                                 className="object-cover rounded-lg"
                               />
-                            </div>
-                            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-200 flex items-center justify-center">
-                              <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-white rounded-full p-2">
-                                <svg className="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                </svg>
-                              </div>
                             </div>
                             <div className="absolute top-1 left-1 bg-pink-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
                               {index + 1}

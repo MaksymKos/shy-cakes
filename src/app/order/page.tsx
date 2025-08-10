@@ -240,8 +240,7 @@ function OrderContent() {
             });
 
             if (response.ok) {
-                const result = await response.json();
-                toast.success(`Замовлення успішно відправлено! Номер замовлення: ${result._id}\nМи зв'яжемося з вами найближчим часом.`);
+                toast.success('Замовлення успішно відправлено! Ми зв\'яжемося з вами найближчим часом.');
                 router.push('/catalog');
             } else {
                 const error = await response.json();

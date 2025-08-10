@@ -126,7 +126,6 @@ export default function ReviewsSwiperSection() {
                         {displayReviews.map((review: PhotoReview) => (
                             <SwiperSlide key={review._id?.toString()}>
                                 <div className="bg-white rounded-2xl overflow-hidden shadow-lg transition-shadow duration-300 hover:shadow-xl">
-                                    {}
                                     {review.images.length > 0 && (
                                         <div className="aspect-square relative overflow-hidden">
                                             <Image
@@ -135,22 +134,17 @@ export default function ReviewsSwiperSection() {
                                                 fill
                                                 className="object-cover"
                                             />
-
-                                            {}
                                             <div className="absolute top-4 right-4 bg-gradient-to-r from-pink-500 to-purple-600 text-white px-4 py-2 rounded-full font-bold text-sm shadow-lg">
                                                 {formatPrice(review.totalPrice)}
                                             </div>
-
-                                            {}
                                             {review.images.length > 1 && (
-                                                <div className="absolute top-4 left-4 bg-black/50 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm">
+                                                <div className="absolute top-4 left-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
                                                     📸 {review.images.length} фото
                                                 </div>
                                             )}
                                         </div>
                                     )}
 
-                                    {}
                                     <div className="p-6">
                                         <div className="flex items-center justify-between mb-3">
                                             <h3 className="text-xl font-bold text-gray-900">
@@ -189,14 +183,14 @@ export default function ReviewsSwiperSection() {
                         ))}
                     </Swiper>
 
-                    {}
-                    <button className="swiper-button-prev-custom absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm hover:bg-white text-gray-800 w-12 h-12 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center group">
+                    { }
+                    <button className="swiper-button-prev-custom absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white text-gray-800 w-12 h-12 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center group">
                         <svg className="w-5 h-5 group-hover:-translate-x-0.5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                         </svg>
                     </button>
 
-                    <button className="swiper-button-next-custom absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm hover:bg-white text-gray-800 w-12 h-12 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center group">
+                    <button className="swiper-button-next-custom absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white text-gray-800 w-12 h-12 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center group">
                         <svg className="w-5 h-5 group-hover:translate-x-0.5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>

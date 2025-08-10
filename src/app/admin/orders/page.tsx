@@ -205,7 +205,7 @@ export default function AdminOrders() {
           </div>
         </div>
 
-        {}
+        { }
         {showEditModal && editingOrder && (
           <EditOrderModal
             order={editingOrder}
@@ -273,7 +273,7 @@ export default function AdminOrders() {
             </button>
           </div>
 
-          {}
+          { }
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setFilter('users')}
@@ -340,7 +340,7 @@ export default function AdminOrders() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                  {}
+                  { }
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <h4 className="font-medium text-gray-900 mb-2 flex items-center">
                       <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -367,7 +367,7 @@ export default function AdminOrders() {
                     )}
                   </div>
 
-                  {}
+                  { }
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <h4 className="font-medium text-gray-900 mb-2 flex items-center">
                       {order.type === 'product' ? (
@@ -412,7 +412,7 @@ export default function AdminOrders() {
                     )}
                   </div>
 
-                  {}
+                  { }
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <h4 className="font-medium text-gray-900 mb-2 flex items-center">
                       <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -435,7 +435,7 @@ export default function AdminOrders() {
                     )}
                   </div>
 
-                  {}
+                  { }
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <h4 className="font-medium text-gray-900 mb-2 flex items-center">
                       <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -452,7 +452,7 @@ export default function AdminOrders() {
                   </div>
                 </div>
 
-                {}
+                { }
                 {(order.specialRequests || order.description) && (
                   <div className="mb-4">
                     <h4 className="font-medium text-gray-900 mb-2 flex items-center">
@@ -467,7 +467,7 @@ export default function AdminOrders() {
                   </div>
                 )}
 
-                {}
+                { }
                 {order.referenceImages && order.referenceImages.length > 0 && (
                   <div className="mb-4">
                     <h4 className="font-medium text-gray-900 mb-2 flex items-center">
@@ -481,24 +481,20 @@ export default function AdminOrders() {
                         .filter(imageUrl => imageUrl && imageUrl.trim() !== '')
                         .map((imageUrl, index) => (
                           <div key={index} className="relative group">
-                            <div className="relative w-full h-24 rounded border overflow-hidden bg-gray-100 cursor-pointer">
+                            <div
+                              className="relative w-full h-30 rounded border overflow-hidden bg-gray-100 cursor-pointer"
+                              onClick={() => window.open(imageUrl, '_blank')}
+                            >
                               <Image
                                 src={imageUrl}
                                 alt={`Референс ${index + 1}`}
                                 fill
                                 className="absolute inset-0 w-full h-full object-cover hover:opacity-90 transition-opacity"
                                 onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-                                  console.error('Image failed to load:', imageUrl);
                                   const target = e.target as HTMLImageElement;
                                   target.style.display = 'none';
                                 }}
                               />
-                              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 rounded border cursor-pointer flex items-center justify-center"
-                                onClick={() => window.open(imageUrl, '_blank')}>
-                                <svg className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
-                                </svg>
-                              </div>
                             </div>
                           </div>
                         ))}
@@ -529,7 +525,7 @@ export default function AdminOrders() {
                     ✏️ Редагувати
                   </button>
 
-                  {}
+                  { }
                   <div className="flex space-x-2">
                     {order.status === 'pending' && (
                       <>
@@ -668,7 +664,7 @@ function EditOrderModal({ order, onSave, onClose, isUpdating }: EditOrderModalPr
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
-          {}
+          { }
           <div>
             <h3 className="text-lg font-medium text-gray-900 mb-4">Інформація про клієнта</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -720,7 +716,7 @@ function EditOrderModal({ order, onSave, onClose, isUpdating }: EditOrderModalPr
             </div>
           </div>
 
-          {}
+          { }
           <div>
             <h3 className="text-lg font-medium text-gray-900 mb-4">Доставка</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -758,7 +754,7 @@ function EditOrderModal({ order, onSave, onClose, isUpdating }: EditOrderModalPr
             </div>
           </div>
 
-          {}
+          { }
           <div>
             <h3 className="text-lg font-medium text-gray-900 mb-4">
               {order.type === 'product' ? 'Інформація про товар' : 'Інформація про торт'}
@@ -854,7 +850,7 @@ function EditOrderModal({ order, onSave, onClose, isUpdating }: EditOrderModalPr
             )}
           </div>
 
-          {}
+          { }
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               {order.type === 'product' ? 'Особливі побажання' : 'Опис замовлення'}
@@ -868,7 +864,7 @@ function EditOrderModal({ order, onSave, onClose, isUpdating }: EditOrderModalPr
             />
           </div>
 
-          {}
+          { }
           <div className="flex justify-end gap-4 pt-4 border-t border-gray-200">
             <button
               type="button"
