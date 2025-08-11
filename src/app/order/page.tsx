@@ -5,7 +5,6 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import PageBannerSimple from '@/components/PageBannerSimple/pagebannersimple';
-import { ProductCategoryValue } from '../../constants/categories';
 import { toast } from 'react-toastify';
 
 interface Product {
@@ -13,7 +12,7 @@ interface Product {
     name: string;
     description: string;
     price: number;
-    category: ProductCategoryValue;
+    category: string;
     images: string[];
     available: boolean;
     unit: 'kg' | 'piece'; // New field for unit type
@@ -94,7 +93,7 @@ function OrderContent() {
                 customerName: user.name || prev.customerName,
                 customerEmail: user.email || prev.customerEmail,
                 customerPhone: user.phone || prev.customerPhone,
-                deliveryAddress: user.shippingInfo?.address 
+                deliveryAddress: user.shippingInfo?.address
                     ? `${user.shippingInfo.address}, ${user.shippingInfo.city || ''}, ${user.shippingInfo.postalCode || ''}`.replace(/,\s*,/g, ',').replace(/,\s*$/, '')
                     : prev.deliveryAddress,
             }));
@@ -166,12 +165,6 @@ function OrderContent() {
                 if (currentCount + uploadedUrls.length >= 5) {
                     toast.warning('Досягнуто максимум 5 зображень');
                     break;
-                }
-
-                // Перевірка розміру файлу (5MB)
-                if (file.size > 5 * 1024 * 1024) {
-                    toast.warning(`Файл ${file.name} завеликий (максимум 5МБ)`);
-                    continue;
                 }
 
                 // Перевірка типу файлу
@@ -299,7 +292,7 @@ function OrderContent() {
     }
 
     return (
-        <div className="">
+        <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50">
             <PageBannerSimple
                 currentPage='Замовлення'
                 title='Оформлення замовлення'
@@ -307,14 +300,18 @@ function OrderContent() {
                 image="/images/cataloge-banner.jpg"
             />
 
-            <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-12">
-                <form onSubmit={handleSubmit} className="space-y-8">
-                    { }
+            <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-16">
+                <form onSubmit={handleSubmit} className="space-y-10">
                     {product ? (
-                        <div className="bg-white p-6 rounded-lg shadow-lg">
-                            <h2 className="text-xl font-semibold text-gray-900 mb-4">Обраний товар</h2>
-                            <div className="flex gap-4">
-                                <div className="relative w-24 h-24 rounded-lg overflow-hidden bg-gray-200 flex-shrink-0">
+                        <div className="bg-white/70 backdrop-blur-sm p-8 rounded-2xl shadow-xl border border-pink-100">
+                            <div className="flex items-center gap-3 mb-6">
+                                <div className="w-8 h-8 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full flex items-center justify-center">
+                                    <span className="text-white text-sm font-bold">1</span>
+                                </div>
+                                <h2 className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">Обраний товар</h2>
+                            </div>
+                            <div className="flex gap-6 p-6 bg-gradient-to-r from-pink-50 to-purple-50 rounded-xl border border-pink-200">
+                                <div className="relative w-32 h-32 rounded-xl overflow-hidden bg-white shadow-lg flex-shrink-0 ring-4 ring-pink-100">
                                     {product.images && product.images.length > 0 ? (
                                         <Image
                                             src={product.images[0]}
@@ -324,47 +321,59 @@ function OrderContent() {
                                         />
                                     ) : (
                                         <div className="flex items-center justify-center h-full">
-                                            <div className="text-gray-400 text-2xl">📸</div>
+                                            <div className="text-gray-400 text-3xl">🍰</div>
                                         </div>
                                     )}
                                 </div>
                                 <div className="flex-1">
-                                    <h3 className="font-semibold text-lg text-gray-900">{product.name}</h3>
-                                    <p className="text-gray-600 text-sm mt-1">{product.category}</p>
-                                    <p className="text-pink-600 font-bold text-lg mt-2">
+                                    <h3 className="font-bold text-xl text-gray-900 mb-2">{product.name}</h3>
+                                    <p className="text-purple-600 font-medium text-sm mb-3 px-3 py-1 bg-purple-100 rounded-full inline-block">{product.category}</p>
+                                    <p className="text-pink-600 font-bold text-2xl">
                                         {formatPrice(product.price, product.unit)}
                                     </p>
                                 </div>
                             </div>
                         </div>
                     ) : (
-                        <div className="bg-white p-6 rounded-lg shadow-lg">
-                            <h2 className="text-xl font-semibold text-gray-900 mb-4">Індивідуальне замовлення</h2>
-                            <p className="text-gray-600">
-                                Заповніть форму нижче для індивідуального замовлення. Ми зв&apos;яжемося з вами для уточнення деталей та ціни.
-                            </p>
+                        <div className="bg-white/70 backdrop-blur-sm p-8 rounded-2xl shadow-xl border border-pink-100">
+                            <div className="flex items-center gap-3 mb-6">
+                                <div className="w-8 h-8 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full flex items-center justify-center">
+                                    <span className="text-white text-sm font-bold">✨</span>
+                                </div>
+                                <h2 className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">Індивідуальне замовлення</h2>
+                            </div>
+                            <div className="p-6 bg-gradient-to-r from-pink-50 to-purple-50 rounded-xl border border-pink-200">
+                                <p className="text-gray-700 text-lg">
+                                    Заповніть форму нижче для індивідуального замовлення. Ми зв&apos;яжемося з вами для уточнення деталей та ціни.
+                                </p>
+                            </div>
                         </div>
                     )}
 
                     {/* Референс на відгук */}
                     {formData.reviewReference && (
-                        <div className="bg-pink-50 border border-pink-200 p-6 rounded-lg shadow-lg">
-                            <h2 className="text-xl font-semibold text-pink-800 mb-4">🍰 Замовлення на основі відгуку</h2>
-                            <div className="space-y-3">
-                                <div className="bg-white p-4 rounded-lg">
-                                    <p className="text-sm text-gray-600 mb-2">Торт з відгуку:</p>
-                                    <p className="font-semibold text-gray-900">{formData.reviewReference.cakeName}</p>
+                        <div className="bg-gradient-to-r from-pink-100 to-purple-100 backdrop-blur-sm border-2 border-pink-300 p-8 rounded-2xl shadow-xl">
+                            <div className="flex items-center gap-3 mb-6">
+                                <div className="w-8 h-8 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full flex items-center justify-center">
+                                    <span className="text-white text-sm">🍰</span>
                                 </div>
-                                <div className="bg-white p-3 rounded-lg">
-                                    <p className="text-xs text-gray-500 mb-1">Посилання на відгук</p>
-                                    <a 
+                                <h2 className="text-2xl font-bold bg-gradient-to-r from-pink-700 to-purple-700 bg-clip-text text-transparent">Замовлення на основі відгуку</h2>
+                            </div>
+                            <div className="space-y-4">
+                                <div className="bg-white/80 backdrop-blur p-6 rounded-xl shadow-md border border-pink-200">
+                                    <p className="text-sm text-purple-600 font-medium mb-2">Торт з відгуку:</p>
+                                    <p className="font-bold text-xl text-gray-900">{formData.reviewReference.cakeName}</p>
+                                </div>
+                                <div className="bg-white/80 backdrop-blur p-4 rounded-xl shadow-md border border-pink-200">
+                                    <p className="text-xs text-purple-600 font-medium mb-2">Посилання на відгук</p>
+                                    <a
                                         href={`/reviews?open=${formData.reviewReference.reviewId}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="inline-flex items-center text-sm text-pink-600 hover:text-pink-800 underline"
+                                        className="inline-flex items-center text-sm font-medium text-pink-600 hover:text-pink-800 transition-colors duration-200 bg-pink-50 px-3 py-2 rounded-lg hover:bg-pink-100"
                                     >
                                         Переглянути оригінальний відгук
-                                        <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                                         </svg>
                                     </a>
@@ -374,12 +383,17 @@ function OrderContent() {
                     )}
 
                     {/* Контактна інформація */}
-                    <div className="bg-white p-6 rounded-lg shadow-lg">
-                        <h2 className="text-xl font-semibold text-gray-900 mb-4">Контактна інформація</h2>
+                    <div className="bg-white/70 backdrop-blur-sm p-8 rounded-2xl shadow-xl border border-pink-100">
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="w-8 h-8 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full flex items-center justify-center">
+                                <span className="text-white text-sm font-bold">2</span>
+                            </div>
+                            <h2 className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">Контактна інформація</h2>
+                        </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label htmlFor="customerName" className="block text-sm font-medium text-gray-700 mb-1">
+                                <label htmlFor="customerName" className="block text-sm font-semibold text-gray-700 mb-2">
                                     Ім&apos;я та прізвище *
                                 </label>
                                 <input
@@ -389,13 +403,13 @@ function OrderContent() {
                                     required
                                     value={formData.customerName}
                                     onChange={handleInputChange}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                                    className="w-full px-4 py-3 border-2 border-pink-200 rounded-xl focus:ring-4 focus:ring-pink-200 focus:border-pink-400 transition-all duration-200 bg-white/80 backdrop-blur-sm"
                                     placeholder="Введіть ваше ім&apos;я"
                                 />
                             </div>
 
                             <div>
-                                <label htmlFor="customerPhone" className="block text-sm font-medium text-gray-700 mb-1">
+                                <label htmlFor="customerPhone" className="block text-sm font-semibold text-gray-700 mb-2">
                                     Номер телефону *
                                 </label>
                                 <input
@@ -405,13 +419,13 @@ function OrderContent() {
                                     required
                                     value={formData.customerPhone}
                                     onChange={handleInputChange}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                                    placeholder="+380 XX XXX XX XX"
+                                    className="w-full px-4 py-3 border-2 border-pink-200 rounded-xl focus:ring-4 focus:ring-pink-200 focus:border-pink-400 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+                                    placeholder="+38 XXX XXX XX XX"
                                 />
                             </div>
 
                             <div className="md:col-span-2">
-                                <label htmlFor="customerEmail" className="block text-sm font-medium text-gray-700 mb-1">
+                                <label htmlFor="customerEmail" className="block text-sm font-semibold text-gray-700 mb-2">
                                     Email (необов&apos;язково)
                                 </label>
                                 <input
@@ -420,50 +434,74 @@ function OrderContent() {
                                     name="customerEmail"
                                     value={formData.customerEmail}
                                     onChange={handleInputChange}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                                    className="w-full px-4 py-3 border-2 border-pink-200 rounded-xl focus:ring-4 focus:ring-pink-200 focus:border-pink-400 transition-all duration-200 bg-white/80 backdrop-blur-sm"
                                     placeholder="your@email.com"
                                 />
                             </div>
                         </div>
                     </div>
 
-                    { }
-                    <div className="bg-white p-6 rounded-lg shadow-lg">
-                        <h2 className="text-xl font-semibold text-gray-900 mb-4">Деталі замовлення</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label htmlFor="weight" className="block text-sm font-medium text-gray-700 mb-1">
-                                    {product
-                                        ? product.unit === 'kg'
-                                            ? 'Вага (кг) *'
-                                            : 'Кількість (шт) *'
-                                        : 'Приблизна вага (кг)'
-                                    }
-                                </label>
-                                <input
-                                    type="number"
-                                    id="weight"
-                                    name="weight"
-                                    required={!!product}
-                                    min={product?.unit === 'piece' ? "1" : "0.5"}
-                                    max={product?.unit === 'piece' ? "100" : "20"}
-                                    step={product?.unit === 'piece' ? "1" : "0.5"}
-                                    value={formData.weight}
-                                    onChange={handleInputChange}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                                />
-                                <p className="text-xs text-gray-500 mt-1">
-                                    {product
-                                        ? product.unit === 'kg'
-                                            ? 'Мінімальна вага: 0.5 кг'
-                                            : 'Мінімальна кількість: 1 шт'
-                                        : 'Орієнтовна вага для розрахунку вартості'
-                                    }
-                                </p>
+                    <div className="bg-white/70 backdrop-blur-sm p-8 rounded-2xl shadow-xl border border-pink-100">
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="w-8 h-8 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full flex items-center justify-center">
+                                <span className="text-white text-sm font-bold">3</span>
+                            </div>
+                            <h2 className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">Деталі замовлення</h2>
+                        </div>
+                        <div className="space-y-6">
+                            {/* Вага та дата доставки в одній лінії */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label htmlFor="weight" className="block text-sm font-semibold text-gray-700 mb-2">
+                                        {product
+                                            ? product.unit === 'kg'
+                                                ? 'Вага (кг) *'
+                                                : 'Кількість (шт) *'
+                                            : 'Приблизна вага (кг)'
+                                        }
+                                    </label>
+                                    <input
+                                        type="number"
+                                        id="weight"
+                                        name="weight"
+                                        required={!!product}
+                                        min={product?.unit === 'piece' ? "1" : "0.5"}
+                                        max={product?.unit === 'piece' ? "100" : "20"}
+                                        step={product?.unit === 'piece' ? "1" : "0.5"}
+                                        value={formData.weight}
+                                        onChange={handleInputChange}
+                                        className="w-full px-4 py-3 border-2 border-pink-200 rounded-xl focus:ring-4 focus:ring-pink-200 focus:border-pink-400 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+                                    />
+                                    <p className="text-xs text-purple-600 font-medium mt-2 bg-purple-50 px-3 py-1 rounded-lg inline-block">
+                                        {product
+                                            ? product.unit === 'kg'
+                                                ? 'Мінімальна вага: 0.5 кг'
+                                                : 'Мінімальна кількість: 5 шт'
+                                            : 'Орієнтовна вага для розрахунку вартості'
+                                        }
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <label htmlFor="deliveryDate" className="block text-sm font-semibold text-gray-700 mb-2">
+                                        Дата доставки *
+                                    </label>
+                                    <input
+                                        type="date"
+                                        id="deliveryDate"
+                                        name="deliveryDate"
+                                        required
+                                        min={getMinDate()}
+                                        value={formData.deliveryDate}
+                                        onChange={handleInputChange}
+                                        className="w-full px-4 py-3 border-2 border-pink-200 rounded-xl focus:ring-4 focus:ring-pink-200 focus:border-pink-400 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+                                    />
+                                </div>
                             </div>
 
+                            {/* Спосіб оплати на всю ширину */}
                             <div>
-                                <label htmlFor="paymentMethod" className="block text-sm font-medium text-gray-700 mb-1">
+                                <label htmlFor="paymentMethod" className="block text-sm font-semibold text-gray-700 mb-2">
                                     Спосіб оплати *
                                 </label>
                                 <select
@@ -472,32 +510,28 @@ function OrderContent() {
                                     required
                                     value={formData.paymentMethod}
                                     onChange={handleInputChange}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                                    className="w-full px-4 py-3 pr-10 border-2 border-pink-200 rounded-xl focus:ring-4 focus:ring-pink-200 focus:border-pink-400 transition-all duration-200 bg-white/80 backdrop-blur-sm appearance-none"
+                                    style={{
+                                        backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e")`,
+                                        backgroundRepeat: 'no-repeat',
+                                        backgroundPosition: 'right 0.7rem center',
+                                        backgroundSize: '1rem'
+                                    }}
                                 >
                                     <option value="cash">Готівка при отриманні</option>
                                     <option value="card">Картка при отриманні</option>
                                     <option value="transfer">Банківський переказ</option>
                                 </select>
-                            </div>
-
-                            <div>
-                                <label htmlFor="deliveryDate" className="block text-sm font-medium text-gray-700 mb-1">
-                                    Дата доставки *
-                                </label>
-                                <input
-                                    type="date"
-                                    id="deliveryDate"
-                                    name="deliveryDate"
-                                    required
-                                    min={getMinDate()}
-                                    value={formData.deliveryDate}
-                                    onChange={handleInputChange}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                                />
+                                <div className="mt-3 p-4 bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-300 rounded-xl shadow-sm">
+                                    <p className="text-sm text-amber-800 font-semibold flex items-center gap-2">
+                                        <span className="text-lg">💡</span>
+                                        Для підтвердження замовлення необхідна передоплата 50%
+                                    </p>
+                                </div>
                             </div>
 
                             <div className="md:col-span-2">
-                                <label htmlFor="deliveryAddress" className="block text-sm font-medium text-gray-700 mb-1">
+                                <label htmlFor="deliveryAddress" className="block text-sm font-semibold text-gray-700 mb-2">
                                     Адреса доставки *
                                 </label>
                                 <input
@@ -507,23 +541,23 @@ function OrderContent() {
                                     required
                                     value={formData.deliveryAddress}
                                     onChange={handleInputChange}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                                    className="w-full px-4 py-3 border-2 border-pink-200 rounded-xl focus:ring-4 focus:ring-pink-200 focus:border-pink-400 transition-all duration-200 bg-white/80 backdrop-blur-sm"
                                     placeholder="Вулиця, номер будинку, квартира"
                                 />
                             </div>
 
                             <div className="md:col-span-2">
-                                <label htmlFor="specialRequests" className="block text-sm font-medium text-gray-700 mb-1">
+                                <label htmlFor="specialRequests" className="block text-sm font-semibold text-gray-700 mb-2">
                                     {product ? 'Особливі побажання' : 'Опис бажаного товару *'}
                                 </label>
                                 <textarea
                                     id="specialRequests"
                                     name="specialRequests"
-                                    rows={product ? 3 : 5}
+                                    rows={product ? 4 : 6}
                                     required={!product}
                                     value={formData.specialRequests}
                                     onChange={handleInputChange}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                                    className="w-full px-4 py-3 border-2 border-pink-200 rounded-xl focus:ring-4 focus:ring-pink-200 focus:border-pink-400 transition-all duration-200 bg-white/80 backdrop-blur-sm resize-none"
                                     placeholder={
                                         product
                                             ? "Напишіть особливі побажання щодо оформлення, доставки тощо..."
@@ -532,7 +566,6 @@ function OrderContent() {
                                 />
                             </div>
 
-                            { }
                             {!product && (
                                 <div className="md:col-span-2">
                                     <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -542,7 +575,6 @@ function OrderContent() {
                                         Додайте до 5 зображень, щоб показати як має виглядати ваш торт або десерт
                                     </p>
 
-                                    { }
                                     <div className="space-y-4">
                                         <div className="flex items-center justify-center w-full">
                                             <label
@@ -629,29 +661,6 @@ function OrderContent() {
                         </div>
                     </div>
 
-                    { }
-                    <div className="bg-gray-50 p-6 rounded-lg">
-                        <h2 className="text-xl font-semibold text-gray-900 mb-4">Підсумок замовлення</h2>
-                        {product ? (
-                            <div className="space-y-2">
-                                <div className="flex justify-between text-gray-600">
-                                    <span>{product.name} × {formData.weight} {product.unit === 'kg' ? 'кг' : 'шт'}</span>
-                                    <span>{formatPrice(product.price, product.unit).replace(/\s*[\/]\s*(кг|шт)/, '')} × {formData.weight}</span>
-                                </div>
-                                <div className="border-t pt-2 flex justify-between text-lg font-semibold text-gray-900">
-                                    <span>Загальна сума:</span>
-                                    <span className="text-pink-600">{formatPrice(calculateTotal())}</span>
-                                </div>
-                            </div>
-                        ) : (
-                            <div className="text-center text-gray-600">
-                                <p className="mb-2">Індивідуальне замовлення</p>
-                                <p className="text-sm">Вартість буде розрахована після уточнення деталей</p>
-                            </div>
-                        )}
-                    </div>
-
-                    { }
                     <div className="flex flex-col sm:flex-row gap-4">
                         <button
                             type="button"

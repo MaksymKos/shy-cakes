@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import Image from 'next/image';
-import { PRODUCT_CATEGORIES, ProductCategoryValue } from '@/constants/categories';
+import { useCategories } from '@/hooks/useCategories';
 import { PRODUCT_UNITS, UNIT_LABELS, type ProductUnit } from '@/constants/units';
 
 interface Product {
@@ -13,7 +13,7 @@ interface Product {
   name: string;
   description: string;
   price: number;
-  category: ProductCategoryValue;
+  category: string;
   available: boolean;
   unit: ProductUnit;
   showOnHomepage?: boolean;
@@ -25,6 +25,7 @@ interface Product {
 export default function AdminProductsPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const { productCategories } = useCategories();
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -467,9 +468,9 @@ export default function AdminProductsPage() {
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-500 text-sm"
                 >
                   <option value="">Всі категорії</option>
-                  {PRODUCT_CATEGORIES.map((category) => (
-                    <option key={category} value={category}>
-                      {category}
+                  {productCategories.map((category) => (
+                    <option key={category.value} value={category.value}>
+                      {category.label}
                     </option>
                   ))}
                 </select>
@@ -534,9 +535,9 @@ export default function AdminProductsPage() {
                     className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-500"
                   >
                     <option value="">Оберіть категорію</option>
-                    {PRODUCT_CATEGORIES.map((category) => (
-                      <option key={category} value={category}>
-                        {category}
+                    {productCategories.map((category) => (
+                      <option key={category.value} value={category.value}>
+                        {category.label}
                       </option>
                     ))}
                   </select>

@@ -1,5 +1,4 @@
 import { ObjectId } from "mongodb";
-import { ProductCategoryValue } from "../constants/categories";
 import { ProductUnit, PRODUCT_UNITS, DEFAULT_UNIT } from "@/constants/units";
 
 export interface IProduct {
@@ -7,7 +6,7 @@ export interface IProduct {
   name: string;
   description: string;
   price: number;
-  category: ProductCategoryValue;
+  category: string;
   images: string[];
   available: boolean;
   unit: ProductUnit;
@@ -24,7 +23,7 @@ export interface CreateProductInput {
   name: string;
   description: string;
   price: number;
-  category: ProductCategoryValue;
+  category: string;
   images?: string[];
   available?: boolean;
   unit?: ProductUnit;
@@ -40,7 +39,7 @@ export interface UpdateProductInput {
   name?: string;
   description?: string;
   price?: number;
-  category?: ProductCategoryValue;
+  category?: string;
   images?: string[];
   available?: boolean;
   unit?: ProductUnit;

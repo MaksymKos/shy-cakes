@@ -4,14 +4,13 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import PageBannerSimple from '@/components/PageBannerSimple/pagebannersimple';
-import { ProductCategoryValue } from '@/constants/categories';
 
 interface Product {
     _id: string;
     name: string;
     description: string;
     price: number;
-    category: ProductCategoryValue;
+    category: string;
     images: string[];
     available: boolean;
     unit: 'kg' | 'piece'; // New field for unit type

@@ -1,8 +1,12 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useCategories } from "@/hooks/useCategories";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const { productCategories } = useCategories();
 
   return (
     <>
@@ -10,7 +14,7 @@ export default function Footer() {
         <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
 
-            {}
+            { }
             <div className="lg:col-span-1">
               <div className="mb-6">
                 <div className="bg-white rounded-lg p-3 inline-block">
@@ -32,7 +36,7 @@ export default function Footer() {
                 Створюємо унікальні торти з любов&apos;ю та майстерністю для ваших особливих моментів.
               </p>
 
-              {}
+              { }
               <div className="flex gap-3">
                 <Link
                   href="https://www.instagram.com/shy__cakes/"
@@ -70,11 +74,11 @@ export default function Footer() {
               </div>
             </div>
 
-            {}
+            { }
             <div className="lg:col-span-3">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
 
-                {}
+                { }
                 <div>
                   <h3 className="text-sm font-semibold text-white mb-4 uppercase tracking-wider">
                     Каталог продукції
@@ -85,30 +89,20 @@ export default function Footer() {
                         Всі торти
                       </Link>
                     </li>
-                    <li>
-                      <Link href="/catalog" className="text-gray-300 hover:text-white transition-colors">
-                        Мусові торти
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/catalog" className="text-gray-300 hover:text-white transition-colors">
-                        Бісквітні торти
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/catalog" className="text-gray-300 hover:text-white transition-colors">
-                        Macarons
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/catalog" className="text-gray-300 hover:text-white transition-colors">
-                        Cake-pops
-                      </Link>
-                    </li>
+                    {productCategories.map((category) => (
+                      <li key={category.value}>
+                        <Link
+                          href={`/catalog?category=${encodeURIComponent(category.value)}`}
+                          className="text-gray-300 hover:text-white transition-colors"
+                        >
+                          {category.label}
+                        </Link>
+                      </li>
+                    ))}
                   </ul>
                 </div>
 
-                {}
+                { }
                 <div>
                   <h3 className="text-sm font-semibold text-white mb-4 uppercase tracking-wider">
                     Інформація
@@ -137,7 +131,7 @@ export default function Footer() {
                   </ul>
                 </div>
 
-                {}
+                { }
                 <div>
                   <h3 className="text-sm font-semibold text-white mb-4 uppercase tracking-wider">
                     Особистий кабінет
@@ -164,7 +158,7 @@ export default function Footer() {
             </div>
           </div>
 
-          {}
+          { }
           <div className="border-t border-gray-800 pt-6 mt-8">
             <div className="flex flex-col md:flex-row justify-between items-center">
               <p className="text-gray-400 text-sm mb-4 md:mb-0">
