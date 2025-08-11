@@ -61,6 +61,7 @@ export async function POST(request: NextRequest) {
       productUnit,
       totalAmount,
       referenceImages, // Add reference images field
+      reviewReference, // Add review reference field
     } = body;
 
     // Determine if this is a guest order or from a logged-in user
@@ -148,6 +149,7 @@ export async function POST(request: NextRequest) {
         productUnit,
         totalAmount: parseFloat(totalAmount),
         referenceImages: referenceImages || [], // Add reference images
+        reviewReference: reviewReference || null, // Add review reference
         status: "pending",
         // User association fields
         userId,
@@ -171,6 +173,7 @@ export async function POST(request: NextRequest) {
         paymentMethod,
         totalAmount: parseFloat(totalAmount) || 0,
         referenceImages: referenceImages || [], // Add reference images for custom orders
+        reviewReference: reviewReference || null, // Add review reference
         status: "pending",
         // User association fields
         userId,

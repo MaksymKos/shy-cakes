@@ -34,6 +34,10 @@ interface Order {
   paymentMethod?: string;
   totalAmount?: number;
   referenceImages?: string[]; // Add reference images field
+  reviewReference?: {
+    reviewId: string;
+    cakeName: string;
+  };
 
   // Legacy cake order fields
   cakeType?: string;
@@ -498,6 +502,40 @@ export default function AdminOrders() {
                             </div>
                           </div>
                         ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Референс на відгук */}
+                {order.reviewReference && (
+                  <div className="mb-4">
+                    <h4 className="font-medium text-gray-900 mb-2 flex items-center">
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-1l-4 4z" />
+                      </svg>
+                      🍰 Замовлення на основі відгуку
+                    </h4>
+                    <div className="bg-pink-50 border border-pink-200 p-3 rounded">
+                      <div className="space-y-2">
+                        <div>
+                          <span className="text-sm text-gray-600">Торт з відгуку:</span>
+                          <p className="font-semibold text-gray-900">{order.reviewReference.cakeName}</p>
+                        </div>
+                        <div>
+                          <span className="text-sm text-gray-600">Посилання на відгук:</span>
+                          <a 
+                            href={`/reviews?open=${order.reviewReference.reviewId}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="ml-2 inline-flex items-center text-sm text-pink-600 hover:text-pink-800 underline"
+                          >
+                            Переглянути оригінальний відгук
+                            <svg className="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                          </a>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 )}

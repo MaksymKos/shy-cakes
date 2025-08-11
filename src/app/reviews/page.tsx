@@ -14,7 +14,7 @@ interface PhotoReview {
   images: string[];
   isApproved: boolean;
   createdAt: string;
-  completedDate: string; // Added property
+  completedDate: string;
 }
 
 function ReviewsContent() {
@@ -32,13 +32,11 @@ function ReviewsContent() {
   const closeModal = useCallback(() => {
     setSelectedReview(null);
     setSelectedImageIndex(0);
-    // Remove the 'open' parameter from URL
     const newParams = new URLSearchParams(searchParams.toString());
     newParams.delete('open');
     router.replace(`/reviews${newParams.toString() ? `?${newParams.toString()}` : ''}`);
   }, [searchParams, router]);
 
-  // Auto-open modal based on URL parameter
   useEffect(() => {
     const openReviewId = searchParams.get('open');
     if (openReviewId && reviews.length > 0) {
@@ -50,7 +48,6 @@ function ReviewsContent() {
     }
   }, [searchParams, reviews]);
 
-  // Handle Escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && selectedReview) {
@@ -70,14 +67,13 @@ function ReviewsContent() {
         setReviews(data);
       }
     } catch {
-      // Error handling already done by toast
     } finally {
       setLoading(false);
     }
   };
 
   const handleOrderSame = (review: PhotoReview) => {
-    router.push(`/contact?description=${encodeURIComponent(review.cakeDescription)}&price=${review.totalPrice}&weight=${review.totalWeight}`);
+    router.push(`/order?description=${encodeURIComponent(review.cakeDescription)}&price=${review.totalPrice}&weight=${review.totalWeight}&reviewId=${review._id}&cakeName=${encodeURIComponent(review.cakeName)}`);
   };
 
   const nextImage = () => {
@@ -93,7 +89,7 @@ function ReviewsContent() {
   };
 
   const formatPrice = (price: number) => {
-    return `${Math.floor(price)} ₴`;
+    return `${price} ₴`;
   };
 
   const formatWeight = (weight: number) => {

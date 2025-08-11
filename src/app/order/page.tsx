@@ -30,6 +30,10 @@ interface OrderFormData {
     specialRequests: string;
     paymentMethod: 'cash' | 'card' | 'transfer';
     referenceImages?: string[];
+    reviewReference?: {
+        reviewId: string;
+        cakeName: string;
+    };
 }
 
 export default function OrderPage() {
@@ -96,6 +100,26 @@ function OrderContent() {
             }));
         }
     }, [session, status]);
+
+    // Handle review reference parameters
+    useEffect(() => {
+        const reviewId = searchParams.get('reviewId');
+        const cakeName = searchParams.get('cakeName');
+        const description = searchParams.get('description');
+        const weight = searchParams.get('weight');
+
+        if (reviewId && cakeName) {
+            setFormData(prev => ({
+                ...prev,
+                specialRequests: description || prev.specialRequests,
+                weight: weight ? parseFloat(weight) : prev.weight,
+                reviewReference: {
+                    reviewId,
+                    cakeName
+                }
+            }));
+        }
+    }, [searchParams]);
 
     // Load product if productId is provided
     useEffect(() => {
@@ -322,28 +346,36 @@ function OrderContent() {
                         </div>
                     )}
 
-                    { }
-                    <div className="bg-white p-6 rounded-lg shadow-lg">
-                        <h2 className="text-xl font-semibold text-gray-900 mb-4">Контактна інформація</h2>
-
-                        {session?.user && (session.user as typeof session.user & { shippingInfo?: { address: string; city: string } }).shippingInfo?.address && (
-                            <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                                <div className="flex items-start text-blue-700 text-sm">
-                                    <svg className="w-4 h-4 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    <div>
-                                        <div className="font-medium">Інформація автоматично заповнена з вашого профілю</div>
-                                        <div className="mt-1">
-                                            Адреса: {(session.user as typeof session.user & { shippingInfo?: { address: string; city: string } }).shippingInfo?.address}, {(session.user as typeof session.user & { shippingInfo?: { address: string; city: string } }).shippingInfo?.city}
-                                        </div>
-                                        <a href="/profile" className="text-blue-600 hover:text-blue-800 underline">
-                                            Редагувати в профілі
-                                        </a>
-                                    </div>
+                    {/* Референс на відгук */}
+                    {formData.reviewReference && (
+                        <div className="bg-pink-50 border border-pink-200 p-6 rounded-lg shadow-lg">
+                            <h2 className="text-xl font-semibold text-pink-800 mb-4">🍰 Замовлення на основі відгуку</h2>
+                            <div className="space-y-3">
+                                <div className="bg-white p-4 rounded-lg">
+                                    <p className="text-sm text-gray-600 mb-2">Торт з відгуку:</p>
+                                    <p className="font-semibold text-gray-900">{formData.reviewReference.cakeName}</p>
+                                </div>
+                                <div className="bg-white p-3 rounded-lg">
+                                    <p className="text-xs text-gray-500 mb-1">Посилання на відгук</p>
+                                    <a 
+                                        href={`/reviews?open=${formData.reviewReference.reviewId}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center text-sm text-pink-600 hover:text-pink-800 underline"
+                                    >
+                                        Переглянути оригінальний відгук
+                                        <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                        </svg>
+                                    </a>
                                 </div>
                             </div>
-                        )}
+                        </div>
+                    )}
+
+                    {/* Контактна інформація */}
+                    <div className="bg-white p-6 rounded-lg shadow-lg">
+                        <h2 className="text-xl font-semibold text-gray-900 mb-4">Контактна інформація</h2>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
