@@ -43,7 +43,7 @@ export default function HeroSection() {
 
             {}
             <div className="relative z-10 text-center text-white px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
-                <div className="animate-fade-in-up">
+                <div className="animate-fade-in-up opacity-0">
                     <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-8 leading-tight">
                         <span className="block bg-gradient-to-r from-pink-200 to-white bg-clip-text text-transparent">
                             Shy Cakes
@@ -54,13 +54,13 @@ export default function HeroSection() {
                     </h1>
                 </div>
 
-                <div className="animate-fade-in-up delay-300">
+                <div className="animate-fade-in-up delay-300 opacity-0">
                     <p className="text-xl md:text-2xl mb-12 max-w-3xl mx-auto leading-relaxed opacity-90 font-light">
                         Авторські торти, що перетворюють особливі моменти у незабутні спогади
                     </p>
                 </div>
 
-                <div className="animate-fade-in-up delay-500">
+                <div className="animate-fade-in-up delay-500 opacity-0">
                     <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
                         <Link
                             href="/catalog"
@@ -81,31 +81,9 @@ export default function HeroSection() {
                         </Link>
                     </div>
                 </div>
-
-                {}
-                <div className="animate-fade-in-up delay-700 mt-16">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 max-w-4xl mx-auto">
-                        <div className="text-center">
-                            <div className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2">200+</div>
-                            <div className="text-xs md:text-sm opacity-80">Виконаних робіт</div>
-                        </div>
-                        <div className="text-center">
-                            <div className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2">150+</div>
-                            <div className="text-xs md:text-sm opacity-80">Задоволених клієнтів</div>
-                        </div>
-                        <div className="text-center">
-                            <div className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2">50+</div>
-                            <div className="text-xs md:text-sm opacity-80">Унікальних дизайнів</div>
-                        </div>
-                        <div className="text-center">
-                            <div className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2">100%</div>
-                            <div className="text-xs md:text-sm opacity-80">Натуральні інгредієнти</div>
-                        </div>
-                    </div>
-                </div>
             </div>
 
-            {}
+            {/* Scroll indicator */}
             <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10">
                 <div className="animate-bounce">
                     <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">

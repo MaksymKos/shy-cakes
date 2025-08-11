@@ -22,7 +22,7 @@ export default function Header() {
                             height={80}
                             alt='Shy Cakes Logo'
                             priority
-                            className="h-auto w-auto"
+                            className="h-25 w-auto"
                         />
                     </Link>
                 </div>
@@ -46,9 +46,8 @@ export default function Header() {
                 </PopoverGroup>
                 <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:items-center lg:gap-4">
                     {status === "loading" ? (
-                        <div className="flex gap-3">
-                            <div className="h-10 w-20 bg-gray-200 rounded-lg animate-pulse"></div>
-                            <div className="h-10 w-24 bg-gray-200 rounded-lg animate-pulse"></div>
+                        <div className="flex items-center gap-3">
+                            <div className="h-10 w-26 bg-gray-200 rounded-md animate-pulse"></div>
                         </div>
                     ) : session ? (
                         <Popover className="relative">
@@ -138,18 +137,31 @@ export default function Header() {
                             )}
                         </Popover>
                     ) : (
-                        <div className="flex gap-3">
+                        <div className="flex items-center gap-3">
                             <Link
                                 href="/auth/signin"
-                                className="text-pink-600 border border-pink-600 hover:bg-pink-50 font-medium rounded-lg text-sm px-5 py-2.5 text-center transition-colors duration-200"
+                                className="p-2 text-gray-700 hover:text-pink-600 transition-colors rounded-md hover:bg-pink-50"
+                                title="Увійти в аккаунт"
                             >
-                                Увійти
+                                <UserIcon className="h-6 w-6" />
                             </Link>
                             <Link
-                                href="/auth/signup"
-                                className="text-white bg-gradient-to-r from-pink-400 via-pink-500 to-pink-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-pink-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center transition-all duration-200"
+                                href="/liked"
+                                className="p-2 text-gray-700 hover:text-pink-600 transition-colors rounded-md hover:bg-pink-50"
+                                title="Улюблені товари"
                             >
-                                Реєстрація
+                                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                </svg>
+                            </Link>
+                            <Link
+                                href="/order"
+                                className="p-2 text-gray-700 hover:text-pink-600 transition-colors rounded-md hover:bg-pink-50"
+                                title="Індивідуальне замовлення"
+                            >
+                                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                </svg>
                             </Link>
                         </div>
                     )}
@@ -250,17 +262,31 @@ export default function Header() {
                                     <div className="space-y-3">
                                         <Link
                                             href="/auth/signin"
-                                            className="mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold text-pink-600 hover:bg-pink-50 transition-colors"
+                                            className="mx-3 flex items-center gap-3 rounded-lg px-3 py-2.5 text-base font-semibold text-gray-900 hover:bg-pink-50 hover:text-pink-600 transition-colors"
                                             onClick={() => setMobileMenuOpen(false)}
                                         >
-                                            Увійти
+                                            <UserIcon className="h-5 w-5" />
+                                            Увійти в аккаунт
                                         </Link>
                                         <Link
-                                            href="/auth/signup"
-                                            className="mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold text-white bg-pink-600 hover:bg-pink-700 transition-colors"
+                                            href="/liked"
+                                            className="mx-3 flex items-center gap-3 rounded-lg px-3 py-2.5 text-base font-semibold text-gray-900 hover:bg-pink-50 hover:text-pink-600 transition-colors"
                                             onClick={() => setMobileMenuOpen(false)}
                                         >
-                                            Реєстрація
+                                            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                            </svg>
+                                            Улюблені товари
+                                        </Link>
+                                        <Link
+                                            href="/order"
+                                            className="mx-3 flex items-center gap-3 rounded-lg px-3 py-2.5 text-base font-semibold text-gray-900 hover:bg-pink-50 hover:text-pink-600 transition-colors"
+                                            onClick={() => setMobileMenuOpen(false)}
+                                        >
+                                            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                            </svg>
+                                            Індивідуальне замовлення
                                         </Link>
                                     </div>
                                 )}

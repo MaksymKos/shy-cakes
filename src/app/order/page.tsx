@@ -90,7 +90,9 @@ function OrderContent() {
                 customerName: user.name || prev.customerName,
                 customerEmail: user.email || prev.customerEmail,
                 customerPhone: user.phone || prev.customerPhone,
-                deliveryAddress: user.shippingInfo?.address || prev.deliveryAddress,
+                deliveryAddress: user.shippingInfo?.address 
+                    ? `${user.shippingInfo.address}, ${user.shippingInfo.city || ''}, ${user.shippingInfo.postalCode || ''}`.replace(/,\s*,/g, ',').replace(/,\s*$/, '')
+                    : prev.deliveryAddress,
             }));
         }
     }, [session, status]);
@@ -322,24 +324,23 @@ function OrderContent() {
 
                     { }
                     <div className="bg-white p-6 rounded-lg shadow-lg">
-                        <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-xl font-semibold text-gray-900">Контактна інформація</h2>
-                            {session?.user && (
-                                <div className="text-sm text-blue-600">
-                                    <a href="/profile" className="hover:text-blue-800 transition-colors">
-                                        💾 Зберегти цю інформацію в профілі
-                                    </a>
-                                </div>
-                            )}
-                        </div>
+                        <h2 className="text-xl font-semibold text-gray-900 mb-4">Контактна інформація</h2>
 
-                        {session?.user && (session.user as typeof session.user & { shippingInfo?: { address: string } }).shippingInfo && (
-                            <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
-                                <div className="flex items-center text-green-700 text-sm">
-                                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        {session?.user && (session.user as typeof session.user & { shippingInfo?: { address: string; city: string } }).shippingInfo?.address && (
+                            <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                                <div className="flex items-start text-blue-700 text-sm">
+                                    <svg className="w-4 h-4 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
-                                    Форма автоматично заповнена з вашого профілю
+                                    <div>
+                                        <div className="font-medium">Інформація автоматично заповнена з вашого профілю</div>
+                                        <div className="mt-1">
+                                            Адреса: {(session.user as typeof session.user & { shippingInfo?: { address: string; city: string } }).shippingInfo?.address}, {(session.user as typeof session.user & { shippingInfo?: { address: string; city: string } }).shippingInfo?.city}
+                                        </div>
+                                        <a href="/profile" className="text-blue-600 hover:text-blue-800 underline">
+                                            Редагувати в профілі
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         )}

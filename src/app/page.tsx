@@ -1,6 +1,8 @@
 import {
   HeroSection,
   ServicesSection,
+  StatsSection,
+  ProcessSection,
   ProductsSection,
   ReviewsSwiperSection,
   FAQSection,
@@ -13,7 +15,9 @@ export default function Home() {
       <HeroSection />
       <ServicesSection />
       <ProductsSection />
+      <StatsSection />
       <ReviewsSwiperSection />
+      <ProcessSection />
       <FAQSection />
       <CTASection />
     </div>

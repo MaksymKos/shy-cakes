@@ -13,22 +13,22 @@ export default function FAQSection() {
   const [faqData, setFaqData] = useState<FAQItem[]>([
     {
       id: 1,
-      question: "Питання 1?",
-      answer: "Відповідь на перше питання. Тут буде детальна інформація."
+      question: "Які смаки тортів у вас є?",
+      answer: "Ми пропонуємо широкий асортимент смаків: класичний бісквіт з вершковим кремом, шоколадний торт, червоний оксамит, морквяний торт, лимонний, клубничний, карамельний та багато інших. Також можемо приготувати торт за вашим індивідуальним рецептом."
     },
     {
       id: 2,
-      question: "Декор",
+      question: "Які варіанти декору доступні?",
       answer: "Ваш торт може бути будь-якого кольору, з бажаним надписом, прикрашений шоколадними або живими квітами, шоколадними фігурками, кульками, цукровими картинками, ручним розписом, макаронами, мусовими серцями, сезонними ягодами тощо. Фінальна вартість десерта з декором розраховується окремо, залежно від оформлення і розміру торта."
     },
     {
       id: 3,
-      question: "За скільки часу робити замовлення?",
+      question: "За скільки часу потрібно робити замовлення?",
       answer: "Ми завжди маємо вільні торти «на сьогодні» вагою 1 кг, замовити можна навіть в останній момент і не турбуватись про свято! В такому випадку ми запропонуємо вам наявні смаки з меню. Замовлення будь-якого смаку з меню приймаємо за 7 днів до потрібної дати. Якщо ви бажаєте прикрасити свій торт декором, що виготовляється спеціально для вас, наприклад іменні топпери, картинки з фото – тоді замовлення варто робити раніше."
     },
     {
       id: 4,
-      question: "Як забрати замовлення?",
+      question: "Як забрати замовлення та чи є доставка?",
       answer: "Забрати десерти можна щодня з 11:00 до 20:00 години, або ж скористатись доставкою: діє на замовлення від 450 грн в межах 3 км, від 600 грн в межах 3-10 км і від 1000 грн понад 10 км та найближче передмістя Вінниці. Працює щодня з 12:30 до 21:00 години, коштує 90 грн."
     }
   ]);
@@ -52,8 +52,8 @@ export default function FAQSection() {
     fetchFAQData();
   }, []);
 
-  const toggleItem = (index: number) => {
-    setOpenItem(openItem === index ? null : index);
+  const toggleItem = (id: number) => {
+    setOpenItem(openItem === id ? null : id);
   };
 
   return (
@@ -103,7 +103,6 @@ export default function FAQSection() {
                   }`}
               >
                 <div className="px-6 pb-5">
-                  <div className="h-px bg-gradient-to-r from-pink-200 to-purple-200 mb-4"></div>
                   <p className="text-gray-600 leading-relaxed">
                     {item.answer}
                   </p>
@@ -113,18 +112,20 @@ export default function FAQSection() {
           ))}
         </div>
 
-        { }
         <div className="mt-12 text-center">
           <div className="bg-gradient-to-r from-pink-500 to-purple-600 rounded-2xl p-8 shadow-2xl">
-            <h3 className="text-2xl font-bold text-white mb-3">
-              Не знайшли відповідь?
+            <h3 className="text-2xl font-bold text-white mb-4">
+              Не знайшли відповідь на своє питання?
             </h3>
             <p className="text-pink-100 mb-6">
-              Зв&apos;яжіться з нами, і ми відповімо на всі ваші питання!
+              Зв&apos;яжіться з нами, і ми з радістю допоможемо вам
             </p>
-            <button className="bg-white text-pink-600 font-semibold px-8 py-3 rounded-full hover:bg-pink-50 transform hover:scale-105 transition-all duration-300 shadow-lg">
-              Зв&apos;язатися з нами
-            </button>
+            <a
+              href="/contact"
+              className="inline-flex items-center px-6 py-3 bg-white text-pink-600 font-semibold rounded-full hover:bg-pink-50 transition-colors duration-300"
+            >
+              Написати нам
+            </a>
           </div>
         </div>
       </div>
