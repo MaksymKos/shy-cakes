@@ -13,11 +13,11 @@ export default function Home() {
   return (
     <div className="overflow-hidden">
       <HeroSection />
-      <ServicesSection />
       <ProductsSection />
-      <StatsSection />
-      <ReviewsSwiperSection />
       <ProcessSection />
+      <ReviewsSwiperSection />
+      <ServicesSection />
+      <StatsSection />
       <FAQSection />
       <CTASection />
     </div>

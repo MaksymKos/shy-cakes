@@ -1,30 +1,18 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Image from 'next/image';
 import Link from 'next/link';
 import PageBannerSimple from '@/components/PageBannerSimple/pagebannersimple';
 import { useCategories } from '@/hooks/useCategories';
-import { UNIT_LABELS, type ProductUnit } from '@/constants/units';
+import ProductItem from '@/components/ProductItem/ProductItem';
+import type { ProductItemType } from '@/types/productItem';
 
-interface Product {
-  _id: string;
-  name: string;
-  description: string;
-  price: number;
-  category: string;
-  images: string[];
-  available: boolean;
-  unit: ProductUnit; // Updated to use ProductUnit type
-  createdAt: string;
-}
+
 
 export default function CatalogPage() {
-  const router = useRouter();
   const { filterCategories } = useCategories();
-  const [products, setProducts] = useState<Product[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<ProductItemType[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<ProductItemType[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -63,7 +51,7 @@ export default function CatalogPage() {
         const response = await fetch(`/api/products?${params}`);
         if (response.ok) {
           const data = await response.json();
-          setProducts(data.filter((product: Product) => product.available));
+          setProducts(data.filter((product: ProductItemType) => product.available));
         }
       } catch {
         // Ignore error - will show no products
@@ -84,11 +72,11 @@ export default function CatalogPage() {
 
     // Фільтруємо за улюбленими товарами якщо активний фільтр
     const likedFiltered = showOnlyLiked
-      ? products.filter((product: Product) => likedProducts.has(product._id))
+      ? products.filter((product: ProductItemType) => likedProducts.has(product._id))
       : products;
 
     // Сортуємо продукти за порядком категорій
-    const sortedProducts = likedFiltered.sort((a: Product, b: Product) => {
+    const sortedProducts = likedFiltered.sort((a: ProductItemType, b: ProductItemType) => {
       const aIndex = filterCategories.findIndex(cat => cat.value === a.category);
       const bIndex = filterCategories.findIndex(cat => cat.value === b.category);
 
@@ -106,15 +94,6 @@ export default function CatalogPage() {
     setFilteredProducts(sortedProducts);
   }, [products, showOnlyLiked, likedProducts, filterCategories]);
 
-  const formatPrice = (price: number, unit: ProductUnit = 'kg') => {
-    const unitText = UNIT_LABELS[unit].perUnit;
-    return `${Math.round(price)} ₴ ${unitText}`;
-  };
-
-  const handleProductClick = (productId: string) => {
-    router.push(`/catalog/${productId}`);
-  };
-
   const toggleLike = (productId: string, e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent navigation when clicking like button
 
@@ -129,88 +108,69 @@ export default function CatalogPage() {
     });
   };
 
-  const handleOrderProduct = (product: Product, e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent navigation
-
-    // Redirect to order page with product pre-filled
-    const orderUrl = `/order?productId=${product._id}&productName=${encodeURIComponent(product.name)}&productPrice=${product.price}&productUnit=${product.unit}`;
-    router.push(orderUrl);
-  };
-
   return (
     <div className="">
       <PageBannerSimple
         currentPage='Каталог'
         title='Каталог товарів'
-        text='У нашому каталозі ви знайдете мусові та бісквітні торти на будь-який смак — від ніжної класики до креативних новинок. Також пропонуємо кейк попси, ескімо-десерти та яскраві макаронси — ідеальні для свят чи подарунків. Обирайте серед готових подарункових наборів або створіть власний солодкий мікс!'
+        text='У моєму каталозі ви знайдете мусові та бісквітні торти на будь-який смак — від ніжної класики до креативних новинок. Також пропоную кейк попси, ескімо-десерти та яскраві макаронси — ідеальні для свят чи подарунків. Обирайте серед готових подарункових наборів або створіть власний солодкий мікс!'
         image="/images/cataloge-banner.jpg"
       />
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
-        { }
         <div className="mb-8">
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-              { }
-              <div className="w-full md:w-1/2">
+          <div className="flex flex-col lg:flex-row gap-6 items-start lg:items-center">
+            <div className="w-full lg:w-1/3">
+              <div className="relative">
                 <input
                   type="text"
                   placeholder="Пошук товарів..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                  className="w-full pl-4 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-[#90e0ef]/30 focus:border-[#90e0ef] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm"
                 />
-              </div>
-
-              { }
-              <div className="w-full md:w-1/2">
-                <select
-                  value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                >
-                  {filterCategories.map((category) => (
-                    <option key={category.value} value={category.value}>
-                      {category.label}
-                    </option>
-                  ))}
-                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center">
+                  {searchTerm && (
+                    <button
+                      onClick={() => setSearchTerm('')}
+                      className="pr-2 flex items-center"
+                    >
+                      <svg className="h-4 w-4 text-gray-400 hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  )}
+                  <button className="pr-3 flex items-center">
+                    <svg className="h-5 w-5 text-gray-400 hover:text-[#90e0ef] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </button>
+                </div>
               </div>
             </div>
 
-            { }
-            <div className="flex flex-wrap gap-3 items-center">
-              { }
-              <button
-                onClick={() => setShowOnlyLiked(!showOnlyLiked)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 border ${showOnlyLiked
-                  ? 'bg-pink-500 text-white border-pink-500'
-                  : 'bg-white text-gray-700 border-gray-300 hover:border-pink-300 hover:text-pink-600'
-                  }`}
-              >
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                </svg>
-                <span>Тільки улюблені</span>
-                {likedProducts.size > 0 && (
-                  <span className="bg-white/20 text-xs px-2 py-1 rounded-full">
-                    {likedProducts.size}
-                  </span>
-                )}
-              </button>
-
-              { }
-              <div className="text-sm text-gray-600">
-                Знайдено товарів: <span className="font-semibold">{filteredProducts.length}</span>
+            <div className="w-full lg:w-2/3">
+              <div className="flex flex-wrap gap-3">
+                {filterCategories.map((category) => (
+                  <button
+                    key={category.value}
+                    onClick={() => setSelectedCategory(category.value === selectedCategory ? '' : category.value)}
+                    className={`px-4 py-2 rounded-xl border-2 transition-all duration-200 font-medium shadow-sm ${selectedCategory === category.value
+                      ? 'bg-[#90e0ef] text-gray-900 border-[#90e0ef] shadow-md scale-105'
+                      : 'bg-white/80 text-gray-700 border-gray-200 hover:border-[#90e0ef] hover:text-[#023e8a] hover:bg-[#90e0ef]/10 backdrop-blur-sm'
+                      }`}
+                  >
+                    {category.label}
+                  </button>
+                ))}
               </div>
             </div>
           </div>
         </div>
 
-        { }
         {loading ? (
           <div className="text-center py-12">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500"></div>
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#90e0ef]"></div>
             <p className="mt-2 text-gray-600">Завантаження товарів...</p>
           </div>
         ) : filteredProducts.length === 0 ? (
@@ -231,7 +191,7 @@ export default function CatalogPage() {
                 {likedProducts.size === 0 && (
                   <button
                     onClick={() => setShowOnlyLiked(false)}
-                    className="mt-4 bg-pink-500 hover:bg-pink-600 text-white px-6 py-3 rounded-lg transition-colors duration-200 font-medium"
+                    className="mt-4 bg-[#90e0ef] hover:bg-[#48cae4] text-gray-900 px-6 py-3 rounded-lg transition-colors duration-200 font-medium"
                   >
                     Переглянути всі товари
                   </button>
@@ -247,98 +207,22 @@ export default function CatalogPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredProducts.map((product) => (
-              <div
-                key={product._id}
-                onClick={() => handleProductClick(product._id)}
-                className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1"
-              >
-                { }
-                <div className="relative h-64 bg-gray-200">
-                  {product.images && product.images.length > 0 ? (
-                    <Image
-                      src={product.images[0]}
-                      alt={product.name}
-                      fill
-                      className="object-cover"
-                    />
-                  ) : (
-                    <div className="flex items-center justify-center h-full">
-                      <div className="text-center">
-                        <div className="text-gray-400 text-4xl mb-2">📸</div>
-                        <p className="text-gray-500 text-sm">Немає фото</p>
-                      </div>
-                    </div>
-                  )}
-
-                  { }
-                  <div className="absolute top-2 left-2">
-                    <span className="bg-pink-500 text-white px-2 py-1 rounded-full text-xs font-medium">
-                      {product.category}
-                    </span>
-                  </div>
-
-                  { }
-                  <button
-                    onClick={(e) => toggleLike(product._id, e)}
-                    className="absolute top-2 right-2 p-2 rounded-full bg-white/80 hover:bg-white transition-all duration-200 shadow-md hover:shadow-lg"
-                  >
-                    {likedProducts.has(product._id) ? (
-                      <svg className="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                      </svg>
-                    ) : (
-                      <svg className="w-5 h-5 text-gray-400 hover:text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                      </svg>
-                    )}
-                  </button>
-                </div>
-
-                { }
-                <div className="p-4">
-                  <h3 className="font-semibold text-lg mb-2 text-gray-900 line-clamp-1">
-                    {product.name}
-                  </h3>
-
-                  <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-                    {product.description}
-                  </p>
-
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-xl font-bold text-pink-600">
-                      {formatPrice(product.price, product.unit)}
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-1 gap-2">
-                    <button
-                      onClick={(e) => handleOrderProduct(product, e)}
-                      className="bg-pink-600 hover:bg-pink-700 text-white px-3 py-2 rounded-lg transition-colors duration-200 text-sm font-medium cursor-pointer flex items-center justify-center gap-1"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                      </svg>
-                      Замовити
-                    </button>
-                  </div>
-                </div>
-              </div>
+              <ProductItem key={product._id} product={product} likedProducts={likedProducts} toggleLike={toggleLike} />
             ))}
           </div>
         )}
       </div>
 
-      { }
       {likedProducts.size > 0 && (
         <Link
           href="/liked"
-          className="fixed bottom-6 right-6 bg-pink-500 hover:bg-pink-600 text-white rounded-full p-4 shadow-lg hover:shadow-xl transition-all duration-300 z-40 group"
+          className="fixed bottom-6 right-6 bg-[#90e0ef] hover:bg-[#48cae4] text-gray-900 rounded-full p-4 shadow-lg hover:shadow-xl transition-all duration-300 z-40 group"
         >
           <div className="relative">
             <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
               <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
             </svg>
-            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
+            <span className="absolute -top-2 -right-2 bg-[#023e8a] text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
               {likedProducts.size}
             </span>
           </div>

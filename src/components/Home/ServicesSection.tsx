@@ -7,54 +7,53 @@ export default function ServicesSection() {
 
     const services = [
         {
-            icon: "🎂",
+            icon: "",
             title: "Весільні торти",
             description: "Створюємо неповторні торти для найважливішого дня у вашому житті",
             features: ["Індивідуальний дизайн", "Натуральні інгредієнти", "Різні смаки"],
-            bgGradient: "from-pink-50 to-rose-50",
-            iconBg: "from-pink-500 to-rose-500",
-            hoverBg: "from-pink-500/10 to-rose-500/10"
+            bgGradient: "from-[#90e0ef]/10 to-[#48cae4]/10",
+            iconBg: "from-[#90e0ef] to-[#48cae4]",
+            hoverBg: "from-[#90e0ef]/10 to-[#48cae4]/10"
         },
         {
-            icon: "🎈",
+            icon: "",
             title: "Дитячі торти",
             description: "Яскраві та смачні торти, які зроблять свято незабутнім",
             features: ["Безпечні барвники", "Улюблені персонажі", "Інтерактивні елементи"],
-            bgGradient: "from-purple-50 to-violet-50",
-            iconBg: "from-purple-500 to-violet-500",
-            hoverBg: "from-purple-500/10 to-violet-500/10"
+            bgGradient: "from-[#48cae4]/10 to-[#023e8a]/10",
+            iconBg: "from-[#48cae4] to-[#023e8a]",
+            hoverBg: "from-[#48cae4]/10 to-[#023e8a]/10"
         },
         {
-            icon: "🎊",
+            icon: "",
             title: "Корпоративні торти",
             description: "Професійні торти для бізнес-заходів та корпоративів",
             features: ["Брендинг компанії", "Великі обсяги", "Швидка доставка"],
-            bgGradient: "from-indigo-50 to-blue-50",
-            iconBg: "from-indigo-500 to-blue-500",
-            hoverBg: "from-indigo-500/10 to-blue-500/10"
+            bgGradient: "from-[#023e8a]/10 to-[#03045e]/10",
+            iconBg: "from-[#023e8a] to-[#03045e]",
+            hoverBg: "from-[#023e8a]/10 to-[#03045e]/10"
         },
         {
-            icon: "🌸",
+            icon: "",
             title: "Торти на замовлення",
             description: "Реалізуємо будь-які ваші ідеї та фантазії",
             features: ["Унікальний дизайн", "Консультація кондитера", "3D моделювання"],
-            bgGradient: "from-emerald-50 to-teal-50",
-            iconBg: "from-emerald-500 to-teal-500",
-            hoverBg: "from-emerald-500/10 to-teal-500/10"
+            bgGradient: "from-[#90e0ef]/10 to-[#023e8a]/10",
+            iconBg: "from-[#90e0ef] to-[#023e8a]",
+            hoverBg: "from-[#90e0ef]/10 to-[#023e8a]/10"
         }
     ];
 
     return (
-        <section className="py-24 bg-white">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="py-24 bg-gradient-to-br from-[#90e0ef]/10 to-[#48cae4]/10">
+            <div className="container mx-auto px-4">
+                {/* Section Header */}
                 <div className="text-center mb-16">
-                    <h2 className="text-4xl md:text-5xl font-bold mb-6">
-                        <span className="bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
-                            Чому обирають нас?
-                        </span>
+                    <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-[#90e0ef] to-[#48cae4] bg-clip-text text-transparent">
+                        Мої Послуги
                     </h2>
-                    <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                        Ми не просто створюємо торти - ми створюємо емоції та незабутні враження
+                    <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                        Створюємо неперевершені торти для ваших найособливіших моментів з любов&rsquo;ю та професіоналізмом
                     </p>
                 </div>
 
@@ -63,10 +62,11 @@ export default function ServicesSection() {
                         <div
                             key={index}
                             className={`
-                                group relative bg-gradient-to-br ${service.bgGradient} rounded-3xl p-8 
+                                group relative bg-white rounded-3xl p-8 
                                 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-4 
-                                overflow-hidden cursor-pointer border border-white/50
-                                ${hoveredIndex === index ? 'scale-105' : ''}
+                                overflow-hidden border-2 border-gray-100 hover:border-[#90e0ef]/30
+                                shadow-lg
+                                ${hoveredIndex === index ? 'scale-105 shadow-2xl border-[#90e0ef]/50' : ''}
                             `}
                             onMouseEnter={() => setHoveredIndex(index)}
                             onMouseLeave={() => setHoveredIndex(null)}
@@ -74,33 +74,27 @@ export default function ServicesSection() {
                             {/* Animated background overlay */}
                             <div className={`
                                 absolute inset-0 bg-gradient-to-br ${service.hoverBg} 
-                                opacity-0 group-hover:opacity-100 transition-all duration-500
+                                opacity-0 group-hover:opacity-50 transition-all duration-500
                             `}></div>
 
                             {/* Decorative elements */}
-                            <div className="absolute -top-10 -right-10 w-20 h-20 bg-white/20 rounded-full blur-xl"></div>
-                            <div className="absolute -bottom-5 -left-5 w-16 h-16 bg-white/10 rounded-full blur-lg"></div>
+                            <div className="absolute -top-10 -right-10 w-20 h-20 bg-[#90e0ef]/10 rounded-full blur-xl"></div>
+                            <div className="absolute -bottom-5 -left-5 w-16 h-16 bg-[#48cae4]/10 rounded-full blur-lg"></div>
 
                             <div className="relative z-10">
-                                <div className={`
-                                    text-5xl mb-6 text-center transform group-hover:scale-110 transition-all duration-500
-                                    ${hoveredIndex === index ? 'animate-bounce' : ''}
-                                `}>
-                                    {service.icon}
-                                </div>
                                 <h3 className={`
-                                    text-xl font-bold text-gray-900 mb-4 text-center transition-all duration-300
-                                    ${hoveredIndex === index ? 'text-transparent bg-gradient-to-r ' + service.iconBg + ' bg-clip-text' : ''}
+                                    text-xl font-bold mb-4 text-center transition-all duration-300
+                                    ${hoveredIndex === index ? 'text-transparent bg-gradient-to-r ' + service.iconBg + ' bg-clip-text' : 'text-gray-900'}
                                 `}>
                                     {service.title}
                                 </h3>
-                                <p className="text-gray-600 mb-6 text-center text-sm leading-relaxed">
+                                <p className="text-gray-600 mb-6 text-center text-sm leading-relaxed font-medium">
                                     {service.description}
                                 </p>
                                 <ul className="space-y-3">
                                     {service.features.map((feature, featureIndex) => (
-                                        <li 
-                                            key={featureIndex} 
+                                        <li
+                                            key={featureIndex}
                                             className="flex items-center text-sm text-gray-600"
                                             style={{
                                                 animationDelay: hoveredIndex === index ? `${featureIndex * 100}ms` : '0ms'

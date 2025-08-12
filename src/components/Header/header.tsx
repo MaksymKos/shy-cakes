@@ -37,12 +37,12 @@ export default function Header() {
                     </button>
                 </div>
                 <PopoverGroup className="hidden lg:flex lg:gap-x-8">
-                    <Link className="text-gray-700 transition font-medium hover:text-pink-600 px-3 py-2 rounded-md hover:bg-pink-50" href="/">Головна</Link>
-                    <Link className="text-gray-700 transition font-medium hover:text-pink-600 px-3 py-2 rounded-md hover:bg-pink-50" href="/catalog/">Каталог</Link>
-                    <Link className="text-gray-700 transition font-medium hover:text-pink-600 px-3 py-2 rounded-md hover:bg-pink-50" href="/reviews/">Відгуки</Link>
-                    <Link className="text-gray-700 transition font-medium hover:text-pink-600 px-3 py-2 rounded-md hover:bg-pink-50" href="/portfolio/">Портфоліо</Link>
-                    <Link className="text-gray-700 transition font-medium hover:text-pink-600 px-3 py-2 rounded-md hover:bg-pink-50" href="/contact/">Контакти</Link>
-                    <Link className="text-gray-700 transition font-medium hover:text-pink-600 px-3 py-2 rounded-md hover:bg-pink-50" href="/about/">Про мене</Link>
+                    <Link className="text-gray-700 transition font-medium hover:text-[#48cae4] px-3 py-2 rounded-md hover:bg-[#90e0ef]/10" href="/">Головна</Link>
+                    <Link className="text-gray-700 transition font-medium hover:text-[#48cae4] px-3 py-2 rounded-md hover:bg-[#90e0ef]/10" href="/catalog/">Каталог</Link>
+                    <Link className="text-gray-700 transition font-medium hover:text-[#48cae4] px-3 py-2 rounded-md hover:bg-[#90e0ef]/10" href="/reviews/">Відгуки</Link>
+                    <Link className="text-gray-700 transition font-medium hover:text-[#48cae4] px-3 py-2 rounded-md hover:bg-[#90e0ef]/10" href="/portfolio/">Портфоліо</Link>
+                    <Link className="text-gray-700 transition font-medium hover:text-[#48cae4] px-3 py-2 rounded-md hover:bg-[#90e0ef]/10" href="/contact/">Контакти</Link>
+                    <Link className="text-gray-700 transition font-medium hover:text-[#48cae4] px-3 py-2 rounded-md hover:bg-[#90e0ef]/10" href="/about/">Про мене</Link>
                 </PopoverGroup>
                 <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:items-center lg:gap-4">
                     {status === "loading" ? (
@@ -53,7 +53,7 @@ export default function Header() {
                         <Popover className="relative">
                             {({ close }) => (
                                 <>
-                                    <PopoverButton className="flex items-center gap-2 text-gray-700 hover:text-pink-600 font-medium px-3 py-2 rounded-md transition-colors focus:outline-none cursor-pointer">
+                                    <PopoverButton className="flex items-center gap-2 text-gray-700 hover:text-[#48cae4] font-medium px-3 py-2 rounded-md transition-colors focus:outline-none cursor-pointer">
                                         <UserIcon className="h-5 w-5" />
                                         <span>Кабінет</span>
                                         <ChevronDownIcon className="h-4 w-4" />
@@ -106,7 +106,7 @@ export default function Header() {
                                                     <Link
                                                         href="/admin"
                                                         onClick={() => close()}
-                                                        className="flex items-center gap-3 px-4 py-2 text-sm text-purple-600 hover:bg-purple-50 rounded-md transition-colors"
+                                                        className="flex items-center gap-3 px-4 py-2 text-sm text-[#023e8a] hover:bg-[#90e0ef]/10 rounded-md transition-colors"
                                                     >
                                                         <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
@@ -140,14 +140,14 @@ export default function Header() {
                         <div className="flex items-center gap-3">
                             <Link
                                 href="/auth/signin"
-                                className="p-2 text-gray-700 hover:text-pink-600 transition-colors rounded-md hover:bg-pink-50"
+                                className="p-2 text-gray-700 hover:text-[#48cae4] transition-colors rounded-md hover:bg-[#90e0ef]/10"
                                 title="Увійти в аккаунт"
                             >
                                 <UserIcon className="h-6 w-6" />
                             </Link>
                             <Link
                                 href="/liked"
-                                className="p-2 text-gray-700 hover:text-pink-600 transition-colors rounded-md hover:bg-pink-50"
+                                className="p-2 text-gray-700 hover:text-[#48cae4] transition-colors rounded-md hover:bg-[#90e0ef]/10"
                                 title="Улюблені товари"
                             >
                                 <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -156,7 +156,7 @@ export default function Header() {
                             </Link>
                             <Link
                                 href="/order"
-                                className="p-2 text-gray-700 hover:text-pink-600 transition-colors rounded-md hover:bg-pink-50"
+                                className="p-2 text-gray-700 hover:text-[#48cae4] transition-colors rounded-md hover:bg-[#90e0ef]/10"
                                 title="Індивідуальне замовлення"
                             >
                                 <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -160,7 +160,7 @@ export default function MyOrders() {
                                 У вас поки немає замовлень
                             </h3>
                             <p className="text-gray-500 mb-6">
-                                Зробіть ваше перше замовлення в нашому каталозі
+                                Зробіть ваше перше замовлення в моєму каталозі
                             </p>
                             <Link
                                 href="/catalog"
@@ -340,7 +340,7 @@ export default function MyOrders() {
                                 Хочете замовити ще щось смачненьке?
                             </h3>
                             <p className="text-gray-600 mb-4">
-                                Переглядайте наш каталог та створюйте нові замовлення
+                                Переглядайте мій каталог та створюйте нові замовлення
                             </p>
                             <div className="flex flex-col sm:flex-row gap-3 justify-center">
                                 <Link

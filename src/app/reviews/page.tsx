@@ -103,7 +103,7 @@ function ReviewsContent() {
     <div>
       <PageBannerSimple
         currentPage="Відгуки"
-        title="Відгуки наших клієнтів"
+        title="Відгуки моїх клієнтів"
         text="Переглядайте реальні роботи та замовляйте схожі торти"
         image="/images/cataloge-banner.jpg"
       />
@@ -113,7 +113,7 @@ function ReviewsContent() {
 
           {loading ? (
             <div className="text-center py-12">
-              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500"></div>
+              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#90e0ef]"></div>
               <p className="mt-2 text-gray-600">Завантаження відгуків...</p>
             </div>
           ) : reviews.length === 0 ? (
@@ -122,7 +122,7 @@ function ReviewsContent() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10m0 0V6a2 2 0 00-2-2H9a2 2 0 00-2 2v2m0 0v10a2 2 0 002 2h6a2 2 0 002-2V8M9 12h6" />
               </svg>
               <h3 className="mt-2 text-xl font-medium text-gray-900">Відгуків поки немає</h3>
-              <p className="mt-1 text-gray-500">Скоро тут з&apos;являться відгуки наших клієнтів</p>
+              <p className="mt-1 text-gray-500">Скоро тут з&apos;являться відгуки моїх клієнтів</p>
             </div>
           ) : (
             <div className="space-y-6">
@@ -143,7 +143,7 @@ function ReviewsContent() {
                             }}
                           />
                           {review.images.length > 1 && (
-                            <div className="absolute bottom-1 right-1 sm:bottom-2 sm:right-2 bg-gradient-to-r from-pink-500 to-pink-600 text-white px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full text-xs font-semibold shadow-lg">
+                            <div className="absolute bottom-1 right-1 sm:bottom-2 sm:right-2 bg-gradient-to-r from-[#90e0ef] to-[#48cae4] text-white px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full text-xs font-semibold shadow-lg">
                               +{review.images.length - 1}
                             </div>
                           )}
@@ -154,7 +154,7 @@ function ReviewsContent() {
                           {review.images.slice(1, 4).map((img, idx) => (
                             <div
                               key={idx}
-                              className="relative w-8 h-8 sm:w-12 sm:h-12 rounded overflow-hidden border border-gray-200 cursor-pointer hover:ring-2 hover:ring-pink-400"
+                              className="relative w-8 h-8 sm:w-12 sm:h-12 rounded overflow-hidden border border-gray-200 cursor-pointer hover:ring-2 hover:ring-[#90e0ef]"
                               onClick={() => {
                                 setSelectedReview(review);
                                 setSelectedImageIndex(idx + 1);
@@ -182,7 +182,7 @@ function ReviewsContent() {
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3">
                           <h3 className="font-bold text-gray-900 text-lg sm:text-xl leading-tight mb-2 sm:mb-0">{review.cakeName}</h3>
                           <div className="flex items-center space-x-2 sm:space-x-3 sm:ml-4">
-                            <div className="bg-gradient-to-r from-pink-500 to-pink-600 text-white px-2 py-1 sm:px-3 sm:py-1 rounded-full font-bold text-xs sm:text-sm">
+                            <div className="bg-gradient-to-r from-[#90e0ef] to-[#48cae4] text-white px-2 py-1 sm:px-3 sm:py-1 rounded-full font-bold text-xs sm:text-sm">
                               {formatPrice(review.totalPrice)}
                             </div>
                             <div className="bg-gray-100 text-gray-700 px-2 py-1 sm:px-3 sm:py-1 rounded-full font-semibold text-xs sm:text-sm">
@@ -211,7 +211,7 @@ function ReviewsContent() {
                         </button>
                         <button
                           onClick={() => handleOrderSame(review)}
-                          className="bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white py-2 px-4 rounded-lg text-sm font-semibold transition-all duration-300 hover:shadow-lg transform hover:-translate-y-0.5 cursor-pointer"
+                          className="bg-gradient-to-r from-[#90e0ef] to-[#48cae4] hover:from-[#48cae4] hover:to-[#023e8a] text-white py-2 px-4 rounded-lg text-sm font-semibold transition-all duration-300 hover:shadow-lg transform hover:-translate-y-0.5 cursor-pointer"
                         >
                           Замовити
                         </button>
@@ -295,7 +295,7 @@ function ReviewsContent() {
                           key={index}
                           onClick={() => setSelectedImageIndex(index)}
                           className={`relative flex-shrink-0 w-12 h-12 rounded-lg overflow-hidden transition-all duration-300 ${index === selectedImageIndex
-                            ? 'ring-2 ring-pink-500 shadow-lg scale-105'
+                            ? 'ring-2 ring-[#90e0ef] shadow-lg scale-105'
                             : 'ring-1 ring-white/50 hover:ring-white hover:scale-105'
                             }`}
                         >
@@ -306,7 +306,7 @@ function ReviewsContent() {
                             className="object-cover"
                           />
                           {index === selectedImageIndex && (
-                            <div className="absolute inset-0 bg-pink-500/20"></div>
+                            <div className="absolute inset-0 bg-[#90e0ef]/20"></div>
                           )}
                         </button>
                       ))}
@@ -320,7 +320,7 @@ function ReviewsContent() {
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
                     <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 leading-tight mb-3 sm:mb-0">{selectedReview.cakeName}</h3>
                     <div className="flex items-center space-x-2 sm:space-x-3">
-                      <div className="bg-gradient-to-r from-pink-500 to-pink-600 text-white px-3 py-1 sm:px-4 sm:py-2 rounded-full font-bold text-sm sm:text-lg lg:text-xl shadow-lg">
+                      <div className="bg-gradient-to-r from-[#90e0ef] to-[#48cae4] text-white px-3 py-1 sm:px-4 sm:py-2 rounded-full font-bold text-sm sm:text-lg lg:text-xl shadow-lg">
                         {formatPrice(selectedReview.totalPrice)}
                       </div>
                       <div className="bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 px-3 py-1 sm:px-4 sm:py-2 rounded-full font-semibold text-sm sm:text-base lg:text-lg">
@@ -335,7 +335,7 @@ function ReviewsContent() {
 
                   <div className="flex flex-col text-xs sm:text-sm text-gray-500 space-y-2">
                     <div className="flex items-center">
-                      <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-2 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-2 text-[#90e0ef]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                       </svg>
                       Виконано: {new Date(selectedReview.completedDate).toLocaleDateString('uk-UA', {
@@ -356,7 +356,7 @@ function ReviewsContent() {
                 <div className="flex justify-center mt-4 sm:mt-6">
                   <button
                     onClick={() => handleOrderSame(selectedReview)}
-                    className="bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white px-6 py-3 sm:px-8 sm:py-4 lg:px-12 lg:py-4 rounded-xl sm:rounded-2xl text-base sm:text-lg lg:text-xl font-bold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 hover:scale-105 cursor-pointer w-full sm:w-auto"
+                    className="bg-gradient-to-r from-[#90e0ef] to-[#48cae4] hover:from-[#48cae4] hover:to-[#023e8a] text-white px-6 py-3 sm:px-8 sm:py-4 lg:px-12 lg:py-4 rounded-xl sm:rounded-2xl text-base sm:text-lg lg:text-xl font-bold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 hover:scale-105 cursor-pointer w-full sm:w-auto"
                   >
                     🍰 Замовити такий торт
                   </button>
@@ -376,7 +376,7 @@ export default function ReviewsPage() {
       <div className="min-h-screen bg-gray-50 pt-20">
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500"></div>
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#90e0ef]"></div>
             <p className="mt-2 text-gray-600">Завантаження відгуків...</p>
           </div>
         </div>

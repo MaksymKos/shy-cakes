@@ -57,14 +57,14 @@ export default function FAQSection() {
   };
 
   return (
-    <section className="py-16 bg-gradient-to-br from-pink-50 via-white to-purple-50">
+    <section className="py-24 bg-gradient-to-br from-[#90e0ef]/10 to-[#48cae4]/10">
       <div className="container mx-auto px-4 max-w-4xl">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-[#90e0ef] to-[#48cae4] bg-clip-text text-transparent">
             Часті питання
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Знайдіть відповіді на найпоширеніші питання про наші торти
+            Знайдіть відповіді на найпоширеніші питання про мої торти
           </p>
         </div>
 
@@ -72,16 +72,16 @@ export default function FAQSection() {
           {faqData.map((item) => (
             <div
               key={item.id}
-              className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-pink-100"
+              className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-[#90e0ef]/30"
             >
               <button
                 onClick={() => toggleItem(item.id)}
-                className="w-full px-6 py-5 text-left flex justify-between items-center hover:bg-gradient-to-r hover:from-pink-50 hover:to-purple-50 transition-all duration-300"
+                className="w-full px-6 py-5 text-left flex justify-between items-center hover:bg-gradient-to-r hover:from-[#90e0ef]/10 hover:to-[#48cae4]/10 transition-all duration-300"
               >
                 <h3 className="text-lg font-semibold text-gray-800 pr-4">
                   {item.question}
                 </h3>
-                <div className={`flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-gradient-to-r from-pink-500 to-purple-500 transition-transform duration-300 ${openItem === item.id ? 'rotate-180' : ''
+                <div className={`flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-gradient-to-r from-[#90e0ef] to-[#48cae4] transition-transform duration-300 ${openItem === item.id ? 'rotate-180' : ''
                   }`}>
                   <svg
                     className="w-4 h-4 text-white"
@@ -102,7 +102,7 @@ export default function FAQSection() {
                 className={`overflow-hidden transition-all duration-300 ease-in-out ${openItem === item.id ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
                   }`}
               >
-                <div className="px-6 pb-5">
+                <div className="px-6 py-5">
                   <p className="text-gray-600 leading-relaxed">
                     {item.answer}
                   </p>
@@ -113,16 +113,16 @@ export default function FAQSection() {
         </div>
 
         <div className="mt-12 text-center">
-          <div className="bg-gradient-to-r from-pink-500 to-purple-600 rounded-2xl p-8 shadow-2xl">
+          <div className="bg-gradient-to-r from-[#90e0ef] to-[#48cae4] rounded-2xl p-8 shadow-2xl">
             <h3 className="text-2xl font-bold text-white mb-4">
               Не знайшли відповідь на своє питання?
             </h3>
-            <p className="text-pink-100 mb-6">
+            <p className="text-white/90 mb-6">
               Зв&apos;яжіться з нами, і ми з радістю допоможемо вам
             </p>
             <a
               href="/contact"
-              className="inline-flex items-center px-6 py-3 bg-white text-pink-600 font-semibold rounded-full hover:bg-pink-50 transition-colors duration-300"
+              className="inline-flex items-center px-6 py-3 bg-white text-[#48cae4] font-semibold rounded-full hover:bg-[#48cae4] hover:text-white transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
             >
               Написати нам
             </a>

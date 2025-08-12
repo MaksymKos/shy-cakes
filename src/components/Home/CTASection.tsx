@@ -3,33 +3,33 @@ import Link from 'next/link';
 export default function CTASection() {
     return (
         <section className="py-24 relative overflow-hidden">
-            {}
-            <div className="absolute inset-0 bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600">
+            { }
+            <div className="absolute inset-0 bg-gradient-to-r from-[#90e0ef] via-[#48cae4] to-[#023e8a]">
                 <div className="absolute inset-0 bg-black/20"></div>
             </div>
 
-            {}
+            { }
             <div className="absolute inset-0">
                 <div className="absolute top-10 left-10 w-32 h-32 bg-white/10 rounded-full blur-xl animate-pulse"></div>
                 <div className="absolute bottom-10 right-10 w-48 h-48 bg-white/5 rounded-full blur-2xl animate-pulse delay-1000"></div>
                 <div className="absolute top-1/2 left-1/4 w-24 h-24 bg-white/10 rounded-full blur-lg animate-pulse delay-500"></div>
             </div>
 
-            <div className="relative z-10 max-w-5xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+            <div className="relative z-10 container mx-auto text-center px-4">
                 <h2 className="text-4xl md:text-6xl font-bold text-white mb-8 leading-tight">
                     Готові створити
-                    <span className="block bg-gradient-to-r from-pink-200 to-white bg-clip-text text-transparent">
+                    <span className="block bg-gradient-to-r from-[#90e0ef] to-white bg-clip-text text-transparent">
                         ваш ідеальний торт?
                     </span>
                 </h2>
 
-                <p className="text-xl md:text-2xl text-pink-100 mb-12 max-w-3xl mx-auto leading-relaxed">
+                <p className="text-xl md:text-2xl text-white/95 mb-12 max-w-3xl mx-auto leading-relaxed">
                     Зв&apos;яжіться з нами сьогодні, і ми перетворимо ваші найсміливіші ідеї у солодку реальність
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
                     <Link
-                        href="/contact"
+                        href="/order"
                         className="group relative px-10 py-5 bg-white text-gray-900 rounded-full text-lg font-semibold transition-all duration-300 hover:shadow-2xl hover:scale-105 overflow-hidden"
                     >
                         <span className="relative z-10 flex items-center">
@@ -47,11 +47,11 @@ export default function CTASection() {
                         <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
-                        Наші роботи
+                        Мої роботи
                     </Link>
                 </div>
 
-                {}
+                { }
                 <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
                     <div className="text-center">
                         <a
@@ -67,7 +67,7 @@ export default function CTASection() {
                         <h3 className="text-lg font-semibold text-white mb-2">Телефон</h3>
                         <a
                             href="tel:+380636787525"
-                            className="text-pink-200 hover:text-white transition-colors duration-300 cursor-pointer"
+                            className="text-white hover:text-[#90e0ef] transition-colors duration-300 cursor-pointer"
                         >
                             +380 63 678 7525
                         </a>
@@ -91,7 +91,7 @@ export default function CTASection() {
                             href="https://instagram.com/shy__cakes"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-pink-200 hover:text-white transition-colors duration-300 cursor-pointer"
+                            className="text-white hover:text-[#90e0ef] transition-colors duration-300 cursor-pointer"
                         >
                             @shy__cakes
                         </a>
@@ -115,7 +115,7 @@ export default function CTASection() {
                             href="https://t.me/elin_pak"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-pink-200 hover:text-white transition-colors duration-300 cursor-pointer"
+                            className="text-white hover:text-[#90e0ef] transition-colors duration-300 cursor-pointer"
                         >
                             @elin_pak
                         </a>

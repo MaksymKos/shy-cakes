@@ -40,7 +40,7 @@ export default function OrderPage() {
         <Suspense fallback={
             <div className="min-h-screen flex items-center justify-center">
                 <div className="text-center">
-                    <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500"></div>
+                    <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#90e0ef]"></div>
                     <p className="mt-2 text-gray-600">Завантаження...</p>
                 </div>
             </div>
@@ -284,7 +284,7 @@ function OrderContent() {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <div className="text-center">
-                    <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500"></div>
+                    <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#90e0ef]"></div>
                     <p className="mt-2 text-gray-600">Завантаження...</p>
                 </div>
             </div>
@@ -292,7 +292,7 @@ function OrderContent() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50">
+        <div className="min-h-screen bg-gradient-to-br from-[#90e0ef]/10 via-white to-[#48cae4]/10">
             <PageBannerSimple
                 currentPage='Замовлення'
                 title='Оформлення замовлення'
@@ -303,15 +303,15 @@ function OrderContent() {
             <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-16">
                 <form onSubmit={handleSubmit} className="space-y-10">
                     {product ? (
-                        <div className="bg-white/70 backdrop-blur-sm p-8 rounded-2xl shadow-xl border border-pink-100">
+                        <div className="bg-white/70 backdrop-blur-sm p-8 rounded-2xl shadow-xl border border-[#90e0ef]/30">
                             <div className="flex items-center gap-3 mb-6">
-                                <div className="w-8 h-8 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full flex items-center justify-center">
+                                <div className="w-8 h-8 bg-gradient-to-r from-[#90e0ef] to-[#48cae4] rounded-full flex items-center justify-center">
                                     <span className="text-white text-sm font-bold">1</span>
                                 </div>
-                                <h2 className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">Обраний товар</h2>
+                                <h2 className="text-2xl font-bold bg-gradient-to-r from-[#90e0ef] to-[#48cae4] bg-clip-text text-transparent">Обраний товар</h2>
                             </div>
-                            <div className="flex gap-6 p-6 bg-gradient-to-r from-pink-50 to-purple-50 rounded-xl border border-pink-200">
-                                <div className="relative w-32 h-32 rounded-xl overflow-hidden bg-white shadow-lg flex-shrink-0 ring-4 ring-pink-100">
+                            <div className="flex gap-6 p-6 bg-gradient-to-r from-[#90e0ef]/10 to-[#48cae4]/10 rounded-xl border border-[#90e0ef]/30">
+                                <div className="relative w-32 h-32 rounded-xl overflow-hidden bg-white shadow-lg flex-shrink-0 ring-4 ring-[#90e0ef]/30">
                                     {product.images && product.images.length > 0 ? (
                                         <Image
                                             src={product.images[0]}
@@ -327,22 +327,22 @@ function OrderContent() {
                                 </div>
                                 <div className="flex-1">
                                     <h3 className="font-bold text-xl text-gray-900 mb-2">{product.name}</h3>
-                                    <p className="text-purple-600 font-medium text-sm mb-3 px-3 py-1 bg-purple-100 rounded-full inline-block">{product.category}</p>
-                                    <p className="text-pink-600 font-bold text-2xl">
+                                    <p className="text-[#48cae4] font-medium text-sm mb-3 px-3 py-1 bg-[#90e0ef]/20 rounded-full inline-block">{product.category}</p>
+                                    <p className="text-[#023e8a] font-bold text-2xl">
                                         {formatPrice(product.price, product.unit)}
                                     </p>
                                 </div>
                             </div>
                         </div>
                     ) : (
-                        <div className="bg-white/70 backdrop-blur-sm p-8 rounded-2xl shadow-xl border border-pink-100">
+                        <div className="bg-white/70 backdrop-blur-sm p-8 rounded-2xl shadow-xl border border-[#90e0ef]/30">
                             <div className="flex items-center gap-3 mb-6">
-                                <div className="w-8 h-8 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full flex items-center justify-center">
+                                <div className="w-8 h-8 bg-gradient-to-r from-[#90e0ef] to-[#48cae4] rounded-full flex items-center justify-center">
                                     <span className="text-white text-sm font-bold">✨</span>
                                 </div>
-                                <h2 className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">Індивідуальне замовлення</h2>
+                                <h2 className="text-2xl font-bold bg-gradient-to-r from-[#90e0ef] to-[#48cae4] bg-clip-text text-transparent">Індивідуальне замовлення</h2>
                             </div>
-                            <div className="p-6 bg-gradient-to-r from-pink-50 to-purple-50 rounded-xl border border-pink-200">
+                            <div className="p-6 bg-gradient-to-r from-[#90e0ef]/10 to-[#48cae4]/10 rounded-xl border border-[#90e0ef]/30">
                                 <p className="text-gray-700 text-lg">
                                     Заповніть форму нижче для індивідуального замовлення. Ми зв&apos;яжемося з вами для уточнення деталей та ціни.
                                 </p>
@@ -352,25 +352,25 @@ function OrderContent() {
 
                     {/* Референс на відгук */}
                     {formData.reviewReference && (
-                        <div className="bg-gradient-to-r from-pink-100 to-purple-100 backdrop-blur-sm border-2 border-pink-300 p-8 rounded-2xl shadow-xl">
+                        <div className="bg-gradient-to-r from-[#90e0ef]/20 to-[#48cae4]/20 backdrop-blur-sm border-2 border-[#90e0ef]/50 p-8 rounded-2xl shadow-xl">
                             <div className="flex items-center gap-3 mb-6">
-                                <div className="w-8 h-8 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full flex items-center justify-center">
+                                <div className="w-8 h-8 bg-gradient-to-r from-[#90e0ef] to-[#48cae4] rounded-full flex items-center justify-center">
                                     <span className="text-white text-sm">🍰</span>
                                 </div>
-                                <h2 className="text-2xl font-bold bg-gradient-to-r from-pink-700 to-purple-700 bg-clip-text text-transparent">Замовлення на основі відгуку</h2>
+                                <h2 className="text-2xl font-bold bg-gradient-to-r from-[#023e8a] to-[#03045e] bg-clip-text text-transparent">Замовлення на основі відгуку</h2>
                             </div>
                             <div className="space-y-4">
-                                <div className="bg-white/80 backdrop-blur p-6 rounded-xl shadow-md border border-pink-200">
-                                    <p className="text-sm text-purple-600 font-medium mb-2">Торт з відгуку:</p>
+                                <div className="bg-white/80 backdrop-blur p-6 rounded-xl shadow-md border border-[#90e0ef]/30">
+                                    <p className="text-sm text-[#48cae4] font-medium mb-2">Торт з відгуку:</p>
                                     <p className="font-bold text-xl text-gray-900">{formData.reviewReference.cakeName}</p>
                                 </div>
-                                <div className="bg-white/80 backdrop-blur p-4 rounded-xl shadow-md border border-pink-200">
-                                    <p className="text-xs text-purple-600 font-medium mb-2">Посилання на відгук</p>
+                                <div className="bg-white/80 backdrop-blur p-4 rounded-xl shadow-md border border-[#90e0ef]/30">
+                                    <p className="text-xs text-[#48cae4] font-medium mb-2">Посилання на відгук</p>
                                     <a
                                         href={`/reviews?open=${formData.reviewReference.reviewId}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="inline-flex items-center text-sm font-medium text-pink-600 hover:text-pink-800 transition-colors duration-200 bg-pink-50 px-3 py-2 rounded-lg hover:bg-pink-100"
+                                        className="inline-flex items-center text-sm font-medium text-[#023e8a] hover:text-[#03045e] transition-colors duration-200 bg-[#90e0ef]/20 px-3 py-2 rounded-lg hover:bg-[#90e0ef]/30"
                                     >
                                         Переглянути оригінальний відгук
                                         <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -383,18 +383,18 @@ function OrderContent() {
                     )}
 
                     {/* Контактна інформація */}
-                    <div className="bg-white/70 backdrop-blur-sm p-8 rounded-2xl shadow-xl border border-pink-100">
+                    <div className="bg-white/70 backdrop-blur-sm p-8 rounded-2xl shadow-xl border border-[#90e0ef]/30">
                         <div className="flex items-center gap-3 mb-6">
-                            <div className="w-8 h-8 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full flex items-center justify-center">
+                            <div className="w-8 h-8 bg-gradient-to-r from-[#90e0ef] to-[#48cae4] rounded-full flex items-center justify-center">
                                 <span className="text-white text-sm font-bold">2</span>
                             </div>
-                            <h2 className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">Контактна інформація</h2>
+                            <h2 className="text-2xl font-bold bg-gradient-to-r from-[#90e0ef] to-[#48cae4] bg-clip-text text-transparent">Контактна інформація</h2>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label htmlFor="customerName" className="block text-sm font-semibold text-gray-700 mb-2">
-                                    Ім&apos;я та прізвище *
+                                    Ім&apos;я *
                                 </label>
                                 <input
                                     type="text"
@@ -403,7 +403,7 @@ function OrderContent() {
                                     required
                                     value={formData.customerName}
                                     onChange={handleInputChange}
-                                    className="w-full px-4 py-3 border-2 border-pink-200 rounded-xl focus:ring-4 focus:ring-pink-200 focus:border-pink-400 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+                                    className="w-full px-4 py-3 border-2 border-[#90e0ef]/30 rounded-xl focus:ring-4 focus:ring-[#90e0ef]/30 focus:border-[#90e0ef] transition-all duration-200 bg-white/80 backdrop-blur-sm"
                                     placeholder="Введіть ваше ім&apos;я"
                                 />
                             </div>
@@ -419,7 +419,7 @@ function OrderContent() {
                                     required
                                     value={formData.customerPhone}
                                     onChange={handleInputChange}
-                                    className="w-full px-4 py-3 border-2 border-pink-200 rounded-xl focus:ring-4 focus:ring-pink-200 focus:border-pink-400 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+                                    className="w-full px-4 py-3 border-2 border-[#90e0ef]/30 rounded-xl focus:ring-4 focus:ring-[#90e0ef]/30 focus:border-[#90e0ef] transition-all duration-200 bg-white/80 backdrop-blur-sm"
                                     placeholder="+38 XXX XXX XX XX"
                                 />
                             </div>
@@ -434,19 +434,19 @@ function OrderContent() {
                                     name="customerEmail"
                                     value={formData.customerEmail}
                                     onChange={handleInputChange}
-                                    className="w-full px-4 py-3 border-2 border-pink-200 rounded-xl focus:ring-4 focus:ring-pink-200 focus:border-pink-400 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+                                    className="w-full px-4 py-3 border-2 border-[#90e0ef]/30 rounded-xl focus:ring-4 focus:ring-[#90e0ef]/30 focus:border-[#90e0ef] transition-all duration-200 bg-white/80 backdrop-blur-sm"
                                     placeholder="your@email.com"
                                 />
                             </div>
                         </div>
                     </div>
 
-                    <div className="bg-white/70 backdrop-blur-sm p-8 rounded-2xl shadow-xl border border-pink-100">
+                    <div className="bg-white/70 backdrop-blur-sm p-8 rounded-2xl shadow-xl border border-[#90e0ef]/30">
                         <div className="flex items-center gap-3 mb-6">
-                            <div className="w-8 h-8 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full flex items-center justify-center">
+                            <div className="w-8 h-8 bg-gradient-to-r from-[#90e0ef] to-[#48cae4] rounded-full flex items-center justify-center">
                                 <span className="text-white text-sm font-bold">3</span>
                             </div>
-                            <h2 className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">Деталі замовлення</h2>
+                            <h2 className="text-2xl font-bold bg-gradient-to-r from-[#90e0ef] to-[#48cae4] bg-clip-text text-transparent">Деталі замовлення</h2>
                         </div>
                         <div className="space-y-6">
                             {/* Вага та дата доставки в одній лінії */}
@@ -470,9 +470,9 @@ function OrderContent() {
                                         step={product?.unit === 'piece' ? "1" : "0.5"}
                                         value={formData.weight}
                                         onChange={handleInputChange}
-                                        className="w-full px-4 py-3 border-2 border-pink-200 rounded-xl focus:ring-4 focus:ring-pink-200 focus:border-pink-400 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+                                        className="w-full px-4 py-3 border-2 border-[#90e0ef]/30 rounded-xl focus:ring-4 focus:ring-[#90e0ef]/30 focus:border-[#90e0ef] transition-all duration-200 bg-white/80 backdrop-blur-sm"
                                     />
-                                    <p className="text-xs text-purple-600 font-medium mt-2 bg-purple-50 px-3 py-1 rounded-lg inline-block">
+                                    <p className="text-xs text-[#48cae4] font-medium mt-2 bg-[#90e0ef]/20 px-3 py-1 rounded-lg inline-block">
                                         {product
                                             ? product.unit === 'kg'
                                                 ? 'Мінімальна вага: 0.5 кг'
@@ -494,12 +494,11 @@ function OrderContent() {
                                         min={getMinDate()}
                                         value={formData.deliveryDate}
                                         onChange={handleInputChange}
-                                        className="w-full px-4 py-3 border-2 border-pink-200 rounded-xl focus:ring-4 focus:ring-pink-200 focus:border-pink-400 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+                                        className="w-full px-4 py-3 border-2 border-[#90e0ef]/30 rounded-xl focus:ring-4 focus:ring-[#90e0ef]/30 focus:border-[#90e0ef] transition-all duration-200 bg-white/80 backdrop-blur-sm"
                                     />
                                 </div>
                             </div>
 
-                            {/* Спосіб оплати на всю ширину */}
                             <div>
                                 <label htmlFor="paymentMethod" className="block text-sm font-semibold text-gray-700 mb-2">
                                     Спосіб оплати *
@@ -510,7 +509,7 @@ function OrderContent() {
                                     required
                                     value={formData.paymentMethod}
                                     onChange={handleInputChange}
-                                    className="w-full px-4 py-3 pr-10 border-2 border-pink-200 rounded-xl focus:ring-4 focus:ring-pink-200 focus:border-pink-400 transition-all duration-200 bg-white/80 backdrop-blur-sm appearance-none"
+                                    className="w-full px-4 py-3 pr-10 border-2 border-[#90e0ef]/30 rounded-xl focus:ring-4 focus:ring-[#90e0ef]/30 focus:border-[#90e0ef] transition-all duration-200 bg-white/80 backdrop-blur-sm appearance-none"
                                     style={{
                                         backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e")`,
                                         backgroundRepeat: 'no-repeat',
@@ -522,8 +521,8 @@ function OrderContent() {
                                     <option value="card">Картка при отриманні</option>
                                     <option value="transfer">Банківський переказ</option>
                                 </select>
-                                <div className="mt-3 p-4 bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-300 rounded-xl shadow-sm">
-                                    <p className="text-sm text-amber-800 font-semibold flex items-center gap-2">
+                                <div className="mt-3 p-4 bg-gradient-to-r from-[#90e0ef]/20 to-[#48cae4]/20 border-2 border-[#90e0ef]/50 rounded-xl shadow-sm">
+                                    <p className="text-sm text-[#023e8a] font-semibold flex items-center gap-2">
                                         <span className="text-lg">💡</span>
                                         Для підтвердження замовлення необхідна передоплата 50%
                                     </p>
@@ -541,7 +540,7 @@ function OrderContent() {
                                     required
                                     value={formData.deliveryAddress}
                                     onChange={handleInputChange}
-                                    className="w-full px-4 py-3 border-2 border-pink-200 rounded-xl focus:ring-4 focus:ring-pink-200 focus:border-pink-400 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+                                    className="w-full px-4 py-3 border-2 border-[#90e0ef]/30 rounded-xl focus:ring-4 focus:ring-[#90e0ef]/30 focus:border-[#90e0ef] transition-all duration-200 bg-white/80 backdrop-blur-sm"
                                     placeholder="Вулиця, номер будинку, квартира"
                                 />
                             </div>
@@ -557,7 +556,7 @@ function OrderContent() {
                                     required={!product}
                                     value={formData.specialRequests}
                                     onChange={handleInputChange}
-                                    className="w-full px-4 py-3 border-2 border-pink-200 rounded-xl focus:ring-4 focus:ring-pink-200 focus:border-pink-400 transition-all duration-200 bg-white/80 backdrop-blur-sm resize-none"
+                                    className="w-full px-4 py-3 border-2 border-[#90e0ef]/30 rounded-xl focus:ring-4 focus:ring-[#90e0ef]/30 focus:border-[#90e0ef] transition-all duration-200 bg-white/80 backdrop-blur-sm resize-none"
                                     placeholder={
                                         product
                                             ? "Напишіть особливі побажання щодо оформлення, доставки тощо..."
@@ -566,98 +565,96 @@ function OrderContent() {
                                 />
                             </div>
 
-                            {!product && (
-                                <div className="md:col-span-2">
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Референсні зображення (необов&apos;язково)
-                                    </label>
-                                    <p className="text-xs text-gray-500 mb-3">
-                                        Додайте до 5 зображень, щоб показати як має виглядати ваш торт або десерт
-                                    </p>
+                            <div className="md:col-span-2">
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Референсні зображення (необов&apos;язково)
+                                </label>
+                                <p className="text-xs text-gray-500 mb-3">
+                                    Додайте до 5 зображень, щоб показати як має виглядати ваш торт або десерт
+                                </p>
 
-                                    <div className="space-y-4">
-                                        <div className="flex items-center justify-center w-full">
-                                            <label
-                                                htmlFor="image-upload"
-                                                className={`flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors ${uploadingImages || (formData.referenceImages?.length || 0) >= 5
-                                                    ? 'opacity-50 cursor-not-allowed'
-                                                    : ''
-                                                    }`}
-                                            >
-                                                <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                                    <div className="w-8 h-8 mb-3 text-gray-400">
-                                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                                                        </svg>
-                                                    </div>
-                                                    <p className="mb-2 text-sm text-gray-500">
-                                                        {uploadingImages ? (
-                                                            <span className="font-semibold">Завантаження...</span>
-                                                        ) : (
-                                                            <>
-                                                                <span className="font-semibold">Натисніть для завантаження</span> або перетягніть файли
-                                                            </>
-                                                        )}
-                                                    </p>
-                                                    <p className="text-xs text-gray-500">PNG, JPG до 5MB кожен</p>
+                                <div className="space-y-4">
+                                    <div className="flex items-center justify-center w-full">
+                                        <label
+                                            htmlFor="image-upload"
+                                            className={`flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors ${uploadingImages || (formData.referenceImages?.length || 0) >= 5
+                                                ? 'opacity-50 cursor-not-allowed'
+                                                : ''
+                                                }`}
+                                        >
+                                            <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                                <div className="w-8 h-8 mb-3 text-gray-400">
+                                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                                    </svg>
                                                 </div>
-                                                <input
-                                                    id="image-upload"
-                                                    type="file"
-                                                    className="hidden"
-                                                    multiple
-                                                    accept="image/*"
-                                                    onChange={handleImageUpload}
-                                                    disabled={uploadingImages || (formData.referenceImages?.length || 0) >= 5}
-                                                />
-                                            </label>
-                                        </div>
-
-                                        {formData.referenceImages && formData.referenceImages.filter(url => url && url.trim() !== '').length > 0 && (
-                                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                                                {formData.referenceImages
-                                                    .map((imageUrl, originalIndex) => {
-                                                        // Пропускаємо порожні URL
-                                                        if (!imageUrl || imageUrl.trim() === '') return null;
-
-                                                        return (
-                                                            <div key={originalIndex} className="relative group">
-                                                                <div className="relative w-full h-24 rounded-lg overflow-hidden bg-gray-200">
-                                                                    <Image
-                                                                        src={imageUrl}
-                                                                        alt={`Референс ${originalIndex + 1}`}
-                                                                        fill
-                                                                        className="object-cover"
-                                                                        unoptimized={true}
-                                                                        onError={(e) => {
-                                                                            const target = e.target as HTMLImageElement;
-                                                                            target.style.display = 'none';
-                                                                        }}
-                                                                    />
-                                                                </div>
-                                                                <button
-                                                                    type="button"
-                                                                    onClick={() => removeImage(originalIndex)}
-                                                                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600 transition-colors group-hover:opacity-100 opacity-75"
-                                                                >
-                                                                    ×
-                                                                </button>
-                                                            </div>
-                                                        );
-                                                    })
-                                                    .filter(Boolean) // Видаляємо null елементи
-                                                }
+                                                <p className="mb-2 text-sm text-gray-500">
+                                                    {uploadingImages ? (
+                                                        <span className="font-semibold">Завантаження...</span>
+                                                    ) : (
+                                                        <>
+                                                            <span className="font-semibold">Натисніть для завантаження</span> або перетягніть файли
+                                                        </>
+                                                    )}
+                                                </p>
+                                                <p className="text-xs text-gray-500">PNG, JPG</p>
                                             </div>
-                                        )}
-
-                                        {formData.referenceImages && formData.referenceImages.filter(url => url && url.trim() !== '').length > 0 && (
-                                            <p className="text-xs text-gray-500">
-                                                Завантажено {formData.referenceImages.filter(url => url && url.trim() !== '').length} з 5 можливих зображень
-                                            </p>
-                                        )}
+                                            <input
+                                                id="image-upload"
+                                                type="file"
+                                                className="hidden"
+                                                multiple
+                                                accept="image/*"
+                                                onChange={handleImageUpload}
+                                                disabled={uploadingImages || (formData.referenceImages?.length || 0) >= 5}
+                                            />
+                                        </label>
                                     </div>
+
+                                    {formData.referenceImages && formData.referenceImages.filter(url => url && url.trim() !== '').length > 0 && (
+                                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                                            {formData.referenceImages
+                                                .map((imageUrl, originalIndex) => {
+                                                    // Пропускаємо порожні URL
+                                                    if (!imageUrl || imageUrl.trim() === '') return null;
+
+                                                    return (
+                                                        <div key={originalIndex} className="relative group">
+                                                            <div className="relative w-full h-24 rounded-lg overflow-hidden bg-gray-200">
+                                                                <Image
+                                                                    src={imageUrl}
+                                                                    alt={`Референс ${originalIndex + 1}`}
+                                                                    fill
+                                                                    className="object-cover"
+                                                                    unoptimized={true}
+                                                                    onError={(e) => {
+                                                                        const target = e.target as HTMLImageElement;
+                                                                        target.style.display = 'none';
+                                                                    }}
+                                                                />
+                                                            </div>
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => removeImage(originalIndex)}
+                                                                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600 transition-colors group-hover:opacity-100 opacity-75"
+                                                            >
+                                                                ×
+                                                            </button>
+                                                        </div>
+                                                    );
+                                                })
+                                                .filter(Boolean) // Видаляємо null елементи
+                                            }
+                                        </div>
+                                    )}
+
+                                    {formData.referenceImages && formData.referenceImages.filter(url => url && url.trim() !== '').length > 0 && (
+                                        <p className="text-xs text-gray-500">
+                                            Завантажено {formData.referenceImages.filter(url => url && url.trim() !== '').length} з 5 можливих зображень
+                                        </p>
+                                    )}
                                 </div>
-                            )}
+                            </div>
                         </div>
                     </div>
 
@@ -672,7 +669,7 @@ function OrderContent() {
                         <button
                             type="submit"
                             disabled={submitting}
-                            className="flex-1 bg-pink-500 hover:bg-pink-600 disabled:bg-pink-300 text-white py-3 px-6 rounded-lg transition-colors font-semibold flex items-center justify-center gap-2"
+                            className="flex-1 bg-[#90e0ef] hover:bg-[#48cae4] disabled:bg-[#90e0ef]/50 text-gray-900 py-3 px-6 rounded-lg transition-colors font-semibold flex items-center justify-center gap-2"
                         >
                             {submitting ? (
                                 <>

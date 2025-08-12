@@ -149,7 +149,7 @@ export default function AdminOrders() {
     switch (status) {
       case 'pending': return 'bg-yellow-100 text-yellow-800';
       case 'confirmed': return 'bg-blue-100 text-blue-800';
-      case 'in-progress': return 'bg-purple-100 text-purple-800';
+      case 'in-progress': return 'bg-[#90e0ef]/20 text-[#023e8a]';
       case 'completed': return 'bg-green-100 text-green-800';
       case 'cancelled': return 'bg-red-100 text-red-800';
       default: return 'bg-gray-100 text-gray-800';
@@ -251,7 +251,7 @@ export default function AdminOrders() {
             <button
               onClick={() => setFilter('in-progress')}
               className={`px-4 py-2 rounded ${filter === 'in-progress'
-                ? 'bg-purple-600 text-white'
+                ? 'bg-[#48cae4] text-white'
                 : 'bg-white text-gray-700 border hover:bg-gray-50'
                 } transition-colors`}
             >
@@ -326,8 +326,8 @@ export default function AdminOrders() {
                       <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${order.type === 'product'
                         ? 'bg-blue-100 text-blue-800'
                         : order.type === 'custom'
-                          ? 'bg-purple-100 text-purple-800'
-                          : 'bg-purple-100 text-purple-800'
+                          ? 'bg-[#90e0ef]/20 text-[#023e8a]'
+                          : 'bg-[#90e0ef]/20 text-[#023e8a]'
                         }`}>
                         {order.type === 'product'
                           ? '🛒 Товар з каталогу'
@@ -515,7 +515,7 @@ export default function AdminOrders() {
                       </svg>
                       🍰 Замовлення на основі відгуку
                     </h4>
-                    <div className="bg-pink-50 border border-pink-200 p-3 rounded">
+                    <div className="bg-[#90e0ef]/10 border border-[#90e0ef]/30 p-3 rounded">
                       <div className="space-y-2">
                         <div>
                           <span className="text-sm text-gray-600">Торт з відгуку:</span>
@@ -523,11 +523,11 @@ export default function AdminOrders() {
                         </div>
                         <div>
                           <span className="text-sm text-gray-600">Посилання на відгук:</span>
-                          <a 
+                          <a
                             href={`/reviews?open=${order.reviewReference.reviewId}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="ml-2 inline-flex items-center text-sm text-pink-600 hover:text-pink-800 underline"
+                            className="ml-2 inline-flex items-center text-sm text-[#48cae4] hover:text-[#023e8a] underline"
                           >
                             Переглянути оригінальний відгук
                             <svg className="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -585,7 +585,7 @@ export default function AdminOrders() {
                     {order.status === 'confirmed' && (
                       <button
                         onClick={() => updateOrderStatus(order._id, 'in-progress')}
-                        className="bg-purple-600 text-white px-3 py-1 text-sm rounded hover:bg-purple-700 transition-colors"
+                        className="bg-[#48cae4] text-white px-3 py-1 text-sm rounded hover:bg-[#023e8a] transition-colors"
                       >
                         🔨 Почати роботу
                       </button>

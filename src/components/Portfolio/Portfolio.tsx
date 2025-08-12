@@ -76,7 +76,7 @@ export default function PortfolioComponent() {
               </svg>
             </div>
             <h3 className="text-heading text-gray-800 mb-4">Портфоліо готується</h3>
-            <p className="text-body text-gray-500">Скоро тут з&apos;являться наші найкращі роботи</p>
+            <p className="text-body text-gray-500">Скоро тут з&apos;являться мої найкращі роботи</p>
           </div>
         </div>
       </section>

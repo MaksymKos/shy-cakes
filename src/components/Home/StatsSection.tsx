@@ -4,10 +4,10 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 
 export default function StatsSection() {
     const [stats, setStats] = useState([
-        { current: 0, target: 200, label: 'Виконаних робіт', icon: '🎂' },
-        { current: 0, target: 150, label: 'Задоволених клієнтів', icon: '😊' },
-        { current: 0, target: 50, label: 'Унікальних дизайнів', icon: '🎨' },
-        { current: 0, target: 100, label: 'Натуральні інгредієнти', icon: '⭐' }
+        { current: 0, target: 200, label: 'Виконаних робіт', icon: '' },
+        { current: 0, target: 150, label: 'Задоволених клієнтів', icon: '' },
+        { current: 0, target: 50, label: 'Унікальних дизайнів', icon: '' },
+        { current: 0, target: 100, label: 'Натуральні інгредієнти', icon: '' }
     ]);
     const [isVisible, setIsVisible] = useState(false);
     const sectionRef = useRef<HTMLElement>(null);
@@ -22,13 +22,13 @@ export default function StatsSection() {
             const updateValue = () => {
                 const elapsed = Date.now() - startTime;
                 const progress = Math.min(elapsed / duration, 1);
-                
+
                 // Easing function for smooth animation
                 const easeOutQuart = 1 - Math.pow(1 - progress, 4);
                 const currentValue = Math.floor(startValue + (endValue - startValue) * easeOutQuart);
 
-                setStats(prevStats => 
-                    prevStats.map((s, i) => 
+                setStats(prevStats =>
+                    prevStats.map((s, i) =>
                         i === index ? { ...s, current: currentValue } : s
                     )
                 );
@@ -62,23 +62,14 @@ export default function StatsSection() {
     }, [isVisible, animateStats]);
 
     return (
-        <section ref={sectionRef} className="py-24 bg-gradient-to-br from-gray-50 to-gray-100 relative overflow-hidden">
-            {/* Background decoration */}
-            <div className="absolute inset-0">
-                <div className="absolute top-20 left-10 w-32 h-32 bg-pink-200/30 rounded-full blur-xl"></div>
-                <div className="absolute bottom-20 right-10 w-48 h-48 bg-purple-200/30 rounded-full blur-2xl"></div>
-                <div className="absolute top-1/2 left-1/3 w-24 h-24 bg-indigo-200/30 rounded-full blur-lg"></div>
-            </div>
-
-            <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section ref={sectionRef} className="py-24 bg-white relative overflow-hidden">
+            <div className="relative z-10 container mx-auto px-4">
                 <div className="text-center mb-16">
-                    <h2 className="text-4xl md:text-5xl font-bold mb-6">
-                        <span className="bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
-                            Наші досягнення
-                        </span>
+                    <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-[#90e0ef] to-[#48cae4] bg-clip-text text-transparent">
+                        Мої досягнення
                     </h2>
-                    <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                        Цифри, які говорять про нашу якість та професіоналізм
+                    <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+                        Цифри, які говорять про мою якість та професіоналізм
                     </p>
                 </div>
 
@@ -86,18 +77,15 @@ export default function StatsSection() {
                     {stats.map((stat, index) => (
                         <div
                             key={index}
-                            className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 text-center shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 border border-white/50"
-                            style={{ 
+                            className="bg-white rounded-3xl p-8 text-center shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-200/50"
+                            style={{
                                 animationDelay: `${index * 0.1}s`,
                                 opacity: isVisible ? 1 : 0,
                                 transform: isVisible ? 'translateY(0)' : 'translateY(50px)',
                                 transition: 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)'
                             }}
                         >
-                            <div className="text-6xl mb-4 transform hover:scale-110 transition-transform duration-300">
-                                {stat.icon}
-                            </div>
-                            <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent mb-2">
+                            <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-[#90e0ef] to-[#48cae4] bg-clip-text text-transparent mb-4">
                                 {stat.label === 'Натуральні інгредієнти' ? `${stat.current}%` : stat.current.toLocaleString()}
                                 {stat.target >= 100 && stat.current === stat.target && stat.label !== 'Натуральні інгредієнти' ? '+' : ''}
                             </div>

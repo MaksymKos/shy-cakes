@@ -10,58 +10,58 @@ export default function ProcessSection() {
             id: 1,
             title: 'Консультація',
             description: 'Обговорюємо ваші побажання, смаки, дизайн та бюджет',
-            icon: '💬',
+            icon: '',
             details: [
                 'Безкоштовна консультація',
                 'Обговорення дизайну',
                 'Вибір смаків',
                 'Розрахунок вартості'
             ],
-            color: 'from-pink-500 to-rose-500'
+            color: 'from-[#90e0ef] to-[#48cae4]'
         },
         {
             id: 2,
             title: 'Дизайн',
             description: 'Створюємо ескіз вашого майбутнього торта',
-            icon: '🎨',
+            icon: '',
             details: [
                 '3D візуалізація',
                 'Кольорова палітра',
                 'Декоративні елементи',
                 'Узгодження змін'
             ],
-            color: 'from-purple-500 to-violet-500'
+            color: 'from-[#48cae4] to-[#023e8a]'
         },
         {
             id: 3,
             title: 'Створення',
             description: 'Майстерно втілюємо проект у життя',
-            icon: '👩‍🍳',
+            icon: '',
             details: [
                 'Натуральні інгредієнти',
                 'Ручна робота',
                 'Контроль якості',
                 'Свіжий продукт'
             ],
-            color: 'from-indigo-500 to-blue-500'
+            color: 'from-[#023e8a] to-[#03045e]'
         },
         {
             id: 4,
             title: 'Доставка',
             description: 'Безпечно доставляємо у зазначений час та місце',
-            icon: '🚚',
+            icon: '',
             details: [
                 'Точна доставка',
                 'Безпечна упаковка',
                 'Професійна збірка',
                 'Гарантія якості'
             ],
-            color: 'from-emerald-500 to-teal-500'
+            color: 'from-[#90e0ef] to-[#023e8a]'
         }
     ];
 
     return (
-        <section className="py-24 bg-white relative overflow-hidden">
+        <section className="py-24 bg-gradient-to-br from-[#90e0ef]/10 to-[#48cae4]/10 relative overflow-hidden">
             {/* Background pattern */}
             <div className="absolute inset-0 opacity-5">
                 <div className="absolute inset-0" style={{
@@ -70,14 +70,12 @@ export default function ProcessSection() {
                 }}></div>
             </div>
 
-            <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="relative z-10 container mx-auto px-4">
                 <div className="text-center mb-16">
-                    <h2 className="text-4xl md:text-5xl font-bold mb-6">
-                        <span className="bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
-                            Як ми працюємо
-                        </span>
+                    <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-[#90e0ef] to-[#48cae4] bg-clip-text text-transparent">
+                        Як ми працюємо
                     </h2>
-                    <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                    <p className="text-lg text-gray-600 max-w-3xl mx-auto">
                         Простий та зрозумілий процес створення вашого ідеального торта
                     </p>
                 </div>
@@ -87,8 +85,8 @@ export default function ProcessSection() {
                     <div className="relative">
                         {/* Progress line */}
                         <div className="absolute top-24 left-0 right-0 h-1 bg-gray-200 rounded-full">
-                            <div 
-                                className="h-full bg-gradient-to-r from-pink-500 to-purple-500 rounded-full transition-all duration-1000 ease-out"
+                            <div
+                                className="h-full bg-gradient-to-r from-[#90e0ef] to-[#48cae4] rounded-full transition-all duration-1000 ease-out"
                                 style={{ width: `${((activeStep + 1) / steps.length) * 100}%` }}
                             ></div>
                         </div>
@@ -103,7 +101,7 @@ export default function ProcessSection() {
                                     <div className={`
                                         relative bg-white rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-4 cursor-pointer
                                         ${activeStep === index ? 'scale-105 shadow-2xl' : ''}
-                                        border-2 ${activeStep === index ? 'border-pink-300' : 'border-gray-100'}
+                                        border-2 ${activeStep === index ? 'border-[#90e0ef]' : 'border-gray-100'}
                                     `}>
                                         {/* Step number */}
                                         <div className={`
@@ -115,9 +113,6 @@ export default function ProcessSection() {
                                         </div>
 
                                         <div className="pt-8 text-center">
-                                            <div className="text-6xl mb-4 transform hover:scale-110 transition-transform duration-300">
-                                                {step.icon}
-                                            </div>
                                             <h3 className="text-xl font-bold text-gray-900 mb-3">
                                                 {step.title}
                                             </h3>
@@ -159,7 +154,6 @@ export default function ProcessSection() {
                                     {step.id}
                                 </div>
                                 <div className="flex-1">
-                                    <div className="text-4xl mb-2">{step.icon}</div>
                                     <h3 className="text-xl font-bold text-gray-900 mb-2">
                                         {step.title}
                                     </h3>
@@ -187,7 +181,7 @@ export default function ProcessSection() {
                     </p>
                     <a
                         href="/contact"
-                        className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-pink-600 to-purple-600 text-white font-semibold rounded-full hover:from-pink-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
+                        className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-[#90e0ef] to-[#48cae4] text-white font-semibold rounded-full hover:from-[#48cae4] hover:to-[#023e8a] transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
                     >
                         <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
