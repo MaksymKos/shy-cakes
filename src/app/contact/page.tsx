@@ -70,10 +70,8 @@ export default function ContactPage() {
       />
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
-        { }
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
 
-          { }
           <div className="lg:col-span-2">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-gray-900 mb-4">
@@ -95,10 +93,10 @@ export default function ContactPage() {
                   onMouseEnter={() => setHoveredContact(method.id)}
                   onMouseLeave={() => setHoveredContact(null)}
                 >
-                  { }
+
                   <div className={`absolute inset-0 bg-gradient-to-br ${method.color} opacity-0 group-hover:opacity-10 transition-opacity duration-300`} />
 
-                  { }
+
                   <div className="absolute top-2 right-2 opacity-20 group-hover:opacity-100 transition-opacity duration-300">
                     <div className="animate-bounce">
                       <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -108,12 +106,12 @@ export default function ContactPage() {
                   </div>
 
                   <div className="relative z-10">
-                    { }
+  
                     <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br ${method.color} text-white mb-4 group-hover:scale-110 transition-transform duration-300`}>
                       {method.icon}
                     </div>
 
-                    { }
+  
                     <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-[#90e0ef] group-hover:to-[#48cae4] transition-all duration-300">
                       {method.title}
                     </h3>
@@ -126,7 +124,7 @@ export default function ContactPage() {
                       {method.description}
                     </p>
 
-                    { }
+  
                     <div className="mt-4 flex items-center text-sm font-medium text-gray-500 group-hover:text-[#48cae4] transition-colors duration-300">
                       <span>Зв&apos;язатися</span>
                       <svg className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -135,17 +133,15 @@ export default function ContactPage() {
                     </div>
                   </div>
 
-                  { }
+
                   <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-30 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-all duration-1000" />
                 </a>
               ))}
             </div>
           </div>
 
-          { }
           <div className="lg:col-span-1">
             <div className="sticky top-8">
-              { }
               <div className="bg-white rounded-3xl shadow-xl p-8 mb-8 border border-gray-100">
                 <div className="text-center mb-6">
                   <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[#90e0ef] to-[#48cae4] text-white mb-4">
@@ -170,7 +166,6 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              { }
               <div className="bg-gradient-to-br from-[#90e0ef] to-[#48cae4] rounded-3xl shadow-xl p-8 text-white">
                 <div className="text-center">
                   <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm mb-4">
@@ -199,7 +194,6 @@ export default function ContactPage() {
           </div>
         </div>
 
-        { }
         <div className="mt-20">
           <div className="bg-white rounded-3xl shadow-xl p-12 border border-gray-100">
             <div className="text-center max-w-4xl mx-auto">

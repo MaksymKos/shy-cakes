@@ -1,23 +1,19 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
+
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
+
 import PageBannerSimple from '@/components/PageBannerSimple/pagebannersimple';
+import Loader from '@/components/Loader/Loader';
+import { sendOrderToTelegram } from '../../../telegram/sendTelegramOrder';
+
+import { ProductItemType } from '@/types/productItem';
+
 import { toast } from 'react-toastify';
 
-interface Product {
-    _id: string;
-    name: string;
-    description: string;
-    price: number;
-    category: string;
-    images: string[];
-    available: boolean;
-    unit: 'kg' | 'piece'; // New field for unit type
-    createdAt: string;
-}
 
 interface OrderFormData {
     customerName: string;
@@ -55,8 +51,7 @@ function OrderContent() {
     const searchParams = useSearchParams();
     const { data: session, status } = useSession();
     const productId = searchParams.get('productId');
-
-    const [product, setProduct] = useState<Product | null>(null);
+    const [product, setProduct] = useState<ProductItemType | null>(null);
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
     const [uploadingImages, setUploadingImages] = useState(false);
@@ -65,14 +60,13 @@ function OrderContent() {
         customerPhone: '',
         customerEmail: '',
         deliveryAddress: '',
-        deliveryDate: '',
+        deliveryDate: getMinDate(),
         weight: 1,
         specialRequests: '',
         paymentMethod: 'cash',
         referenceImages: []
     });
 
-    // Auto-fill form with user's saved information
     useEffect(() => {
         if (status === 'loading') return;
 
@@ -100,7 +94,6 @@ function OrderContent() {
         }
     }, [session, status]);
 
-    // Handle review reference parameters
     useEffect(() => {
         const reviewId = searchParams.get('reviewId');
         const cakeName = searchParams.get('cakeName');
@@ -120,7 +113,6 @@ function OrderContent() {
         }
     }, [searchParams]);
 
-    // Load product if productId is provided
     useEffect(() => {
         const fetchProduct = async () => {
             if (!productId) {
@@ -261,6 +253,7 @@ function OrderContent() {
             if (response.ok) {
                 toast.success('Замовлення успішно відправлено! Ми зв\'яжемося з вами найближчим часом.');
                 router.push('/catalog');
+                sendOrderToTelegram(orderData);
             } else {
                 const error = await response.json();
                 toast.error(error.message || 'Помилка при створенні замовлення');
@@ -273,21 +266,15 @@ function OrderContent() {
         }
     };
 
-    // Get minimum date (tomorrow)
-    const getMinDate = () => {
+    function getMinDate() {
         const tomorrow = new Date();
-        tomorrow.setDate(tomorrow.getDate() + 1);
+        tomorrow.setDate(tomorrow.getDate() + 2);
         return tomorrow.toISOString().split('T')[0];
     };
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="text-center">
-                    <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#90e0ef]"></div>
-                    <p className="mt-2 text-gray-600">Завантаження...</p>
-                </div>
-            </div>
+            <Loader text="Завантаження замовлення..." />
         );
     }
 
@@ -496,7 +483,11 @@ function OrderContent() {
                                         onChange={handleInputChange}
                                         className="w-full px-4 py-3 border-2 border-[#90e0ef]/30 rounded-xl focus:ring-4 focus:ring-[#90e0ef]/30 focus:border-[#90e0ef] transition-all duration-200 bg-white/80 backdrop-blur-sm"
                                     />
+                                    <p className="text-xs text-[#48cae4] font-medium mt-2 bg-[#90e0ef]/20 px-3 py-1 rounded-lg inline-block">
+                                        Орієнтовна дата, може відрізнятися на 1-2 дні
+                                    </p>
                                 </div>
+                                
                             </div>
 
                             <div>

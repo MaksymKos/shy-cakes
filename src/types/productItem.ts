@@ -8,6 +8,10 @@ export interface ProductItemType {
   category: string;
   images: string[];
   available: boolean;
+  packaging?: string;
+  importantInfo?: string;
+  storageConditions?: string;
+  recommendations?: string;
   showOnHomepage?: boolean;
   unit: ProductUnit;
   createdAt: string;

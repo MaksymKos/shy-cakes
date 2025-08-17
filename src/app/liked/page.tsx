@@ -5,8 +5,6 @@ import PageBannerSimple from '@/components/PageBannerSimple/pagebannersimple';
 import ProductList from '@/components/ProductList/ProductList';
 import { toast } from 'react-toastify';
 
-
-
 export default function LikedProductsPage() {
     const [likedProducts, setLikedProducts] = useState<Set<string>>(new Set());
 

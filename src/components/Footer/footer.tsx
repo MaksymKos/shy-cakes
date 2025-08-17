@@ -168,7 +168,7 @@ export default function Footer() {
                 <Link href="/contact" className="text-gray-400 hover:text-white text-sm transition-colors">
                   Підтримка
                 </Link>
-                <Link href="/about" className="text-gray-400 hover:text-white text-sm transition-colors">
+                <Link href="/privacy-policy" className="text-gray-400 hover:text-white text-sm transition-colors">
                   Політика конфіденційності
                 </Link>
               </div>
