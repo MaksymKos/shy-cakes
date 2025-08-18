@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function PageBanner() {
     const [particles, setParticles] = useState<Array<{ left: string, top: string, delay: string, duration: string }>>([]);
@@ -21,17 +22,15 @@ export default function PageBanner() {
 
     return (
         <section className="relative h-[calc(100dvh-80px)] flex items-center justify-center overflow-hidden">
-            {/* Відео фон */}
-            <video
-                autoPlay
-                muted
-                loop
-                playsInline
+            {/* Фото фон */}
+            <Image
+                src="/images/homepage-background.jpeg"
+                layout="fill"
+                objectFit="cover"
                 className="absolute inset-0 w-full h-full object-cover z-0"
-            >
-                <source src="/videos/large.mp4" type="video/mp4" />
-                Your browser does not support the video tag.
-            </video>
+                alt='Background Image'
+                quality={100}
+            />
 
             {/* Додатковий темний оверлей для читабельності тексту */}
             <div className="absolute inset-0 bg-black/30 z-20"></div>

@@ -209,7 +209,6 @@ export default function Profile() {
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-8">
-                    { }
                     <div className="bg-white rounded-lg shadow-sm border border-gray-200">
                         <div className="px-6 py-4 border-b border-gray-200">
                             <h2 className="text-lg font-semibold text-gray-900 flex items-center">
@@ -274,7 +273,19 @@ export default function Profile() {
                         </div>
                     </div>
 
-                    { }
+                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 flex items-center gap-6 shadow-sm">
+                        <div className="flex items-center justify-center w-16 h-16 rounded-full bg-yellow-100">
+                            <svg className="w-10 h-10 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 17.75V21m0-3.25a6.75 6.75 0 100-13.5 6.75 6.75 0 000 13.5zm0 0a3.25 3.25 0 110-6.5 3.25 3.25 0 010 6.5z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 className="text-xl font-semibold text-yellow-800 mb-1">Ваші бонуси</h3>
+                            <p className="text-yellow-700 text-lg">Нараховано <span className="font-bold">0</span> бонусів за замовлення</p>
+                            <p className="text-sm text-yellow-600 mt-1">Бонуси можна використати для знижки на наступне замовлення</p>
+                        </div>
+                    </div>
+
                     <div className="bg-white rounded-lg shadow-sm border border-gray-200">
                         <div className="px-6 py-4 border-b border-gray-200">
                             <h2 className="text-lg font-semibold text-gray-900 flex items-center">
@@ -363,7 +374,6 @@ export default function Profile() {
                         </div>
                     </div>
 
-                    { }
                     <div className="flex flex-col sm:flex-row gap-4 justify-end">
                         <button
                             type="submit"
@@ -387,7 +397,6 @@ export default function Profile() {
                     </div>
                 </form>
 
-                { }
                 <div className="mt-12">
                     <div className="bg-pink-50 rounded-lg p-6">
                         <h3 className="text-lg font-medium text-gray-900 mb-4">Швидкі посилання</h3>
