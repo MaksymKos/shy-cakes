@@ -1,11 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import Image from 'next/image';
 import { usePortfolio, usePortfolioStore } from '@/store';
 import type { PortfolioItem } from '@/types/database';
+import AdminHeader from '@/components/admin/AdminHeader';
+import Loader from '@/components/Loader/Loader';
 
 interface ImageUploadProps {
   onImageUpload: (url: string) => void;
@@ -107,9 +108,6 @@ function ImageUpload({ onImageUpload, currentImage }: ImageUploadProps) {
 }
 
 export default function PortfolioAdmin() {
-  const router = useRouter();
-
-  // Use Zustand store for portfolio management
   const {
     data: portfolioItems,
     isLoading: loading,
@@ -243,7 +241,6 @@ export default function PortfolioAdmin() {
     }
   };
 
-  // Display error if any
   if (error) {
     return (
       <div className="min-h-screen bg-gray-50 p-8">
@@ -265,35 +262,21 @@ export default function PortfolioAdmin() {
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 sm:mb-8 space-y-4 sm:space-y-0 bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-6 sm:mb-8">
-          <div className="flex items-center space-x-4">
-            <button
-              onClick={() => router.push('/admin')}
-              className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors cursor-pointer"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              <span className="text-sm sm:text-base">Назад до панелі</span>
-            </button>
-            <div className="h-6 w-px bg-gray-300"></div>
-            <div>
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">Управління портфоліо</h1>
-              <p className="mt-2 text-gray-600 text-sm sm:text-base">Знайдено {portfolioItems.length} робіт</p>
-            </div>
-          </div>
 
-          <button
+        <AdminHeader title="Управління портфоліо" />
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 sm:mb-8 space-y-4 sm:space-y-0 bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-6 sm:mb-8">
+          <p className="mt-2 text-gray-600 text-sm sm:text-base">Знайдено {portfolioItems.length} робіт</p>
+          <button className="w-full sm:w-auto bg-pink-600 text-white px-4 sm:px-6 py-3 rounded-lg hover:bg-pink-700 transition-colors font-semibold cursor-pointer text-sm sm:text-base"
             onClick={() => {
               setEditingItem(null);
               resetForm();
               setShowAddForm(true);
             }}
-            className="w-full sm:w-auto bg-pink-600 text-white px-4 sm:px-6 py-3 rounded-lg hover:bg-pink-700 transition-colors font-semibold cursor-pointer text-sm sm:text-base"
           >
             + Додати роботу
           </button>
         </div>
+
 
         {/* Add/Edit Portfolio Item Form */}
         {showAddForm && (
@@ -310,7 +293,7 @@ export default function PortfolioAdmin() {
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                  placeholder="Введіть назву роботи"
+                  placeholder="Введіть невеликий опис роботи"
                 />
               </div>
 
@@ -342,10 +325,7 @@ export default function PortfolioAdmin() {
         )}
 
         {loading ? (
-          <div className="text-center py-12">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500"></div>
-            <p className="mt-2 text-gray-600">Завантаження...</p>
-          </div>
+          <Loader text="Завантаження портфоліо..." />
         ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 sm:gap-4 bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-6 sm:mb-8">
             {portfolioItems.map((item) => (
@@ -381,7 +361,8 @@ export default function PortfolioAdmin() {
               </div>
             ))}
           </div>
-        )}      {!loading && portfolioItems.length === 0 && (
+        )}
+        {!loading && portfolioItems.length === 0 && (
           <div className="text-center py-12">
             <p className="text-gray-500 text-lg">Портфоліо порожнє</p>
             <p className="text-gray-400 mt-2">Додайте першу роботу</p>

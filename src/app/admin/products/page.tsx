@@ -1,42 +1,37 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+
+import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { toast } from 'react-toastify';
-import Image from 'next/image';
+
+import Loader from '@/components/Loader/Loader';
 import { useCategories } from '@/hooks/useCategories';
 import { PRODUCT_UNITS, UNIT_LABELS, type ProductUnit } from '@/constants/units';
+import { ProductItemType } from '@/types/productItem';
 
-interface Product {
-  _id: string;
-  name: string;
-  description: string;
-  price: number;
-  category: string;
-  available: boolean;
-  unit: ProductUnit;
-  showOnHomepage?: boolean;
-  images?: string[];
-  createdAt?: string;
-  updatedAt?: string;
-}
+import { toast } from 'react-toastify';
 
 export default function AdminProductsPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { productCategories } = useCategories();
-  const [products, setProducts] = useState<Product[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<ProductItemType[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<ProductItemType[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [editingProduct, setEditingProduct] = useState<ProductItemType | null>(null);
   const [uploading, setUploading] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState<string>('');
   const [homepageFilter, setHomepageFilter] = useState<string>('');
   const [newProduct, setNewProduct] = useState({
     name: '',
     description: '',
+    importantInfo: '',
+    packaging: '',
+    recommendations: '',
+    storageConditions: '',
     price: '',
     category: '',
     unit: 'kg' as ProductUnit,
@@ -46,11 +41,14 @@ export default function AdminProductsPage() {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
 
-  // Helper function to reset form
   const resetForm = () => {
     setNewProduct({
       name: '',
       description: '',
+      importantInfo: '',
+      packaging: '',
+      recommendations: '',
+      storageConditions: '',
       price: '',
       category: '',
       unit: 'kg' as ProductUnit,
@@ -100,7 +98,6 @@ export default function AdminProductsPage() {
     return () => clearTimeout(timer);
   }, [session, status, router]);
 
-  // Cleanup blob URLs when component unmounts
   useEffect(() => {
     return () => {
       previewUrls.forEach(url => {
@@ -128,7 +125,6 @@ export default function AdminProductsPage() {
     }
   };
 
-  // Update filtered products when filters or products change
   useEffect(() => {
     let filtered = [...products];
 
@@ -263,11 +259,15 @@ export default function AdminProductsPage() {
     }
   };
 
-  const handleEditProduct = (product: Product) => {
+  const handleEditProduct = (product: ProductItemType) => {
     setEditingProduct(product);
     setNewProduct({
       name: product.name,
       description: product.description,
+      importantInfo: product.importantInfo || '',
+      packaging: product.packaging || '',
+      recommendations: product.recommendations || '',
+      storageConditions: product.storageConditions || '',
       price: product.price.toString(),
       category: product.category,
       unit: product.unit || 'kg',
@@ -383,16 +383,10 @@ export default function AdminProductsPage() {
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Завантаження...</p>
-        </div>
-      </div>
+      <Loader text='Завантаження...' />
     );
   }
 
-  // Якщо не авторизований або не адмін - не показуємо нічого (useEffect перенаправить)
   if (status === 'unauthenticated' || !session || (session.user as { role?: string })?.role !== 'admin') {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -404,15 +398,9 @@ export default function AdminProductsPage() {
     );
   }
 
-  // Показуємо контент тільки для авторизованих адмінів
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Завантаження товарів...</p>
-        </div>
-      </div>
+      <Loader text='Завантаження товарів...' />
     );
   }
 
@@ -513,7 +501,8 @@ export default function AdminProductsPage() {
               {editingProduct ? `Редагування: ${editingProduct.name}` : 'Додати новий товар'}
             </h2>
             <form onSubmit={editingProduct ? handleUpdateProduct : handleAddProduct} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-b pb-4 mb-4">
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Назва товару</label>
                   <input
@@ -555,20 +544,7 @@ export default function AdminProductsPage() {
                     <option value={PRODUCT_UNITS.PIECE}>{UNIT_LABELS[PRODUCT_UNITS.PIECE].full} ({UNIT_LABELS[PRODUCT_UNITS.PIECE].short})</option>
                   </select>
                 </div>
-              </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Опис</label>
-                <textarea
-                  required
-                  value={newProduct.description}
-                  onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 h-24 focus:outline-none focus:ring-2 focus:ring-pink-500"
-                  placeholder="Детальний опис товару"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Ціна (грн)</label>
                   <input
@@ -581,10 +557,6 @@ export default function AdminProductsPage() {
                     className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-500"
                     placeholder="0"
                   />
-                </div>
-
-                <div className="flex items-center">
-
                 </div>
 
                 <div className="flex items-center direction-column gap-4">
@@ -609,8 +581,66 @@ export default function AdminProductsPage() {
                 </div>
               </div>
 
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-b pb-4 mb-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Опис</label>
+                  <textarea
+                    required
+                    value={newProduct.description}
+                    onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 h-24 focus:outline-none focus:ring-2 focus:ring-pink-500"
+                    placeholder="Детальний опис товару"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Важливо знати</label>
+                  <textarea
+                    required
+                    value={newProduct.importantInfo}
+                    onChange={(e) => setNewProduct({ ...newProduct, importantInfo: e.target.value })}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 h-24 focus:outline-none focus:ring-2 focus:ring-pink-500"
+                    placeholder="Детальна інформація про товар"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Упаковка</label>
+                  <textarea
+                    required
+                    value={newProduct.packaging}
+                    onChange={(e) => setNewProduct({ ...newProduct, packaging: e.target.value })}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 h-24 focus:outline-none focus:ring-2 focus:ring-pink-500"
+                    placeholder="Детальний опис упаковки товару"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Рекомендації</label>
+                  <textarea
+                    required
+                    value={newProduct.recommendations}
+                    onChange={(e) => setNewProduct({ ...newProduct, recommendations: e.target.value })}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 h-24 focus:outline-none focus:ring-2 focus:ring-pink-500"
+                    placeholder="Детальний опис рекомендацій"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Умови зберігання</label>
+                  <textarea
+                    required
+                    value={newProduct.storageConditions}
+                    onChange={(e) => setNewProduct({ ...newProduct, storageConditions: e.target.value })}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 h-24 focus:outline-none focus:ring-2 focus:ring-pink-500"
+                    placeholder="Детальний опис умов зберігання товару"
+                  />
+                </div>
+
+              </div>
+
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-m font-bold text-gray-700 mb-2">
                   Фото товару
                 </label>
 
@@ -618,20 +648,21 @@ export default function AdminProductsPage() {
                 {editingProduct && editingProduct.images && editingProduct.images.length > 0 && (
                   <div className="mb-4">
                     <h4 className="text-sm font-medium text-gray-700 mb-2">Поточні зображення:</h4>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4">
+                    {/* <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4"> */}
+                    <div className="flex flex-wrap gap-4">
                       {editingProduct.images.map((image, index) => (
                         <div key={index} className="relative group">
                           <Image
                             src={image}
                             alt={`Product ${index + 1}`}
-                            width={120}
-                            height={120}
-                            className="object-cover rounded-lg border-2 border-gray-200"
+                            width={100}
+                            height={100}
+                            className="object-cover rounded-lg border-2 border-gray-200 h-[100px] w-[100px]"
                           />
                           <button
                             type="button"
                             onClick={() => removeImage(index)}
-                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1"
                           >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

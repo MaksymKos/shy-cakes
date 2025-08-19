@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const TELEGRAM_TOKEN = "8330970425:AAFHG-a9sq5scNcx224dTlklV4wMJJxT-a0";
-const CHAT_ID = "391812250";
+const TELEGRAM_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
 interface Order {
   customerName: string;

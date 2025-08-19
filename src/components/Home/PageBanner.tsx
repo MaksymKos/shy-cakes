@@ -30,6 +30,8 @@ export default function PageBanner() {
                 className="absolute inset-0 w-full h-full object-cover z-0"
                 alt='Background Image'
                 quality={100}
+                fetchPriority='high'
+                loading='lazy'
             />
 
             {/* Додатковий темний оверлей для читабельності тексту */}

@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import Image from 'next/image';
+import AdminHeader from '@/components/admin/AdminHeader';
+import Loader from '@/components/Loader/Loader';
 
 interface Order {
   _id: string;
@@ -183,7 +185,7 @@ export default function AdminOrders() {
         : orders.filter(order => order.status === filter);
 
   if (status === 'loading' || loading) {
-    return <div className="p-8">Завантаження...</div>;
+    return <Loader text='Завантаження...' />;
   }
 
   if (!session || session.user?.role !== 'admin') {
@@ -193,23 +195,8 @@ export default function AdminOrders() {
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <div className="flex items-center space-x-4">
-            <button
-              onClick={() => router.push('/admin')}
-              className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors cursor-pointer"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              <span>Назад до панелі</span>
-            </button>
-            <div className="h-6 w-px bg-gray-300"></div>
-            <h1 className="text-3xl font-bold text-gray-900">Управління замовленнями</h1>
-          </div>
-        </div>
+        <AdminHeader title="Управління замовленнями" />
 
-        { }
         {showEditModal && editingOrder && (
           <EditOrderModal
             order={editingOrder}
@@ -277,7 +264,6 @@ export default function AdminOrders() {
             </button>
           </div>
 
-          { }
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setFilter('users')}
@@ -344,7 +330,6 @@ export default function AdminOrders() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                  { }
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <h4 className="font-medium text-gray-900 mb-2 flex items-center">
                       <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -371,7 +356,6 @@ export default function AdminOrders() {
                     )}
                   </div>
 
-                  { }
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <h4 className="font-medium text-gray-900 mb-2 flex items-center">
                       {order.type === 'product' ? (
@@ -416,7 +400,6 @@ export default function AdminOrders() {
                     )}
                   </div>
 
-                  { }
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <h4 className="font-medium text-gray-900 mb-2 flex items-center">
                       <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -439,7 +422,6 @@ export default function AdminOrders() {
                     )}
                   </div>
 
-                  { }
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <h4 className="font-medium text-gray-900 mb-2 flex items-center">
                       <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -456,7 +438,6 @@ export default function AdminOrders() {
                   </div>
                 </div>
 
-                { }
                 {(order.specialRequests || order.description) && (
                   <div className="mb-4">
                     <h4 className="font-medium text-gray-900 mb-2 flex items-center">
@@ -471,7 +452,6 @@ export default function AdminOrders() {
                   </div>
                 )}
 
-                { }
                 {order.referenceImages && order.referenceImages.length > 0 && (
                   <div className="mb-4">
                     <h4 className="font-medium text-gray-900 mb-2 flex items-center">
@@ -563,7 +543,6 @@ export default function AdminOrders() {
                     ✏️ Редагувати
                   </button>
 
-                  { }
                   <div className="flex space-x-2">
                     {order.status === 'pending' && (
                       <>
@@ -702,7 +681,6 @@ function EditOrderModal({ order, onSave, onClose, isUpdating }: EditOrderModalPr
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
-          { }
           <div>
             <h3 className="text-lg font-medium text-gray-900 mb-4">Інформація про клієнта</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -754,7 +732,6 @@ function EditOrderModal({ order, onSave, onClose, isUpdating }: EditOrderModalPr
             </div>
           </div>
 
-          { }
           <div>
             <h3 className="text-lg font-medium text-gray-900 mb-4">Доставка</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -792,7 +769,6 @@ function EditOrderModal({ order, onSave, onClose, isUpdating }: EditOrderModalPr
             </div>
           </div>
 
-          { }
           <div>
             <h3 className="text-lg font-medium text-gray-900 mb-4">
               {order.type === 'product' ? 'Інформація про товар' : 'Інформація про торт'}
@@ -888,7 +864,6 @@ function EditOrderModal({ order, onSave, onClose, isUpdating }: EditOrderModalPr
             )}
           </div>
 
-          { }
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               {order.type === 'product' ? 'Особливі побажання' : 'Опис замовлення'}
@@ -902,7 +877,6 @@ function EditOrderModal({ order, onSave, onClose, isUpdating }: EditOrderModalPr
             />
           </div>
 
-          { }
           <div className="flex justify-end gap-4 pt-4 border-t border-gray-200">
             <button
               type="button"
