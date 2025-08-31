@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
@@ -50,7 +49,7 @@ export default function SignIn() {
       ...prev,
       [name]: value
     }));
-    
+
     if (errors[name as keyof FormErrors]) {
       setErrors(prev => ({
         ...prev,
@@ -61,7 +60,7 @@ export default function SignIn() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -89,18 +88,9 @@ export default function SignIn() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 to-purple-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex justify-center bg-gradient-to-br from-[#90e0ef] via-white to-[#90e0ef] py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div>
-          <div className="mx-auto h-24 w-24 flex items-center justify-center">
-            <Image
-              src="/images/logo.png"
-              alt="Logo"
-              width={96}
-              height={96}
-              className="h-20 w-auto"
-            />
-          </div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             Вхід до акаунту
           </h2>
@@ -108,14 +98,14 @@ export default function SignIn() {
             Або{' '}
             <Link
               href="/auth/signup"
-              className="font-medium text-pink-600 hover:text-pink-500 transition-colors duration-200"
+              className="font-medium text-[#0077b6] hover:text-[#023e8a] transition-colors duration-200"
             >
               створіть новий акаунт
             </Link>
           </p>
         </div>
 
-        <div className="bg-white shadow-xl rounded-lg px-8 py-8">
+        <div className="bg-white shadow-xl rounded-lg px-8 py-8 border border-[#90e0ef]">
           {errors.general && (
             <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
               {errors.general}
@@ -135,9 +125,8 @@ export default function SignIn() {
                 required
                 value={formData.email}
                 onChange={handleInputChange}
-                className={`appearance-none relative block w-full px-3 py-2 border rounded-md placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 focus:z-10 sm:text-sm transition-colors duration-200 ${
-                  errors.email ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                }`}
+                className={`appearance-none relative block w-full px-3 py-2 border rounded-md placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#90e0ef] focus:border-[#90e0ef] focus:z-10 sm:text-sm transition-colors duration-200 ${errors.email ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                  }`}
                 placeholder="example@email.com"
               />
               {errors.email && (
@@ -157,9 +146,8 @@ export default function SignIn() {
                 required
                 value={formData.password}
                 onChange={handleInputChange}
-                className={`appearance-none relative block w-full px-3 py-2 border rounded-md placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 focus:z-10 sm:text-sm transition-colors duration-200 ${
-                  errors.password ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                }`}
+                className={`appearance-none relative block w-full px-3 py-2 border rounded-md placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#90e0ef] focus:border-[#90e0ef] focus:z-10 sm:text-sm transition-colors duration-200 ${errors.password ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                  }`}
                 placeholder="Введіть пароль"
               />
               {errors.password && (
@@ -171,7 +159,7 @@ export default function SignIn() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-pink-600 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                className="group relative w-full flex justify-center py-2 px-4 border border-[#90e0ef] text-sm font-medium rounded-md text-white bg-[#90e0ef] hover:bg-[#00b4d8] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#90e0ef] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
               >
                 {isLoading ? (
                   <div className="flex items-center">
@@ -192,7 +180,7 @@ export default function SignIn() {
             <div className="text-center">
               <Link
                 href="/auth/forgot-password"
-                className="text-sm text-pink-600 hover:text-pink-500 transition-colors duration-200"
+                className="text-sm text-[#90e0ef] hover:text-[#00b4d8] transition-colors duration-200"
               >
                 Забули пароль?
               </Link>

@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -78,7 +77,7 @@ export default function SignUp() {
       ...prev,
       [name]: value
     }));
-    
+
     if (errors[name as keyof FormErrors]) {
       setErrors(prev => ({
         ...prev,
@@ -89,7 +88,7 @@ export default function SignUp() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -120,9 +119,9 @@ export default function SignUp() {
       }
 
       setShowSuccess(true);
-      
+
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       try {
         const result = await signIn('credentials', {
           email: formData.email.toLowerCase().trim(),
@@ -160,33 +159,25 @@ export default function SignUp() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 to-purple-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex justify-center bg-gradient-to-br from-[#90e0ef] via-white to-[#90e0ef] py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div>
-          <div className="mx-auto h-24 w-24 flex items-center justify-center">
-            <Image
-              src="/images/logo.png"
-              alt="Logo"
-              width={96}
-              height={96}
-              className="h-20 w-auto"
-            />
-          </div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+
+          <h2 className="text-center text-3xl font-extrabold text-gray-900">
             Створення акаунту
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
             Або{' '}
             <Link
               href="/auth/signin"
-              className="font-medium text-pink-600 hover:text-pink-500 transition-colors duration-200"
+              className="font-medium text-[#0077b6] hover:text-[#023e8a] transition-colors duration-200"
             >
               увійдіть в існуючий акаунт
             </Link>
           </p>
         </div>
 
-        <div className="bg-white shadow-xl rounded-lg px-8 py-8">
+        <div className="bg-white shadow-xl rounded-lg px-8 py-8 border border-[#90e0ef]">
           {showSuccess && (
             <div className="mb-4 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-md">
               <div className="flex">
@@ -223,9 +214,8 @@ export default function SignUp() {
                 required
                 value={formData.name}
                 onChange={handleInputChange}
-                className={`appearance-none relative block w-full px-3 py-2 border rounded-md placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 focus:z-10 sm:text-sm transition-colors duration-200 ${
-                  errors.name ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                }`}
+                className={`appearance-none relative block w-full px-3 py-2 border rounded-md placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 focus:z-10 sm:text-sm transition-colors duration-200 ${errors.name ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                  }`}
                 placeholder="Введіть ваше повне ім&apos;я"
               />
               {errors.name && (
@@ -245,9 +235,8 @@ export default function SignUp() {
                 required
                 value={formData.email}
                 onChange={handleInputChange}
-                className={`appearance-none relative block w-full px-3 py-2 border rounded-md placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 focus:z-10 sm:text-sm transition-colors duration-200 ${
-                  errors.email ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                }`}
+                className={`appearance-none relative block w-full px-3 py-2 border rounded-md placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 focus:z-10 sm:text-sm transition-colors duration-200 ${errors.email ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                  }`}
                 placeholder="example@email.com"
               />
               {errors.email && (
@@ -266,9 +255,8 @@ export default function SignUp() {
                 autoComplete="tel"
                 value={formData.phone}
                 onChange={handleInputChange}
-                className={`appearance-none relative block w-full px-3 py-2 border rounded-md placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 focus:z-10 sm:text-sm transition-colors duration-200 ${
-                  errors.phone ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                }`}
+                className={`appearance-none relative block w-full px-3 py-2 border rounded-md placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 focus:z-10 sm:text-sm transition-colors duration-200 ${errors.phone ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                  }`}
                 placeholder="+380 XX XXX XX XX"
               />
               {errors.phone && (
@@ -288,9 +276,8 @@ export default function SignUp() {
                 required
                 value={formData.password}
                 onChange={handleInputChange}
-                className={`appearance-none relative block w-full px-3 py-2 border rounded-md placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 focus:z-10 sm:text-sm transition-colors duration-200 ${
-                  errors.password ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                }`}
+                className={`appearance-none relative block w-full px-3 py-2 border rounded-md placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 focus:z-10 sm:text-sm transition-colors duration-200 ${errors.password ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                  }`}
                 placeholder="Створіть надійний пароль"
               />
               {errors.password && (
@@ -305,7 +292,7 @@ export default function SignUp() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-pink-600 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                className="group relative w-full flex justify-center py-3 px-4 border border-[#90e0ef] text-sm font-medium rounded-md text-white bg-[#90e0ef] hover:bg-[#00b4d8] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#90e0ef] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
               >
                 {isLoading ? (
                   <div className="flex items-center">
@@ -325,11 +312,11 @@ export default function SignUp() {
           <div className="mt-6">
             <div className="text-center text-xs text-gray-500">
               Створюючи акаунт, ви погоджуєтесь з нашими{' '}
-              <Link href="/terms" className="text-pink-600 hover:text-pink-500">
+              <Link href="/terms" className="text-[#90e0ef] hover:text-[#00b4d8]">
                 Умовами використання
               </Link>{' '}
               та{' '}
-              <Link href="/privacy" className="text-pink-600 hover:text-pink-500">
+              <Link href="/privacy-policy" className="text-[#90e0ef] hover:text-[#00b4d8]">
                 Політикою конфіденційності
               </Link>
             </div>
