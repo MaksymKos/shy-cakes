@@ -1,16 +1,16 @@
-import React from 'react'
-import { useState, useEffect } from 'react';
-import PageBannerSimple from '@/components/PageBannerSimple/pagebannersimple';
+import { useState, useEffect, useMemo } from 'react';
+
 import { useCategories } from '@/hooks/useCategories';
-import ProductItem from '@/components/ProductItem/ProductItem';
 import type { ProductItemType } from '@/types/productItem';
+
+import PageBannerSimple from '@/components/PageBannerSimple/pagebannersimple';
+import ProductItem from '@/components/ProductItem/ProductItem';
 import Loader from '@/components/Loader/Loader';
 import CatalogActions from '@/components/CatalogActions/CatalogActions';
 
 const CatalogList = () => {
   const { filterCategories } = useCategories();
   const [products, setProducts] = useState<ProductItemType[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<ProductItemType[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -45,27 +45,18 @@ const CatalogList = () => {
     fetchProducts();
   }, [selectedCategory, searchTerm]);
 
-  useEffect(() => {
-    if (products.length === 0) {
-      setFilteredProducts([]);
-      return;
-    }
-
-    const sortedProducts = products.sort((a: ProductItemType, b: ProductItemType) => {
-      const aIndex = filterCategories.findIndex(cat => cat.value === a.category);
-      const bIndex = filterCategories.findIndex(cat => cat.value === b.category);
-
-      const aOrder = aIndex === -1 ? 999 : aIndex;
-      const bOrder = bIndex === -1 ? 999 : bIndex;
-
-      if (aOrder !== bOrder) {
-        return aOrder - bOrder;
-      }
-      return a.name.localeCompare(b.name);
-    });
-
-    setFilteredProducts(sortedProducts);
-  }, [products, likedProducts, filterCategories]);
+  const sortedProducts = useMemo(() => {
+    if (products.length === 0) return [];
+    return products
+      .sort((a, b) => {
+        const aIndex = filterCategories.findIndex(cat => cat.value === a.category);
+        const bIndex = filterCategories.findIndex(cat => cat.value === b.category);
+        const aOrder = aIndex === -1 ? 999 : aIndex;
+        const bOrder = bIndex === -1 ? 999 : bIndex;
+        if (aOrder !== bOrder) return aOrder - bOrder;
+        return a.name.localeCompare(b.name);
+      });
+  }, [products, filterCategories]);
 
   const toggleLike = (productId: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -80,6 +71,7 @@ const CatalogList = () => {
       return newLiked;
     });
   };
+
   return (
     <div className="">
       <PageBannerSimple
@@ -101,19 +93,19 @@ const CatalogList = () => {
         </div>
 
         {loading ? (
-          <Loader />
-        ) : filteredProducts.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-gray-600 text-lg">Товари не знайдено</p>
-            <p className="text-gray-500 mt-2">Спробуйте змінити фільтри або пошуковий запит</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredProducts.map((product) => (
-              <ProductItem key={product._id} product={product} likedProducts={likedProducts} toggleLike={toggleLike} />
-            ))}
-          </div>
-        )
+            <Loader />
+          ) : sortedProducts.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-gray-600 text-lg">Товари не знайдено</p>
+              <p className="text-gray-500 mt-2">Спробуйте змінити фільтри або пошуковий запит</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {sortedProducts.map((product) => (
+                <ProductItem key={product._id} product={product} likedProducts={likedProducts} toggleLike={toggleLike} />
+              ))}
+            </div>
+          )
         }
       </div>
     </div>
