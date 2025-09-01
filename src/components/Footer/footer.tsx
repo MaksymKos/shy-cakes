@@ -14,7 +14,6 @@ export default function Footer() {
         <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
 
-            { }
             <div className="lg:col-span-1">
               <div className="mb-6">
                 <div className="bg-white rounded-lg p-3 inline-block">
@@ -24,6 +23,7 @@ export default function Footer() {
                     height={120}
                     alt='Shy Cakes Logo'
                     className="w-auto h-auto"
+                    priority={false}
                   />
                 </div>
               </div>
@@ -36,9 +36,9 @@ export default function Footer() {
                 Створюємо унікальні торти з любов&apos;ю та майстерністю для ваших особливих моментів.
               </p>
 
-              { }
               <div className="flex gap-3">
                 <Link
+                  aria-label="Instagram"
                   href="https://www.instagram.com/shy__cakes/"
                   target='_blank'
                   rel="noreferrer"
@@ -74,101 +74,105 @@ export default function Footer() {
               </div>
             </div>
 
-            { }
             <div className="lg:col-span-3">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
 
-                { }
                 <div>
                   <h3 className="text-sm font-semibold text-white mb-4 uppercase tracking-wider">
                     Каталог продукції
                   </h3>
-                  <ul className="space-y-2 text-sm">
-                    <li>
-                      <Link href="/catalog" className="text-gray-300 hover:text-white transition-colors">
-                        Всі торти
-                      </Link>
-                    </li>
-                    {productCategories.map((category) => (
-                      <li key={category.value}>
-                        <Link
-                          href={`/catalog?category=${encodeURIComponent(category.value)}`}
-                          className="text-gray-300 hover:text-white transition-colors"
-                        >
-                          {category.label}
+                  <nav aria-label="Нижня навігація">
+                    <ul className="space-y-2 text-sm">
+                      <li>
+                        <Link href="/catalog" className="text-gray-300 hover:text-white transition-colors">
+                          Всі торти
                         </Link>
                       </li>
-                    ))}
-                  </ul>
+                      {productCategories.map((category) => (
+                        <li key={category.value}>
+                          <Link
+                            href={`/catalog?category=${encodeURIComponent(category.value)}`}
+                            className="text-gray-300 hover:text-white transition-colors"
+                          >
+                            {category.label}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </nav>
+
                 </div>
 
-                { }
                 <div>
                   <h3 className="text-sm font-semibold text-white mb-4 uppercase tracking-wider">
                     Інформація
                   </h3>
-                  <ul className="space-y-2 text-sm">
-                    <li>
-                      <Link href="/about" className="text-gray-300 hover:text-white transition-colors">
-                        Про мене
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/portfolio" className="text-gray-300 hover:text-white transition-colors">
-                        Портфоліо
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/reviews" className="text-gray-300 hover:text-white transition-colors">
-                        Відгуки
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/contact" className="text-gray-300 hover:text-white transition-colors">
-                        Контакти
-                      </Link>
-                    </li>
-                  </ul>
+                  <nav aria-label="Нижня навігація">
+                    <ul className="space-y-2 text-sm">
+                      <li>
+                        <Link href="/about" className="text-gray-300 hover:text-white transition-colors">
+                          Про мене
+                        </Link>
+                      </li>
+                      <li>
+                        <Link href="/portfolio" className="text-gray-300 hover:text-white transition-colors">
+                          Портфоліо
+                        </Link>
+                      </li>
+                      <li>
+                        <Link href="/reviews" className="text-gray-300 hover:text-white transition-colors">
+                          Відгуки
+                        </Link>
+                      </li>
+                      <li>
+                        <Link href="/contact" className="text-gray-300 hover:text-white transition-colors">
+                          Контакти
+                        </Link>
+                      </li>
+                    </ul>
+                  </nav>
+
                 </div>
 
-                { }
                 <div>
                   <h3 className="text-sm font-semibold text-white mb-4 uppercase tracking-wider">
                     Особистий кабінет
                   </h3>
-                  <ul className="space-y-2 text-sm">
-                    <li>
-                      <Link href="/profile" className="text-gray-300 hover:text-white transition-colors">
-                        Профіль
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/orders" className="text-gray-300 hover:text-white transition-colors">
-                        Мої замовлення
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/liked" className="text-gray-300 hover:text-white transition-colors">
-                        Улюблені
-                      </Link>
-                    </li>
-                  </ul>
+                  <nav aria-label="Нижня навігація">
+                    <ul className="space-y-2 text-sm">
+                      <li>
+                        <Link href="/profile" className="text-gray-300 hover:text-white transition-colors">
+                          Профіль
+                        </Link>
+                      </li>
+                      <li>
+                        <Link href="/orders" className="text-gray-300 hover:text-white transition-colors">
+                          Мої замовлення
+                        </Link>
+                      </li>
+                      <li>
+                        <Link href="/liked" className="text-gray-300 hover:text-white transition-colors">
+                          Улюблені
+                        </Link>
+                      </li>
+                    </ul>
+                  </nav>
+
                 </div>
               </div>
             </div>
           </div>
 
-          { }
           <div className="border-t border-gray-800 pt-6 mt-8">
             <div className="flex flex-col md:flex-row justify-between items-center">
-              <p className="text-gray-400 text-sm mb-4 md:mb-0">
-                &copy; {currentYear} Shy Cakes. Всі права захищені. Створено з ❤️ у Вінниці
-              </p>
+              <small className="text-gray-400 text-sm mb-4 md:mb-0">
+                &copy; {currentYear} <span itemProp="name">Shy Cakes.</span> Всі права захищені. Створено з ❤️ у Вінниці
+              </small>
               <div className="flex items-center space-x-4">
-                <Link href="/contact" className="text-gray-400 hover:text-white text-sm transition-colors">
+                <Link area-label="Підтримка" href="/contact" className="text-gray-400 hover:text-white text-sm transition-colors">
                   Підтримка
                 </Link>
-                <Link href="/privacy-policy" className="text-gray-400 hover:text-white text-sm transition-colors">
+                <Link area-label="Політика конфіденційності" href="/privacy-policy" className="text-gray-400 hover:text-white text-sm transition-colors">
                   Політика конфіденційності
                 </Link>
               </div>
